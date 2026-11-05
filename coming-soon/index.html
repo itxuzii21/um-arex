@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UM-AREX Leather — Coming Soon</title>
+  <link rel="icon" href="https://imgur.com/7zyXbkn.jpg" type="image/jpeg" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: #f5f0eb;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Subtle leather-texture background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(139, 90, 43, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 30%, rgba(160, 120, 60, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(100, 60, 20, 0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 40px 24px;
+      max-width: 520px;
+      width: 100%;
+    }
+
+    /* Logo */
+    .logo-wrapper {
+      margin-bottom: 40px;
+      animation: fadeInDown 1s ease-out;
+    }
+
+    .logo-wrapper img {
+      width: 280px;
+      height: auto;
+      object-fit: contain;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    /* Brand Name */
+    .brand-name {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: #c9a96e;
+      margin-bottom: 8px;
+      animation: fadeInDown 1s ease-out 0.2s both;
+    }
+
+    .brand-tagline {
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(201, 169, 110, 0.6);
+      margin-bottom: 48px;
+      animation: fadeInDown 1s ease-out 0.4s both;
+    }
+
+    /* Coming Soon Text */
+    .coming-soon-title {
+      font-size: 1.6rem;
+      font-weight: 300;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      color: #f5f0eb;
+      margin-bottom: 12px;
+      animation: fadeInUp 1s ease-out 0.6s both;
+    }
+
+    .coming-soon-inshaallah {
+      font-size: 1.3rem;
+      font-weight: 400;
+      letter-spacing: 4px;
+      color: #c9a96e;
+      margin-bottom: 20px;
+      font-style: italic;
+      animation: fadeInUp 1s ease-out 0.65s both;
+    }
+
+    .coming-soon-desc {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: rgba(245, 240, 235, 0.55);
+      max-width: 380px;
+      margin: 0 auto 48px;
+      animation: fadeInUp 1s ease-out 0.8s both;
+    }
+
+    /* Divider */
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #c9a96e, transparent);
+      margin: 0 auto 48px;
+      animation: fadeInUp 1s ease-out 0.7s both;
+    }
+
+    /* Social Icons */
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      animation: fadeInUp 1s ease-out 1s both;
+    }
+
+    .social-links a {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1px solid rgba(201, 169, 110, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #c9a96e;
+      font-size: 1.3rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      background: rgba(201, 169, 110, 0.05);
+    }
+
+    .social-links a:hover {
+      background: rgba(201, 169, 110, 0.15);
+      border-color: #c9a96e;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(201, 169, 110, 0.15);
+    }
+
+    /* Footer */
+    .footer-text {
+      margin-top: 56px;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      color: rgba(245, 240, 235, 0.25);
+      animation: fadeInUp 1s ease-out 1.2s both;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      .brand-name { font-size: 1.6rem; letter-spacing: 4px; }
+      .coming-soon-title { font-size: 1.2rem; letter-spacing: 5px; }
+      .logo-wrapper img { width: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo-wrapper">
+      <img src="https://imgur.com/7zyXbkn.jpg" alt="UM-AREX Leather" />
+    </div>
+
+    <h1 class="brand-name">UM-AREX</h1>
+    <p class="brand-tagline">Premium Leather</p>
+
+    <h2 class="coming-soon-title">Coming Soon</h2>
+    <p class="coming-soon-inshaallah">Insha'Allah</p>
+    <div class="divider"></div>
+    <p class="coming-soon-desc">
+      Something extraordinary is being crafted. Premium handcrafted leather goods, designed for those who appreciate timeless elegance.
+    </p>
+
+    <div class="social-links">
+      <a href="https://www.instagram.com/um__arex?igsh=MWJmbWxvdWZweWc1NQ==" target="_blank" rel="noreferrer" aria-label="Instagram">
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+      <a href="https://www.tiktok.com/@um__arex?_r=1&_t=ZS-9888c4kH4uS" target="_blank" rel="noreferrer" aria-label="TikTok">
+        <i class="fa-brands fa-tiktok"></i>
+      </a>
+      <a href="https://www.facebook.com/profile.php?id=61592505966869" target="_blank" rel="noreferrer" aria-label="Facebook">
+        <i class="fa-brands fa-facebook-f"></i>
+      </a>
+    </div>
+
+    <p class="footer-text">&copy; 2026 UM-AREX Luxury Group. All rights reserved.</p>
+  </div>
+</body>
+</html>
