@@ -10,3 +10,8 @@
   from = "/api/admin/content"
   to = "/.netlify/functions/admin-content"
   status = 200
+
+[[redirects]]
+  from = "/api/admin/passcode"
+  to = "/.netlify/functions/admin-passcode"
+  status = 200

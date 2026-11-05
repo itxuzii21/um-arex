@@ -53,6 +53,14 @@ export default function AdminPage() {
   const [siteContent, setSiteContent] = useState({});
   const [contentLoading, setContentLoading] = useState(false);
 
+  // Passcode reset
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [sendingReset, setSendingReset] = useState(false);
+  const [recoveryToken, setRecoveryToken] = useState('');
+  const [newPasscode, setNewPasscode] = useState('');
+  const [confirmPasscode, setConfirmPasscode] = useState('');
+  const [savingPasscode, setSavingPasscode] = useState(false);
+
   // ============================================================
   // DEFAULT SITE CONTENT
   // ============================================================
@@ -423,6 +431,19 @@ export default function AdminPage() {
     return () => clearTimeout(timer);
   }, [toast]);
 
+  useEffect(() => {
+    const fragment = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    const query = new URLSearchParams(window.location.search);
+
+    const accessToken = fragment.get('access_token') || query.get('access_token');
+    const type = fragment.get('type') || query.get('type');
+
+    if (type === 'recovery' && accessToken) {
+      setRecoveryToken(accessToken);
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+  }, []);
+
   // ============================================================
   // TOAST
   // ============================================================
@@ -438,6 +459,67 @@ export default function AdminPage() {
     const entered = window.prompt('Enter the admin passcode to save changes:');
     if (entered) sessionStorage.setItem(PASSCODE_STORAGE_KEY, entered);
     return entered || '';
+  }
+
+  async function callPasscodeApi(payload) {
+    const response = await fetch('/api/admin/passcode', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.error || 'Request failed.');
+    }
+
+    return result;
+  }
+
+  async function handleSendResetEmail() {
+    setSendingReset(true);
+
+    try {
+      await callPasscodeApi({ action: 'request-reset' });
+      setIsResetModalOpen(false);
+      showToast('Recovery email sent to your admin inbox.', 'success');
+    } catch (error) {
+      console.error('Failed to send recovery email:', error);
+      showToast(error.message, 'error');
+    } finally {
+      setSendingReset(false);
+    }
+  }
+
+  async function handleSetNewPasscode(event) {
+    event.preventDefault();
+
+    if (newPasscode !== confirmPasscode) {
+      showToast('The two passcodes do not match.', 'error');
+      return;
+    }
+
+    setSavingPasscode(true);
+
+    try {
+      await callPasscodeApi({
+        action: 'set-new',
+        access_token: recoveryToken,
+        new_passcode: newPasscode,
+      });
+
+      sessionStorage.removeItem(PASSCODE_STORAGE_KEY);
+      setRecoveryToken('');
+      setNewPasscode('');
+      setConfirmPasscode('');
+      showToast('New passcode saved. Use it on your next save.', 'success');
+    } catch (error) {
+      console.error('Failed to set new passcode:', error);
+      showToast(error.message, 'error');
+    } finally {
+      setSavingPasscode(false);
+    }
   }
 
   // ============================================================
@@ -511,7 +593,7 @@ export default function AdminPage() {
 
       if (response.status === 401) {
         sessionStorage.removeItem(PASSCODE_STORAGE_KEY);
-        throw new Error('Incorrect admin passcode.');
+        throw new Error('Incorrect admin passcode. Use "Forgot passcode?" to reset.');
       }
 
       if (!response.ok || !result.success) {
@@ -527,7 +609,7 @@ export default function AdminPage() {
     } catch (error) {
       console.error('Failed to save content:', error);
       showToast(
-        error.message === 'Incorrect admin passcode.'
+        error.message.startsWith('Incorrect admin passcode')
           ? error.message
           : 'Failed to save page content.',
         'error'
@@ -982,6 +1064,14 @@ export default function AdminPage() {
             </div>
 
             <div className="admin-user">
+              <button
+                type="button"
+                className="btn-modal-cancel"
+                onClick={() => setIsResetModalOpen(true)}
+              >
+                Forgot passcode?
+              </button>
+
               <span style={{ color: 'var(--text-muted)' }}>
                 Administrator
               </span>
@@ -4115,6 +4205,125 @@ export default function AdminPage() {
                   {loading
                     ? 'Saving...'
                     : 'Save Changes'}
+                </button>
+
+              </div>
+
+            </form>
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* =======================================================
+          FORGOT PASSCODE
+      ======================================================== */}
+
+      {isResetModalOpen && (
+
+        <div
+          className="admin-modal-overlay"
+          onClick={() => setIsResetModalOpen(false)}
+        >
+
+          <div
+            className="admin-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+
+            <h3>
+              <i className="fa-solid fa-key"></i>
+              Reset admin passcode
+            </h3>
+
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: 1.7 }}>
+              We will send a one-time recovery link to your admin email address.
+              Open that link and choose a new passcode.
+            </p>
+
+            <div className="admin-modal-actions">
+
+              <button
+                type="button"
+                className="btn-modal-cancel"
+                onClick={() => setIsResetModalOpen(false)}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className="btn-modal-save"
+                disabled={sendingReset}
+                onClick={handleSendResetEmail}
+              >
+                {sendingReset ? 'Sending...' : 'Send recovery email'}
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* =======================================================
+          SET NEW PASSCODE
+      ======================================================== */}
+
+      {recoveryToken && (
+
+        <div className="admin-modal-overlay">
+
+          <div className="admin-modal">
+
+            <h3>
+              <i className="fa-solid fa-shield-halved"></i>
+              Choose a new passcode
+            </h3>
+
+            <form onSubmit={handleSetNewPasscode}>
+
+              <div className="form-group">
+
+                <label>New passcode</label>
+
+                <input
+                  type="password"
+                  value={newPasscode}
+                  onChange={(e) => setNewPasscode(e.target.value)}
+                  minLength={8}
+                  required
+                  autoFocus
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label>Confirm new passcode</label>
+
+                <input
+                  type="password"
+                  value={confirmPasscode}
+                  onChange={(e) => setConfirmPasscode(e.target.value)}
+                  minLength={8}
+                  required
+                />
+
+              </div>
+
+              <div className="admin-modal-actions">
+
+                <button
+                  type="submit"
+                  className="btn-modal-save"
+                  disabled={savingPasscode}
+                >
+                  {savingPasscode ? 'Saving...' : 'Save new passcode'}
                 </button>
 
               </div>

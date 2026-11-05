@@ -1,5 +1,3 @@
-const crypto = require('crypto');
-
 function json(status, payload) {
   return {
     statusCode: status,
@@ -8,13 +6,24 @@ function json(status, payload) {
   };
 }
 
-function hasCorrectPasscode(headerValue) {
-  const expected = process.env.ADMIN_PASSCODE;
-  if (!expected || typeof headerValue !== 'string') return false;
+async function isAdminPasscode(candidate) {
+  const email = process.env.ADMIN_ACCOUNT_EMAIL;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-  const provided = Buffer.from(headerValue);
-  const actual = Buffer.from(expected);
-  return provided.length === actual.length && crypto.timingSafeEqual(provided, actual);
+  if (!candidate || !email || !url || !key) return false;
+
+  const response = await fetch(`${url}/auth/v1/token?grant_type=password`, {
+    method: 'POST',
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password: candidate }),
+  });
+
+  return response.ok;
 }
 
 exports.handler = async (event) => {
@@ -22,7 +31,7 @@ exports.handler = async (event) => {
     return json(405, { success: false, error: 'Method not allowed.' });
   }
 
-  if (!hasCorrectPasscode(event.headers['x-admin-passcode'])) {
+  if (!(await isAdminPasscode(event.headers['x-admin-passcode']))) {
     return json(401, { success: false, error: 'Invalid admin passcode.' });
   }
 
