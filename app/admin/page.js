@@ -4,6 +4,8 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 
+const PASSCODE_STORAGE_KEY = 'umarexAdminPasscode';
+
 const CATEGORIES = [
   { value: 'wallet', label: 'Wallet' },
   { value: 'accessory', label: 'Accessory' },
@@ -429,6 +431,15 @@ export default function AdminPage() {
     setToast({ message, type });
   }
 
+  function askAdminPasscode() {
+    const stored = sessionStorage.getItem(PASSCODE_STORAGE_KEY);
+    if (stored) return stored;
+
+    const entered = window.prompt('Enter the admin passcode to save changes:');
+    if (entered) sessionStorage.setItem(PASSCODE_STORAGE_KEY, entered);
+    return entered || '';
+  }
+
   // ============================================================
   // SUPABASE SITE CONTENT
   // ============================================================
@@ -482,11 +493,13 @@ export default function AdminPage() {
 
     try {
       const data = siteContent[page] || {};
+      const passcode = askAdminPasscode();
 
       const response = await fetch('/api/admin/content', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-admin-passcode': passcode,
         },
         body: JSON.stringify({
           id: page,
@@ -495,6 +508,11 @@ export default function AdminPage() {
       });
 
       const result = await response.json();
+
+      if (response.status === 401) {
+        sessionStorage.removeItem(PASSCODE_STORAGE_KEY);
+        throw new Error('Incorrect admin passcode.');
+      }
 
       if (!response.ok || !result.success) {
         throw new Error(result.error || 'Save failed.');
@@ -508,7 +526,12 @@ export default function AdminPage() {
       await fetchSiteContent();
     } catch (error) {
       console.error('Failed to save content:', error);
-      showToast('Failed to save page content.', 'error');
+      showToast(
+        error.message === 'Incorrect admin passcode.'
+          ? error.message
+          : 'Failed to save page content.',
+        'error'
+      );
     } finally {
       setContentLoading(false);
     }

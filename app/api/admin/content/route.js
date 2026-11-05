@@ -1,8 +1,28 @@
 import { NextResponse } from 'next/server';
+import { timingSafeEqual } from 'crypto';
 import { supabaseServer } from '@/lib/supabaseServer';
+
+function hasCorrectPasscode(headerValue) {
+  const expected = process.env.ADMIN_PASSCODE;
+  if (!expected || typeof headerValue !== 'string') return false;
+
+  const provided = Buffer.from(headerValue);
+  const actual = Buffer.from(expected);
+  return provided.length === actual.length && timingSafeEqual(provided, actual);
+}
 
 export async function POST(request) {
   try {
+    if (!hasCorrectPasscode(request.headers.get('x-admin-passcode'))) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid admin passcode.',
+        },
+        { status: 401 }
+      );
+    }
+
     const { id, content } = await request.json();
 
     if (!id || !String(id).trim()) {
