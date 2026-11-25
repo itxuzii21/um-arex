@@ -1,18 +1,16 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabasePublishableKey =
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+const supabasePublishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-if (!supabaseUrl) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_URL');
-}
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabasePublishableKey);
 
-if (!supabasePublishableKey) {
-  throw new Error('Missing NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY');
-}
+export const supabase = isSupabaseConfigured
+  ? createClient(supabaseUrl as string, supabasePublishableKey as string, {
+      auth: { persistSession: true, autoRefreshToken: true },
+    })
+  : null;
 
-export const supabase = createClient(
-  supabaseUrl,
-  supabasePublishableKey
-);
+export const ADMIN_ACCOUNT_EMAIL = "uzairmirza7863@gmail.com";
+
+export const LEATHER_SITE_URL = "https://leather.um-arex.store";

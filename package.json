@@ -1,18 +1,22 @@
 {
-  "name": "temp-next-app",
+  "name": "um",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "admin": "node admin-server.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.112.4",
-    "next": "16.2.10",
+    "@supabase/supabase-js": "^2.119.0",
+    "lucide-react": "^0.541.0",
+    "motion": "^11.15.0",
+    "next": "16.2.4",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "react-icons": "^5.5.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -20,7 +24,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.10",
+    "eslint-config-next": "16.2.4",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

@@ -1,0 +1,381 @@
+[
+  {
+    "id": "bu-gatti-supreme",
+    "name": "Bu-Gatti Supreme Watch",
+    "category": "Semi Automatic",
+    "price": 5799,
+    "oldPrice": 7999,
+    "image": "/watches/BuGatti%20Supreme/1%20(1).jpeg",
+    "gallery": [
+      "/watches/BuGatti%20Supreme/1%20(1).jpeg",
+      "/watches/BuGatti%20Supreme/1%20(2).jpeg",
+      "/watches/BuGatti%20Supreme/1%20(3).jpeg",
+      "/watches/BuGatti%20Supreme/1%20(4).jpeg"
+    ],
+    "description": "Premium edition, semi automatic build."
+  },
+  {
+    "id": "cassino-watch",
+    "name": "Cassino Watch",
+    "category": "Semi Automatic",
+    "price": 5999,
+    "oldPrice": 7999,
+    "image": "/watches/Cassino%20Watch/1%20(1).jpeg",
+    "gallery": [
+      "/watches/Cassino%20Watch/1%20(1).jpeg",
+      "/watches/Cassino%20Watch/1%20(2).jpeg",
+      "/watches/Cassino%20Watch/1%20(3).jpeg",
+      "/watches/Cassino%20Watch/1%20(4).jpeg"
+    ],
+    "description": "Premium edition semi automatic design.",
+    "isFeatured": true
+  },
+  {
+    "id": "hublot-diamond-edition",
+    "name": "Hublot Diamond Edition",
+    "category": "Casual",
+    "price": 3350,
+    "image": "/watches/Hublot%20Diamond%20Edition/1%20(1).jpeg",
+    "gallery": [
+      "/watches/Hublot%20Diamond%20Edition/1%20(1).jpeg",
+      "/watches/Hublot%20Diamond%20Edition/1%20(2).jpeg",
+      "/watches/Hublot%20Diamond%20Edition/1%20(3).jpeg",
+      "/watches/Hublot%20Diamond%20Edition/1%20(4).jpeg"
+    ],
+    "description": "Diamond edition with a luxury finish.",
+    "isFeatured": true
+  },
+  {
+    "id": "ricky-skeleton",
+    "name": "Ricky Skeleton",
+    "category": "Semi Automatic",
+    "price": 4200,
+    "image": "/watches/Ricky%20Skeleton/1%20(1).jpeg",
+    "gallery": [
+      "/watches/Ricky%20Skeleton/1%20(1).jpeg",
+      "/watches/Ricky%20Skeleton/1%20(2).jpeg",
+      "/watches/Ricky%20Skeleton/1%20(3).jpeg",
+      "/watches/Ricky%20Skeleton/1%20(4).jpeg"
+    ],
+    "description": "Semi automatic skeleton dial."
+  },
+  {
+    "id": "cartier-tank",
+    "name": "Cartier Tank",
+    "category": "Casual",
+    "price": 3199,
+    "image": "/watches/Cartier%20Tank/1%20(1).jpeg",
+    "gallery": [
+      "/watches/Cartier%20Tank/1%20(1).jpeg",
+      "/watches/Cartier%20Tank/1%20(2).jpeg",
+      "/watches/Cartier%20Tank/1%20(3).jpeg"
+    ],
+    "description": "Old money edition with a classic profile."
+  },
+  {
+    "id": "black-diamond-cut",
+    "name": "Black Diamond Cut",
+    "category": "Casual",
+    "price": 1699,
+    "image": "/watches/Black%20Diamond/1%20(1).jpeg",
+    "gallery": [
+      "/watches/Black%20Diamond/1%20(1).jpeg",
+      "/watches/Black%20Diamond/1%20(2).jpeg",
+      "/watches/Black%20Diamond/1%20(3).jpeg"
+    ],
+    "description": "Aujla's edition with a dark finish."
+  },
+  {
+    "id": "tissot-prx-1853",
+    "name": "Tissot PRX 1853",
+    "category": "Casual",
+    "price": 3050,
+    "image": "/watches/Tissot%20PRX%201853/1%20(1).jpeg",
+    "gallery": [
+      "/watches/Tissot%20PRX%201853/1%20(1).jpeg",
+      "/watches/Tissot%20PRX%201853/1%20(2).jpeg",
+      "/watches/Tissot%20PRX%201853/1%20(3).jpeg"
+    ],
+    "description": "PRX style with a clean dial.",
+    "isFeatured": true
+  },
+  {
+    "id": "rolex-automatic-skeleton-edition",
+    "name": "Rolex Automatic Skeleton Edition",
+    "category": "Automatic",
+    "price": 5599,
+    "image": "/watches/Rolex%20Automatic/1.jpeg",
+    "gallery": [
+      "/watches/Rolex%20Automatic/1.jpeg",
+      "/watches/Rolex%20Automatic/1%20(1).jpeg",
+      "/watches/Rolex%20Automatic/1%20(3).jpeg",
+      "/watches/Rolex%20Automatic/1%20(4).jpeg"
+    ],
+    "description": "Skeleton edition automatic style."
+  },
+  {
+    "id": "leather-rolex-fully-automatic",
+    "name": "Leather Rolex Fully Automatic",
+    "category": "Automatic",
+    "price": 5799,
+    "image": "/watches/Leather%20Rolex/1%20(1).jpeg",
+    "gallery": [
+      "/watches/Leather%20Rolex/1%20(1).jpeg",
+      "/watches/Leather%20Rolex/1%20(2).jpeg",
+      "/watches/Leather%20Rolex/1%20(3).jpeg",
+      "/watches/Leather%20Rolex/1%20(4).jpeg"
+    ],
+    "description": "Fully automatic with leather strap."
+  },
+  {
+    "id": "hublot-leather-straps",
+    "name": "Hublot Leather Straps",
+    "category": "Casual",
+    "price": 2450,
+    "image": "/watches/Hublot%20Leather%20straps/1%20(1).jpeg",
+    "gallery": [
+      "/watches/Hublot%20Leather%20straps/1%20(1).jpeg",
+      "/watches/Hublot%20Leather%20straps/1%20(2).jpeg",
+      "/watches/Hublot%20Leather%20straps/1%20(3).jpeg",
+      "/watches/Hublot%20Leather%20straps/1%20(4).jpeg"
+    ],
+    "description": "Casual leather strap style."
+  },
+  {
+    "id": "cartier-tank-old-money-black-golden",
+    "name": "Cartier Tank Old Money Black & Golden",
+    "category": "Casual",
+    "price": 3050,
+    "image": "/watches/Cartier%20Tank%20golden%20black/WhatsApp%20Image%202026-05-14%20at%208.47.41%20PM.jpeg",
+    "gallery": [
+      "/watches/Cartier%20Tank%20golden%20black/WhatsApp%20Image%202026-05-14%20at%208.47.41%20PM.jpeg",
+      "/watches/Cartier%20Tank%20golden%20black/WhatsApp%20Image%202026-05-14%20at%208.47.42%20PM.jpeg",
+      "/watches/Cartier%20Tank%20golden%20black/WhatsApp%20Image%202026-05-14%20at%208.47.42%20PM%20(1).jpeg",
+      "/watches/Cartier%20Tank%20golden%20black/WhatsApp%20Image%202026-05-14%20at%208.47.42%20PM%20(2).jpeg"
+    ],
+    "description": "Old money edition in black and golden."
+  },
+  {
+    "id": "cartier-tank-old-money-black",
+    "name": "Cartier Tank Old Money Black",
+    "category": "Casual",
+    "price": 3050,
+    "image": "/watches/Cartier%20Tank%20black/WhatsApp%20Image%202026-05-14%20at%208.47.36%20PM.jpeg",
+    "gallery": [
+      "/watches/Cartier%20Tank%20black/WhatsApp%20Image%202026-05-14%20at%208.47.36%20PM.jpeg",
+      "/watches/Cartier%20Tank%20black/WhatsApp%20Image%202026-05-14%20at%208.47.36%20PM%20(1).jpeg",
+      "/watches/Cartier%20Tank%20black/WhatsApp%20Image%202026-05-14%20at%208.47.37%20PM.jpeg",
+      "/watches/Cartier%20Tank%20black/WhatsApp%20Image%202026-05-14%20at%208.47.37%20PM%20(1).jpeg"
+    ],
+    "description": "Old money edition in black.",
+    "isFeatured": true
+  },
+  {
+    "id": "patek-philip-silver-sky",
+    "name": "Patek Philip's Silver'n Sky",
+    "category": "Casual",
+    "price": 3150,
+    "image": "/watches/Patek%20Philip%20sky%20silver/WhatsApp%20Image%202026-05-14%20at%208.47.32%20PM.jpeg",
+    "gallery": [
+      "/watches/Patek%20Philip%20sky%20silver/WhatsApp%20Image%202026-05-14%20at%208.47.32%20PM.jpeg",
+      "/watches/Patek%20Philip%20sky%20silver/WhatsApp%20Image%202026-05-14%20at%208.47.33%20PM.jpeg",
+      "/watches/Patek%20Philip%20sky%20silver/WhatsApp%20Image%202026-05-14%20at%208.47.33%20PM%20(1).jpeg",
+      "/watches/Patek%20Philip%20sky%20silver/WhatsApp%20Image%202026-05-14%20at%208.47.33%20PM%20(2).jpeg"
+    ],
+    "description": "Silver and sky dial look."
+  },
+  {
+    "id": "patek-philip-chocolate-edition",
+    "name": "Patek Philips Chocolate Edition",
+    "category": "Casual",
+    "price": 3150,
+    "image": "/watches/Patek%20choclate/WhatsApp%20Image%202026-05-14%20at%208.47.34%20PM.jpeg",
+    "gallery": [
+      "/watches/Patek%20choclate/WhatsApp%20Image%202026-05-14%20at%208.47.34%20PM.jpeg",
+      "/watches/Patek%20choclate/WhatsApp%20Image%202026-05-14%20at%208.47.34%20PM%20(1).jpeg",
+      "/watches/Patek%20choclate/WhatsApp%20Image%202026-05-14%20at%208.47.34%20PM%20(2).jpeg",
+      "/watches/Patek%20choclate/WhatsApp%20Image%202026-05-14%20at%208.47.35%20PM.jpeg"
+    ],
+    "description": "Chocolate edition premium look."
+  },
+  {
+    "id": "rolex-chocolate-edition",
+    "name": "Rolex Chocolate Edition",
+    "category": "Casual",
+    "price": 3350,
+    "image": "/watches/Rolex%20choc/WhatsApp%20Image%202026-05-14%20at%208.47.38%20PM.jpeg",
+    "gallery": [
+      "/watches/Rolex%20choc/WhatsApp%20Image%202026-05-14%20at%208.47.38%20PM.jpeg",
+      "/watches/Rolex%20choc/WhatsApp%20Image%202026-05-14%20at%208.47.38%20PM%20(1).jpeg",
+      "/watches/Rolex%20choc/WhatsApp%20Image%202026-05-14%20at%208.47.38%20PM%20(2).jpeg",
+      "/watches/Rolex%20choc/WhatsApp%20Image%202026-05-14%20at%208.47.39%20PM.jpeg"
+    ],
+    "description": "Chocolate dial edition."
+  },
+  {
+    "id": "stunning-rolex-gold-silver-sky",
+    "name": "Stunning Rolex Gold'n Silver-sky",
+    "category": "Casual",
+    "price": 3350,
+    "image": "/watches/Stunning%20Rolex/WhatsApp%20Image%202026-05-14%20at%208.47.43%20PM.jpeg",
+    "gallery": [
+      "/watches/Stunning%20Rolex/WhatsApp%20Image%202026-05-14%20at%208.47.43%20PM.jpeg",
+      "/watches/Stunning%20Rolex/WhatsApp%20Image%202026-05-14%20at%208.47.43%20PM%20(1).jpeg",
+      "/watches/Stunning%20Rolex/WhatsApp%20Image%202026-05-14%20at%208.47.44%20PM.jpeg",
+      "/watches/Stunning%20Rolex/WhatsApp%20Image%202026-05-14%20at%208.47.44%20PM%20(1).jpeg",
+      "/watches/Stunning%20Rolex/WhatsApp%20Image%202026-05-14%20at%208.47.44%20PM%20(2).jpeg"
+    ],
+    "description": "Gold and silver-sky tone."
+  },
+  {
+    "id": "ladies-premium-article",
+    "name": "Ladies Premium Article",
+    "category": "Ladies",
+    "price": 1699,
+    "image": "/watches/Ladies%20premium/WhatsApp%20Image%202026-05-14%20at%208.47.40%20PM.jpeg",
+    "gallery": [
+      "/watches/Ladies%20premium/WhatsApp%20Image%202026-05-14%20at%208.47.40%20PM.jpeg",
+      "/watches/Ladies%20premium/WhatsApp%20Image%202026-05-14%20at%208.47.41%20PM.jpeg",
+      "/watches/Ladies%20premium/WhatsApp%20Image%202026-05-14%20at%208.47.41%20PM%20(1).jpeg"
+    ],
+    "description": "Heavyweight ladies premium piece."
+  },
+  {
+    "id": "boys-deal-watch-2-bracelets",
+    "name": "Boys Deal Watch + 2 Bracelets",
+    "category": "Casual",
+    "price": 1699,
+    "image": "/watches/boys%20deal%20watch%20%2B%202%20braclet/WhatsApp%20Image%202026-05-14%20at%208.47.35%20PM%20(1).jpeg",
+    "gallery": [
+      "/watches/boys%20deal%20watch%20%2B%202%20braclet/WhatsApp%20Image%202026-05-14%20at%208.47.35%20PM%20(1).jpeg",
+      "/watches/boys%20deal%20watch%20%2B%202%20braclet/WhatsApp%20Image%202026-05-14%20at%208.47.35%20PM.jpeg",
+      "/watches/boys%20deal%20watch%20%2B%202%20braclet/WhatsApp%20Image%202026-05-14%20at%208.47.36%20PM.jpeg"
+    ],
+    "description": "Watch plus two bracelets deal."
+  },
+  {
+    "id": "aura-deal",
+    "name": "Aura Deal",
+    "category": "Casual",
+    "price": 1699,
+    "image": "/watches/Aura%20Deal/WhatsApp%20Image%202026-05-14%20at%208.47.39%20PM.jpeg",
+    "gallery": [
+      "/watches/Aura%20Deal/WhatsApp%20Image%202026-05-14%20at%208.47.39%20PM.jpeg",
+      "/watches/Aura%20Deal/WhatsApp%20Image%202026-05-14%20at%208.47.40%20PM%20(1).jpeg",
+      "/watches/Aura%20Deal/WhatsApp%20Image%202026-05-14%20at%208.47.40%20PM.jpeg"
+    ],
+    "description": "Aura deal special."
+  },
+  {
+    "id": "rado-day-date",
+    "name": "Rado Day And Date Working",
+    "category": "Casual",
+    "price": 3150,
+    "image": "/watches/Rado/WhatsApp%20Image%202026-05-15%20at%2011.12.45%20AM.jpeg",
+    "gallery": [
+      "/watches/Rado/WhatsApp%20Image%202026-05-15%20at%2011.12.45%20AM.jpeg",
+      "/watches/Rado/WhatsApp%20Image%202026-05-15%20at%2011.12.46%20AM.jpeg",
+      "/watches/Rado/WhatsApp%20Image%202026-05-15%20at%2011.12.46%20AM%20(1).jpeg",
+      "/watches/Rado/WhatsApp%20Image%202026-05-15%20at%2011.12.47%20AM.jpeg",
+      "/watches/Rado/WhatsApp%20Image%202026-05-15%20at%2011.12.47%20AM%20(1).jpeg",
+      "/watches/Rado/WhatsApp%20Image%202026-05-15%20at%2011.12.48%20AM.jpeg"
+    ],
+    "description": "Day and date working with leather strap."
+  },
+  {
+    "id": "nike-snake-edition",
+    "name": "Nike Snake Edition",
+    "category": "Casual",
+    "price": 2650,
+    "image": "/watches/Nike%20Snake%20Edition/WhatsApp%20Image%202026-05-15%20at%2011.12.48%20AM.jpeg",
+    "gallery": [
+      "/watches/Nike%20Snake%20Edition/WhatsApp%20Image%202026-05-15%20at%2011.12.48%20AM.jpeg",
+      "/watches/Nike%20Snake%20Edition/WhatsApp%20Image%202026-05-15%20at%2011.12.49%20AM.jpeg",
+      "/watches/Nike%20Snake%20Edition/WhatsApp%20Image%202026-05-15%20at%2011.12.50%20AM.jpeg",
+      "/watches/Nike%20Snake%20Edition/WhatsApp%20Image%202026-05-15%20at%2011.12.50%20AM%20(1).jpeg",
+      "/watches/Nike%20Snake%20Edition/WhatsApp%20Image%202026-05-15%20at%2011.12.51%20AM.jpeg"
+    ],
+    "description": "Snake edition sporty style."
+  },
+  {
+    "id": "petek-philip-fully-automatic",
+    "name": "Petek Philip's Fully Automatic",
+    "category": "Automatic",
+    "price": 6999,
+    "image": "/watches/Petek%20Philip%20fully%20auto/WhatsApp%20Image%202026-05-15%20at%2011.12.52%20AM.jpeg",
+    "gallery": [
+      "/watches/Petek%20Philip%20fully%20auto/WhatsApp%20Image%202026-05-15%20at%2011.12.52%20AM.jpeg",
+      "/watches/Petek%20Philip%20fully%20auto/WhatsApp%20Image%202026-05-15%20at%2011.12.52%20AM%20(1).jpeg"
+    ],
+    "description": "Fully automatic with certificate and 1 year warranty."
+  },
+  {
+    "id": "rolex-daytona",
+    "name": "Rolex Daytona",
+    "category": "Casual",
+    "price": 3350,
+    "image": "/watches/Rolex%20Daytona/WhatsApp%20Image%202026-05-15%20at%2011.12.53%20AM.jpeg",
+    "gallery": [
+      "/watches/Rolex%20Daytona/WhatsApp%20Image%202026-05-15%20at%2011.12.53%20AM.jpeg",
+      "/watches/Rolex%20Daytona/WhatsApp%20Image%202026-05-15%20at%2011.12.54%20AM.jpeg",
+      "/watches/Rolex%20Daytona/WhatsApp%20Image%202026-05-15%20at%2011.12.55%20AM.jpeg",
+      "/watches/Rolex%20Daytona/WhatsApp%20Image%202026-05-15%20at%2011.12.55%20AM%20(1).jpeg",
+      "/watches/Rolex%20Daytona/WhatsApp%20Image%202026-05-15%20at%2011.12.56%20AM.jpeg"
+    ],
+    "description": "Heavyweight, rotating dual, date working."
+  },
+  {
+    "id": "citizen-master-copy",
+    "name": "Citizen Master Copy",
+    "category": "Master Copy",
+    "price": 16500,
+    "image": "/watches/citizen/WhatsApp%20Image%202026-05-15%20at%2011.12.57%20AM.jpeg",
+    "gallery": [
+      "/watches/citizen/WhatsApp%20Image%202026-05-15%20at%2011.12.57%20AM.jpeg",
+      "/watches/citizen/WhatsApp%20Image%202026-05-15%20at%2011.12.57%20AM%20(1).jpeg"
+    ],
+    "description": "Master copy, heavyweight, original replica."
+  },
+  {
+    "id": "rolex-master-copy",
+    "name": "Rolex Master Copy",
+    "category": "Master Copy",
+    "price": 16500,
+    "image": "/watches/Rolex%20Master%20Copy/WhatsApp%20Image%202026-05-15%20at%2011.12.59%20AM.jpeg",
+    "gallery": [
+      "/watches/Rolex%20Master%20Copy/WhatsApp%20Image%202026-05-15%20at%2011.12.59%20AM.jpeg",
+      "/watches/Rolex%20Master%20Copy/WhatsApp%20Image%202026-05-15%20at%2011.13.00%20AM.jpeg",
+      "/watches/Rolex%20Master%20Copy/WhatsApp%20Image%202026-05-15%20at%2011.13.01%20AM.jpeg",
+      "/watches/Rolex%20Master%20Copy/WhatsApp%20Image%202026-05-15%20at%2011.13.01%20AM%20(1).jpeg"
+    ],
+    "description": "Master copy, premium caliber mechanical movement, heavyweight build."
+  },
+  {
+    "id": "heavyweight-watch",
+    "name": "Heavyweight Watch",
+    "category": "Ladies",
+    "price": 1999,
+    "image": "/watches/heavyweight-watch/1 (1).jpeg",
+    "gallery": [
+      "/watches/heavyweight-watch/1 (1).jpeg",
+      "/watches/heavyweight-watch/1 (2).jpeg",
+      "/watches/heavyweight-watch/1 (3).jpeg",
+      "/watches/heavyweight-watch/1 (4).jpeg"
+    ],
+    "description": "Heavyweight Watch, comes with 2 elegant bracelets."
+  },
+  {
+    "id": "rolex",
+    "name": "Rolex",
+    "category": "Automatic",
+    "price": 3350,
+    "description": "Rubber straps\nMaster lock\nHeavyweight",
+    "image": "/watches/rolex/WhatsApp_Image_2026-06-28_at_06.27.59.jpeg",
+    "gallery": [
+      "/watches/rolex/WhatsApp_Image_2026-06-28_at_06.28.05.jpeg",
+      "/watches/rolex/WhatsApp_Image_2026-06-28_at_06.28.12.jpeg",
+      "/watches/rolex/WhatsApp_Image_2026-06-28_at_06.28.18.jpeg"
+    ],
+    "oldPrice": 5350
+  }
+]
