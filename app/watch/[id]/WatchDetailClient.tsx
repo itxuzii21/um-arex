@@ -102,7 +102,7 @@ export default function WatchDetailClient({ productId }: { productId: string }) 
     setSwipedDuringGesture(false);
   };
 
-  const shippingNote1 = resolveContentText(product?.shippingNote1 || page.shippingNote1, {
+  const shippingNote1 = resolveContentText((product?.shippingNote1 || page.shippingNote1).replace(/\{\d+\}/g, "{deliveryCharge}"), {
     deliveryCharge: formatPkr(commerce.domesticDeliveryChargePkr),
   });
   const shippingNote2 = product?.shippingNote2 || page.shippingNote2;

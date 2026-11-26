@@ -56,9 +56,9 @@ export default function Navbar() {
   return (
     <>
       <header className={`sticky top-0 z-50 border-b transition-all duration-500 ${scrolled ? "border-brand-gold/20 bg-brand-green-dark/95 shadow-lg shadow-black/30 backdrop-blur-xl" : "border-brand-gold/10 bg-brand-green-dark/90 backdrop-blur-xl"}`}>
-        <div className="relative z-50 overflow-hidden border-b border-brand-gold-dark/40 bg-gradient-to-r from-brand-gold-dark via-brand-gold to-brand-gold-dark py-2">
+        <div className="relative z-50 overflow-hidden border-b border-brand-gold/15 bg-gradient-to-r from-[#17100c] via-[#24160f] to-[#17100c] py-2">
           <div className="flex w-full overflow-hidden">
-            <div className="animate-marquee-infinite whitespace-nowrap text-[9px] md:text-[10px] font-bold uppercase tracking-[0.18em] text-brand-green-dark">
+            <div className="animate-marquee-infinite whitespace-nowrap text-[9px] md:text-[10px] font-bold uppercase tracking-[0.18em] text-brand-gold-light">
               <span className="px-8">{settings.bannerText}</span>
               <span className="px-8">{settings.bannerText}</span>
               <span className="px-8">{settings.bannerText}</span>
@@ -66,7 +66,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 md:px-8">
+        <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-4 px-5 py-4 md:px-8 lg:px-12">
           <Link href="/" className="flex items-center gap-3 transition-transform duration-500 active:scale-95">
             <div className="relative h-11 w-11 rounded-full border border-brand-gold/25 bg-brand-green-mid p-1 shadow-inner">
               <Image src={shared.logoUrl} alt={shared.logoAlt} fill sizes="44px" className="rounded-full object-contain p-1" />

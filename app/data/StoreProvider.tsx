@@ -145,7 +145,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const persist = useCallback(
     async (id: string, content: unknown, accessToken: string) => {
       try {
-        const res = await fetch("/api/admin/content", {
+        const res = await fetch("/.netlify/functions/admin-content", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

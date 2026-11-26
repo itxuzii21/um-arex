@@ -35,7 +35,7 @@ export default function TrackOrderPage() {
       <div className="pointer-events-none absolute left-1/4 top-[15%] h-[500px] w-[500px] rounded-full bg-brand-green-glow/10 blur-[150px]" />
       <div className="pointer-events-none absolute bottom-[10%] right-1/4 h-[400px] w-[400px] rounded-full bg-brand-gold/5 blur-[120px]" />
       <div className="relative z-10 mx-auto max-w-4xl px-5 py-8 md:px-8 md:py-20">
-        <BackLink label={content.backLabel} />
+        <BackLink label={content.backLabel} href="/#collection" />
         <PageIntroHeader content={content} className="mb-12 md:mb-16" />
 
         <div className="mx-auto mb-12 max-w-2xl">

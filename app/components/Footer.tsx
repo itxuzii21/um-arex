@@ -33,8 +33,9 @@ export default function Footer() {
   if (pathname.startsWith("/admin")) return null;
 
   return (
-    <footer className="relative z-10 border-t border-brand-gold/10 bg-brand-green-dark pb-10 pt-20 text-brand-cream md:pt-24">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 border-b border-brand-gold/10 px-5 pb-16 sm:grid-cols-2 md:px-8 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:gap-10">
+    <footer className="relative z-10 overflow-hidden border-t border-brand-gold/15 bg-[#08080a] pb-10 pt-20 text-brand-cream md:pt-24">
+      <div className="pointer-events-none absolute -right-40 -top-40 h-96 w-96 rounded-full bg-brand-gold/[0.05] blur-[120px]" />
+      <div className="relative mx-auto grid max-w-[1500px] grid-cols-1 gap-12 border-b border-white/[0.07] px-5 pb-16 sm:grid-cols-2 md:px-8 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:gap-10 lg:px-12">
         <div className="flex flex-col items-start">
           <Link href="/" onClick={handleLogoClick} className="flex items-center gap-3" aria-label={`${shared.brandName} ${footer.homeLabel}`}>
             <div className="relative h-11 w-11 rounded-full border border-brand-gold/20 bg-brand-green-mid p-1">
@@ -122,7 +123,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="mx-auto mt-8 flex max-w-7xl flex-col items-center justify-between gap-4 px-5 text-center text-[10px] text-brand-cream-muted md:flex-row md:px-8 md:text-left">
+      <div className="relative mx-auto mt-8 flex max-w-[1500px] flex-col items-center justify-between gap-4 px-5 text-center text-[10px] text-brand-cream-muted md:flex-row md:px-8 md:text-left lg:px-12">
         <p>&copy; {new Date().getFullYear()} {settings.footerCopyright}</p>
         <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
           <Link href="/privacy" className="transition-colors duration-300 hover:text-brand-gold">{footer.privacy}</Link>

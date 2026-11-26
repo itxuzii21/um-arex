@@ -117,58 +117,58 @@ function HomeContent() {
         <SearchParamsHandler setSelectedCategory={setSelectedCategory} categories={categories} />
       </Suspense>
 
-      <div className="animate-glow-drift pointer-events-none absolute left-1/2 top-[8%] z-0 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-brand-green-glow/20 blur-[160px]" />
-      <div className="pointer-events-none absolute right-0 top-[55%] z-0 h-[420px] w-[420px] rounded-full bg-brand-gold/5 blur-[130px]" />
+      <div className="animate-glow-drift pointer-events-none absolute right-[8%] top-[4%] z-0 h-[620px] w-[620px] rounded-full bg-brand-gold/[0.09] blur-[190px]" />
+      <div className="pointer-events-none absolute left-0 top-[55%] z-0 h-[420px] w-[420px] rounded-full bg-white/[0.025] blur-[150px]" />
 
-      <section className="relative z-10 flex items-center px-5 pb-20 pt-12 sm:px-8 md:pb-24 lg:min-h-[calc(100vh-118px)] lg:px-12 lg:py-16">
-        <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
+      <section className="relative z-10 flex items-center px-5 pb-20 pt-10 sm:px-8 md:pb-24 lg:min-h-[calc(100vh-104px)] lg:px-12 lg:py-14">
+        <div className="mx-auto grid w-full max-w-[1500px] grid-cols-1 items-center gap-14 lg:grid-cols-12 lg:gap-10">
           <div className="z-20 flex flex-col items-start text-left lg:col-span-7">
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}>
-              <span className="mb-5 inline-flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.28em] text-brand-gold md:text-[10px]">
-                <span className="h-[1px] w-7 bg-brand-gold/60" />
+              <span className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-brand-gold/20 bg-brand-gold/[0.06] px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.24em] text-brand-gold-light md:text-[10px]">
+                <span className="h-1.5 w-1.5 rounded-full bg-brand-gold shadow-[0_0_14px_rgba(229,138,85,0.7)]" />
                 {settings.heroTagline}
               </span>
-              <h1 className="mb-6 text-[2.75rem] leading-[0.98] tracking-[-0.02em] text-brand-cream sm:text-6xl lg:text-[4.6rem] xl:text-[5.2rem]">
+              <h1 className="mb-7 max-w-4xl text-[clamp(2.9rem,6.2vw,6.6rem)] leading-[0.9] tracking-[-0.06em] text-brand-cream">
                 {settings.heroTitle1} <br />
-                <span className="gold-gradient-text font-light italic">{settings.heroTitle2}</span> <br />
+                <span className="gold-gradient-text">{settings.heroTitle2}</span> <br />
                 {settings.heroTitle3}
               </h1>
-              <p className="mb-8 max-w-lg text-sm font-light leading-7 text-brand-cream-muted md:text-[15px]">
+              <p className="mb-9 max-w-md text-sm font-light leading-7 text-brand-cream-muted md:text-base">
                 {settings.heroDescription}
               </p>
               <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
                 <a
                   href="#collection"
-                  className="gold-button inline-flex h-12 items-center justify-center gap-2.5 px-7 shadow-lg shadow-black/10 hover:shadow-brand-gold/15 active:scale-[0.98]"
+                  className="gold-button inline-flex h-13 items-center justify-center gap-3 px-8 shadow-[0_16px_40px_-18px_rgba(229,138,85,0.65)] hover:shadow-[0_20px_45px_-16px_rgba(229,138,85,0.75)] active:scale-[0.98]"
                 >
                   {settings.heroCta1Text}
-                  <ArrowRight size={14} />
+                  <ArrowRight size={15} />
                 </a>
                 <a
                   href={conciergeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-12 items-center justify-center gap-2.5 rounded-full border border-brand-gold/30 px-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-cream transition-all duration-500 hover:border-brand-gold hover:bg-brand-gold/5 active:scale-[0.98]"
+                  className="inline-flex h-13 items-center justify-center gap-2.5 rounded-full border border-white/15 bg-white/[0.025] px-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-cream transition-all duration-500 hover:border-brand-gold/60 hover:bg-brand-gold/[0.07] active:scale-[0.98]"
                 >
-                  <MessageCircle size={14} />
+                  <MessageCircle size={15} />
                   {settings.heroCta2Text}
                 </a>
               </div>
 
-              <div className="mt-8 grid w-full max-w-lg grid-cols-3 border-y border-brand-gold/10 py-5">
+              <div className="mt-9 grid w-full max-w-xl grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-white/[0.025] p-4 backdrop-blur-sm sm:p-5">
                 {[
                   { value: `${products.length}+`, label: content.curatedPiecesLabel },
                   { value: `${categories.length}`, label: content.collectionsLabel },
                   { value: content.dispatchStatValue, label: content.dispatchLabel },
                 ].map((stat) => (
-                  <div key={stat.label} className="border-l border-brand-gold/10 pl-4 first:border-l-0 first:pl-0 sm:pl-6">
-                    <span className="block font-serif text-2xl text-brand-gold md:text-3xl">{stat.value}</span>
-                    <span className="mt-1 block text-[8px] uppercase tracking-[0.14em] text-brand-cream-muted sm:text-[9px]">{stat.label}</span>
+                  <div key={stat.label} className="border-l border-white/10 pl-3 first:border-l-0 first:pl-0 sm:pl-5">
+                    <span className="block font-serif text-2xl text-brand-gold-light md:text-3xl">{stat.value}</span>
+                    <span className="mt-1 block text-[8px] uppercase leading-4 tracking-[0.14em] text-brand-cream-muted sm:text-[9px]">{stat.label}</span>
                   </div>
                 ))}
               </div>
 
-              <LeatherBrandCard className="mt-7 max-w-[340px]" />
+              <LeatherBrandCard className="mt-6 max-w-[340px]" />
             </motion.div>
           </div>
 
@@ -177,20 +177,21 @@ function HomeContent() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1.2, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-              className="relative w-full max-w-[370px] lg:max-w-[400px]"
+              className="relative w-full max-w-[420px] lg:max-w-[480px]"
             >
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[1.75rem] border border-brand-gold/25 shadow-2xl shadow-black/40">
+              <div className="pointer-events-none absolute -inset-4 rounded-[2.4rem] border border-brand-gold/10 bg-brand-gold/[0.035]" />
+              <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/15 bg-brand-green-mid shadow-[0_45px_120px_-45px_rgba(0,0,0,0.95)]">
                 <Image
                   src={settings.heroImage}
                   alt={content.heroImageAlt}
                   fill
                   priority
-                  sizes="(max-width: 1024px) 90vw, 400px"
+                  sizes="(max-width: 1024px) 90vw, 480px"
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-green-dark/90 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 rounded-xl border border-brand-gold/15 bg-brand-green-dark/85 p-5 backdrop-blur-md sm:bottom-6 sm:left-6 sm:right-6">
-                  <span className="mb-2 block text-[8px] uppercase tracking-[0.24em] text-brand-gold">{content.signatureLabel}</span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/10 to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-white/10 bg-black/55 p-5 backdrop-blur-xl sm:bottom-6 sm:left-6 sm:right-6">
+                  <span className="mb-2 block text-[8px] font-bold uppercase tracking-[0.24em] text-brand-gold-light">{content.signatureLabel}</span>
                   <p className="text-[11px] font-light leading-6 text-brand-cream sm:text-xs">{settings.heroQuote}</p>
                 </div>
               </div>
@@ -219,12 +220,12 @@ function HomeContent() {
         </a>
       </section>
 
-      <section className="relative z-10 border-y border-brand-gold/10 bg-brand-green-mid/30 px-5 py-9 sm:px-8 md:px-12">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-4 gap-y-8 md:grid-cols-4 lg:gap-0">
+      <section className="relative z-10 border-y border-white/[0.06] bg-white/[0.018] px-5 py-8 sm:px-8 md:px-12">
+        <div className="mx-auto grid max-w-[1500px] grid-cols-2 gap-3 md:grid-cols-4">
           {content.benefits.map((item) => (
-            <Reveal key={item.id} className="flex flex-col items-start gap-3 lg:flex-row lg:border-l lg:border-brand-gold/10 lg:pl-6 lg:first:border-l-0 lg:first:pl-0">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-brand-gold/25 bg-brand-green-dark text-brand-gold">
-                <ContentIcon name={item.icon} size={19} />
+            <Reveal key={item.id} className="flex flex-col items-start gap-3 rounded-2xl border border-white/[0.06] bg-black/10 p-4 lg:flex-row lg:p-5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-gold/20 bg-brand-gold/[0.06] text-brand-gold">
+                <ContentIcon name={item.icon} size={18} />
               </span>
               <div>
                 <h3 className="font-serif text-sm text-brand-cream md:text-base">{item.title}</h3>
@@ -235,65 +236,68 @@ function HomeContent() {
         </div>
       </section>
 
-      <section id="categories" className="relative z-10 scroll-mt-28 border-b border-brand-gold/10 px-5 py-24 sm:px-8 md:px-12 md:py-28">
-        <div className="mx-auto max-w-7xl">
-          <Reveal className="mb-11 text-center">
+      <section id="categories" className="relative z-10 scroll-mt-28 border-b border-white/[0.06] bg-[#0c0c0f] px-5 py-20 sm:px-8 md:px-12 md:py-24">
+        <div className="mx-auto max-w-[1500px]">
+          <Reveal className="mb-8">
             <span className="mb-3 block text-[9px] font-bold uppercase tracking-[0.28em] text-brand-gold">{settings.categorySectionTag}</span>
             <h2 className="text-3xl text-brand-cream md:text-4xl">{settings.categorySectionTitle}</h2>
           </Reveal>
-          <div className="no-scrollbar flex snap-x snap-mandatory flex-row flex-nowrap items-start justify-start gap-6 overflow-x-auto px-1 py-2 md:flex-wrap md:justify-center md:gap-9">
-            <button type="button" onClick={() => handleCategorySelect("Featured")} className="group flex shrink-0 snap-center flex-col items-center">
-              <span className={`relative flex h-[72px] w-[72px] items-center justify-center overflow-hidden rounded-full border bg-brand-green-mid p-3 transition-all duration-500 md:h-20 md:w-20 ${selectedCategory === "Featured" ? "border-brand-gold shadow-lg shadow-brand-gold/15" : "border-brand-gold/15 hover:border-brand-gold/50"}`}>
-                <span className="relative h-8 w-8">
-                  <Image src={shared.logoUrl} alt={content.featuredLabel} fill sizes="32px" className="object-contain p-1 brightness-110" />
-                </span>
+          <div className="no-scrollbar flex snap-x snap-mandatory flex-row flex-nowrap items-stretch justify-start gap-3 overflow-x-auto px-1 py-2 md:flex-wrap">
+            <button type="button" onClick={() => handleCategorySelect("Featured")} className={`group flex shrink-0 snap-center items-center gap-3 rounded-2xl border p-2 pr-5 text-left transition-all duration-300 ${selectedCategory === "Featured" ? "border-brand-gold/60 bg-brand-gold/[0.09]" : "border-white/10 bg-white/[0.025] hover:border-brand-gold/35 hover:bg-white/[0.045]"}`}>
+              <span className={`relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl border bg-brand-green-mid p-2.5 ${selectedCategory === "Featured" ? "border-brand-gold/40" : "border-white/10"}`}>
+                <Image src={shared.logoUrl} alt={content.featuredLabel} fill sizes="56px" className="object-contain p-1 brightness-110" />
               </span>
-              <span className={`mt-3 text-[10px] font-semibold uppercase tracking-[0.14em] transition-colors ${selectedCategory === "Featured" ? "text-brand-gold" : "text-brand-cream-muted group-hover:text-brand-gold"}`}>{content.featuredLabel}</span>
+              <span className={`text-[10px] font-bold uppercase tracking-[0.16em] ${selectedCategory === "Featured" ? "text-brand-gold-light" : "text-brand-cream-muted group-hover:text-brand-gold"}`}>{content.featuredLabel}</span>
             </button>
             {categories.map((category) => (
-              <button type="button" key={category.name} onClick={() => handleCategorySelect(category.name)} className="group flex shrink-0 snap-center flex-col items-center">
-                <span className={`relative h-[72px] w-[72px] overflow-hidden rounded-full border bg-brand-green-mid transition-all duration-500 md:h-20 md:w-20 ${selectedCategory === category.name ? "border-brand-gold shadow-lg shadow-brand-gold/15" : "border-brand-gold/15 hover:border-brand-gold/50"}`}>
-                  <Image src={category.image} alt={category.name} fill sizes="(max-width: 768px) 72px, 80px" className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                  <span className="absolute inset-0 bg-brand-green-dark/10 transition-colors group-hover:bg-transparent" />
+              <button type="button" key={category.name} onClick={() => handleCategorySelect(category.name)} className={`group flex shrink-0 snap-center items-center gap-3 rounded-2xl border p-2 pr-5 text-left transition-all duration-300 ${selectedCategory === category.name ? "border-brand-gold/60 bg-brand-gold/[0.09]" : "border-white/10 bg-white/[0.025] hover:border-brand-gold/35 hover:bg-white/[0.045]"}`}>
+                <span className={`relative h-14 w-14 overflow-hidden rounded-xl border bg-brand-green-mid ${selectedCategory === category.name ? "border-brand-gold/40" : "border-white/10"}`}>
+                  <Image src={category.image} alt={category.name} fill sizes="56px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <span className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-transparent" />
                 </span>
-                <span className={`mt-3 text-[10px] font-semibold uppercase tracking-[0.14em] transition-colors ${selectedCategory === category.name ? "text-brand-gold" : "text-brand-cream-muted group-hover:text-brand-gold"}`}>{category.name}</span>
-                <span className="mt-1 text-[9px] text-brand-cream-muted/70">{category.count} {category.count === 1 ? content.pieceLabel : content.piecesLabel}</span>
+                <span>
+                  <span className={`block text-[10px] font-bold uppercase tracking-[0.16em] ${selectedCategory === category.name ? "text-brand-gold-light" : "text-brand-cream-muted group-hover:text-brand-gold"}`}>{category.name}</span>
+                  <span className="mt-1 block text-[9px] text-brand-cream-muted/60">{category.count} {category.count === 1 ? content.pieceLabel : content.piecesLabel}</span>
+                </span>
               </button>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="collection" className="relative z-10 scroll-mt-28 px-5 py-24 sm:px-8 md:px-12 md:py-28">
-        <div className="mx-auto max-w-7xl">
-          <Reveal className="mb-10 text-center md:flex md:items-end md:justify-between md:text-left">
+      <section id="collection" className="relative z-10 scroll-mt-28 px-5 py-20 sm:px-8 md:px-12 md:py-24">
+        <div className="mx-auto max-w-[1500px]">
+          <Reveal className="mb-9 md:flex md:items-end md:justify-between md:gap-8">
             <div>
               <span className="mb-3 block text-[9px] font-bold uppercase tracking-[0.28em] text-brand-gold">{settings.collectionTag}</span>
               <h2 className="text-3xl text-brand-cream md:text-[2.75rem]">
                 {selectedCategory === "Featured" ? settings.collectionTitleFeatured : `${selectedCategory} ${content.categoryCollectionSuffix}`}
               </h2>
             </div>
+            <span className="mt-4 inline-flex w-fit rounded-full border border-white/10 bg-white/[0.025] px-4 py-2 text-[10px] uppercase tracking-[0.14em] text-brand-cream-muted md:mt-0">
+              {filteredProducts.length} {filteredProducts.length === 1 ? content.pieceLabel : content.piecesLabel}
+            </span>
           </Reveal>
 
-          <div className="mb-12 flex flex-col items-stretch justify-between gap-4 border-y border-brand-gold/10 py-4 md:flex-row md:items-center">
+          <div className="mb-8 flex flex-col items-stretch justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.025] p-3 md:flex-row md:items-center">
             <div className="relative md:max-w-md md:flex-1">
-              <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-gold/70" />
+              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-gold/80" />
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder={content.searchPlaceholder}
-                className="w-full rounded-full border border-brand-gold/20 bg-brand-green-dark/60 py-3 pl-11 pr-4 text-xs text-brand-cream placeholder:text-brand-cream-muted/60 transition-colors focus:border-brand-gold/60 focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-black/20 py-3.5 pl-11 pr-4 text-xs text-brand-cream placeholder:text-brand-cream-muted/55 transition-colors focus:border-brand-gold/60 focus:outline-none"
               />
             </div>
             <div className="flex items-center justify-between gap-4 md:justify-end">
-              <span className="text-[11px] text-brand-cream-muted">
+              <span className="pl-1 text-[11px] text-brand-cream-muted md:hidden">
                 {filteredProducts.length} {filteredProducts.length === 1 ? content.pieceLabel : content.piecesLabel}
               </span>
               <select
                 value={sort}
                 onChange={(event) => setSort(event.target.value)}
                 aria-label={content.sortLabel}
-                className="rounded-full border border-brand-gold/20 bg-brand-green-dark px-4 py-2.5 text-[10px] font-medium uppercase tracking-[0.1em] text-brand-cream transition-colors focus:border-brand-gold/60 focus:outline-none"
+                className="rounded-xl border border-white/10 bg-brand-green-dark px-4 py-3 text-[10px] font-medium uppercase tracking-[0.1em] text-brand-cream transition-colors focus:border-brand-gold/60 focus:outline-none"
               >
                 <option value="featured">{content.sortFeaturedLabel}</option>
                 <option value="price-asc">{content.sortPriceAscLabel}</option>
@@ -308,7 +312,7 @@ function HomeContent() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: [0.215, 0.61, 0.355, 1] }}
-            className="grid grid-cols-1 gap-x-5 gap-y-12 sm:grid-cols-2 md:gap-x-7 lg:grid-cols-3 xl:grid-cols-4"
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:grid-cols-4"
           >
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
@@ -316,10 +320,10 @@ function HomeContent() {
           </motion.div>
 
           {filteredProducts.length === 0 && (
-            <div className="rounded-2xl border border-brand-gold/15 bg-brand-green-mid/30 py-20 text-center">
+            <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.025] py-20 text-center">
               <p className="text-xl text-brand-cream">{content.emptyTitle}</p>
               <p className="mt-2 text-xs leading-6 text-brand-cream-muted">{content.emptyDescription}</p>
-              <button type="button" onClick={() => setQuery("")} className="mt-6 rounded-full border border-brand-gold/30 px-7 py-3 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-gold transition-all hover:bg-brand-gold hover:text-brand-green-dark">
+              <button type="button" onClick={() => setQuery("")} className="mt-6 rounded-full border border-brand-gold/40 px-7 py-3 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-gold transition-all hover:bg-brand-gold hover:text-brand-green-dark">
                 {content.clearSearchLabel}
               </button>
             </div>
@@ -327,10 +331,10 @@ function HomeContent() {
         </div>
       </section>
 
-      <section id="story" className="relative z-10 scroll-mt-28 border-t border-brand-gold/10 bg-brand-green-dark/30 px-5 py-24 sm:px-8 md:px-12 md:py-32 lg:px-20">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
+      <section id="story" className="relative z-10 scroll-mt-28 border-t border-white/[0.06] bg-white/[0.015] px-5 py-24 sm:px-8 md:px-12 md:py-32 lg:px-20">
+        <div className="mx-auto grid max-w-[1500px] grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
           <Reveal className="order-2 lg:order-1 lg:col-span-5">
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-brand-gold/15 shadow-2xl">
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.8rem] border border-white/10 shadow-[0_35px_90px_-40px_rgba(0,0,0,0.9)]">
               <Image src={settings.storyImage} alt={content.storyImageAlt} fill sizes="(max-width: 1024px) 90vw, 450px" className="object-cover" />
               <div className="absolute inset-0 bg-gradient-to-tr from-brand-green-dark/50 to-transparent" />
             </div>
@@ -338,21 +342,20 @@ function HomeContent() {
           <div className="order-1 flex flex-col items-start lg:order-2 lg:col-span-7">
             <Reveal>
               <span className="mb-3 block text-[9px] font-bold uppercase tracking-[0.28em] text-brand-gold">{settings.storyTag}</span>
-              <h2 className="mb-6 text-3xl leading-[1.08] text-brand-cream md:text-5xl">
+              <h2 className="mb-6 text-3xl leading-[1.02] tracking-[-0.045em] text-brand-cream md:text-6xl">
                 {settings.storyTitle1} <br />
                 <span className="gold-gradient-text font-light italic">{settings.storyTitle2}</span>
               </h2>
               <p className="mb-5 max-w-xl text-sm font-light leading-7 text-brand-cream-muted md:text-[15px]">{settings.storyParagraph1}</p>
               <p className="mb-8 max-w-xl text-sm font-light leading-7 text-brand-cream-muted md:text-[15px]">{settings.storyParagraph2}</p>
-              <div className="gold-rule mb-8 w-24" />
-              <div className="grid w-full grid-cols-2">
-                <div className="border-l border-brand-gold/15 pl-5 first:border-l-0 first:pl-0">
-                  <span className="mb-2 block font-serif text-3xl text-brand-gold">{settings.storyStat1Value}</span>
-                  <span className="block max-w-[150px] text-[10px] uppercase leading-5 tracking-[0.12em] text-brand-cream-muted">{settings.storyStat1Label}</span>
+              <div className="grid w-full grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-black/15 p-4 backdrop-blur-sm sm:p-5">
+                <div className="rounded-xl border border-brand-gold/10 bg-white/[0.025] p-4 sm:p-5">
+                  <span className="mb-2 block font-serif text-3xl tracking-tight text-brand-gold-light sm:text-4xl">{settings.storyStat1Value}</span>
+                  <span className="block max-w-[150px] text-[9px] uppercase leading-5 tracking-[0.14em] text-brand-cream-muted">{settings.storyStat1Label}</span>
                 </div>
-                <div className="border-l border-brand-gold/15 pl-5 sm:pl-8">
-                  <span className="mb-2 block font-serif text-3xl text-brand-gold">{settings.storyStat2Value}</span>
-                  <span className="block max-w-[170px] text-[10px] uppercase leading-5 tracking-[0.12em] text-brand-cream-muted">{settings.storyStat2Label}</span>
+                <div className="rounded-xl border border-brand-gold/10 bg-white/[0.025] p-4 sm:p-5">
+                  <span className="mb-2 block font-serif text-3xl tracking-tight text-brand-gold-light sm:text-4xl">{settings.storyStat2Value}</span>
+                  <span className="block max-w-[170px] text-[9px] uppercase leading-5 tracking-[0.14em] text-brand-cream-muted">{settings.storyStat2Label}</span>
                 </div>
               </div>
             </Reveal>
@@ -360,34 +363,34 @@ function HomeContent() {
         </div>
       </section>
 
-      <section className="relative z-10 border-t border-brand-gold/10 px-5 py-24 sm:px-8 md:px-12 md:py-28">
-        <div className="mx-auto max-w-7xl">
+      <section className="relative z-10 border-t border-white/[0.06] px-5 py-24 sm:px-8 md:px-12 md:py-32">
+        <div className="mx-auto max-w-[1500px]">
           <Reveal className="mb-14 text-center">
-            <span className="mb-3 block text-[9px] font-bold uppercase tracking-[0.28em] text-brand-gold">{settings.specsTag}</span>
-            <h2 className="text-3xl text-brand-cream md:text-4xl">{settings.specsTitle}</h2>
+            <span className="mb-4 inline-flex rounded-full border border-brand-gold/15 bg-brand-gold/[0.05] px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.24em] text-brand-gold">{settings.specsTag}</span>
+            <h2 className="text-3xl tracking-[-0.04em] text-brand-cream md:text-5xl">{settings.specsTitle}</h2>
           </Reveal>
-          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-16">
             <Reveal className="lg:col-span-5">
-              <div className="relative aspect-square overflow-hidden rounded-2xl border border-brand-gold/15 shadow-2xl">
+              <div className="relative aspect-square overflow-hidden rounded-[1.8rem] border border-white/10 shadow-[0_35px_90px_-40px_rgba(0,0,0,0.9)]">
                 <Image src={settings.bannerImage} alt={content.specsImageAlt} fill sizes="(max-width: 1024px) 90vw, 480px" className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-green-dark/40 to-transparent" />
-                <div className="absolute bottom-5 left-5 rounded-full border border-brand-gold/25 bg-brand-green-dark/80 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-brand-gold backdrop-blur">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/5" />
+                <div className="absolute bottom-5 left-5 rounded-full border border-brand-gold/25 bg-black/65 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-brand-gold-light backdrop-blur-md">
                   {content.specsImageBadge}
                 </div>
               </div>
             </Reveal>
-            <div className="space-y-10 lg:col-span-7">
+            <div className="space-y-3 lg:col-span-7">
               {[
-                { icon: <Clock size={18} />, title: settings.spec1Title, desc: settings.spec1Description },
-                { icon: <Award size={18} />, title: settings.spec2Title, desc: settings.spec2Description },
-                { icon: <Gem size={18} />, title: settings.spec3Title, desc: settings.spec3Description },
+                { icon: <Clock size={19} />, title: settings.spec1Title, desc: settings.spec1Description },
+                { icon: <Award size={19} />, title: settings.spec2Title, desc: settings.spec2Description },
+                { icon: <Gem size={19} />, title: settings.spec3Title, desc: settings.spec3Description },
               ].map((spec, index) => (
-                <Reveal key={spec.title} delay={index * 0.1} className="flex items-start gap-5">
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-brand-gold/25 bg-brand-green-mid/50 text-brand-gold">
+                <Reveal key={spec.title} delay={index * 0.1} className="flex items-start gap-5 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-5 transition-colors duration-500 hover:border-brand-gold/20 sm:p-6">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-brand-gold/20 bg-brand-gold/[0.06] text-brand-gold-light">
                     {spec.icon}
                   </span>
                   <div>
-                    <h3 className="mb-2 text-xl text-brand-gold">{spec.title}</h3>
+                    <h3 className="mb-2 text-lg tracking-tight text-brand-cream sm:text-xl">{spec.title}</h3>
                     <p className="text-[13px] font-light leading-7 text-brand-cream-muted">{spec.desc}</p>
                   </div>
                 </Reveal>
@@ -397,22 +400,22 @@ function HomeContent() {
         </div>
       </section>
 
-      <section className="relative z-10 border-t border-brand-gold/10 bg-brand-green-mid/20 px-5 py-24 sm:px-8 md:px-12 md:py-28">
-        <div className="mx-auto max-w-7xl">
+      <section className="relative z-10 border-t border-white/[0.06] bg-white/[0.018] px-5 py-24 sm:px-8 md:px-12 md:py-32">
+        <div className="mx-auto max-w-[1500px]">
           <Reveal className="mb-12 text-center">
-            <span className="mb-3 block text-[9px] font-bold uppercase tracking-[0.28em] text-brand-gold">{content.testimonialsTag}</span>
-            <h2 className="text-3xl text-brand-cream md:text-4xl">{content.testimonialsTitle}</h2>
+            <span className="mb-4 inline-flex rounded-full border border-brand-gold/15 bg-brand-gold/[0.05] px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.24em] text-brand-gold">{content.testimonialsTag}</span>
+            <h2 className="text-3xl tracking-[-0.04em] text-brand-cream md:text-5xl">{content.testimonialsTitle}</h2>
           </Reveal>
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {content.testimonials.map((testimonial, index) => (
-              <Reveal key={testimonial.id} delay={index * 0.12} className="flex h-full flex-col border-t border-brand-gold/25 pt-7 md:px-6 md:first:pl-0 md:last:pr-0">
+              <Reveal key={testimonial.id} delay={index * 0.12} className="flex h-full flex-col rounded-2xl border border-white/[0.07] bg-black/15 p-6 transition-colors duration-500 hover:border-brand-gold/25 sm:p-7">
                 <div className="mb-6 flex gap-1 text-brand-gold" aria-label={content.ratingLabel}>
                   {Array.from({ length: 5 }).map((_, star) => (
                     <Star key={star} size={13} fill="currentColor" />
                   ))}
                 </div>
                 <p className="mb-8 flex-1 font-serif text-lg leading-7 text-brand-cream-muted">“{testimonial.quote}”</p>
-                <div>
+                <div className="border-t border-white/[0.07] pt-5">
                   <span className="block font-sans text-xs font-semibold text-brand-cream">{testimonial.name}</span>
                   <span className="mt-1.5 block text-[10px] text-brand-cream-muted">{testimonial.location} · {testimonial.piece}</span>
                 </div>
@@ -422,16 +425,16 @@ function HomeContent() {
         </div>
       </section>
 
-      <section className="relative z-10 border-t border-brand-gold/10 px-5 py-24 sm:px-8 md:px-12 md:py-28">
-        <div className="mx-auto max-w-7xl">
+      <section className="relative z-10 border-t border-white/[0.06] px-5 py-24 sm:px-8 md:px-12 md:py-32">
+        <div className="mx-auto max-w-[1500px]">
           <Reveal>
-            <div className="leather-sheen leather-surface relative overflow-hidden rounded-2xl border border-brand-tan/25 shadow-2xl shadow-black/40">
-              <div className="relative z-10 grid grid-cols-1 items-center gap-10 p-7 sm:p-9 md:grid-cols-12 md:p-12">
+            <div className="leather-sheen leather-surface relative overflow-hidden rounded-[1.8rem] border border-brand-tan/25 shadow-[0_35px_100px_-40px_rgba(0,0,0,0.95)]">
+              <div className="relative z-10 grid grid-cols-1 items-center gap-10 p-7 sm:p-9 md:grid-cols-12 md:p-12 lg:p-16">
                 <div className="md:col-span-7">
-                  <span className="mb-4 inline-flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.24em] text-brand-tan">
+                  <span className="mb-5 inline-flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.24em] text-brand-tan">
                     <span className="h-[1px] w-7 bg-brand-tan/60" /> {content.leatherTag}
                   </span>
-                  <h2 className="mb-5 text-3xl leading-[1.08] text-brand-cream md:text-5xl">
+                  <h2 className="mb-5 text-3xl leading-[1.02] tracking-[-0.045em] text-brand-cream md:text-6xl">
                     {content.leatherTitleLead} <span className="gold-gradient-text font-light italic">{content.leatherTitleAccent}</span>
                   </h2>
                   <p className="mb-8 max-w-lg text-[13px] font-light leading-7 text-brand-cream-muted md:text-sm">
@@ -463,13 +466,13 @@ function HomeContent() {
         </div>
       </section>
 
-      <section id="contact" className="relative z-10 scroll-mt-28 border-t border-brand-gold/10 px-5 py-24 sm:px-8 md:px-12 md:py-28">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+      <section id="contact" className="relative z-10 scroll-mt-28 border-t border-white/[0.06] px-5 py-24 sm:px-8 md:px-12 md:py-32">
+        <div className="mx-auto grid max-w-[1500px] grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-6">
             <Reveal>
-              <span className="mb-3 block text-[9px] font-bold uppercase tracking-[0.28em] text-brand-gold">{content.faqTag}</span>
-              <h2 className="mb-8 text-3xl text-brand-cream md:text-4xl">{content.faqTitle}</h2>
-              <div className="divide-y divide-brand-gold/10 border-y border-brand-gold/10">
+              <span className="mb-4 block text-[9px] font-bold uppercase tracking-[0.28em] text-brand-gold">{content.faqTag}</span>
+              <h2 className="mb-8 text-3xl tracking-[-0.04em] text-brand-cream md:text-5xl">{content.faqTitle}</h2>
+              <div className="divide-y divide-white/[0.07] overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.02] px-5 sm:px-6">
                 {content.faqs.map((faq, index) => (
                   <div key={faq.id}>
                     <button
@@ -479,10 +482,10 @@ function HomeContent() {
                       aria-expanded={openFaq === index}
                     >
                       <span className="font-serif text-base text-brand-cream md:text-lg">{faq.question}</span>
-                      <span className="shrink-0 text-brand-gold">{openFaq === index ? <Minus size={16} /> : <Plus size={16} />}</span>
+                      <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-colors ${openFaq === index ? "border-brand-gold/40 bg-brand-gold/10 text-brand-gold-light" : "border-white/10 text-brand-gold"}`}>{openFaq === index ? <Minus size={15} /> : <Plus size={15} />}</span>
                     </button>
                     <motion.div initial={false} animate={{ height: openFaq === index ? "auto" : 0, opacity: openFaq === index ? 1 : 0 }} transition={{ duration: 0.3 }} className="overflow-hidden">
-                      <p className="pb-6 pr-6 text-[13px] font-light leading-7 text-brand-cream-muted">{faq.answer}</p>
+                      <p className="pb-6 pr-5 text-[13px] font-light leading-7 text-brand-cream-muted">{faq.answer}</p>
                     </motion.div>
                   </div>
                 ))}
@@ -495,13 +498,13 @@ function HomeContent() {
 
           <div className="lg:col-span-6">
             <Reveal delay={0.1}>
-              <div className="relative h-full overflow-hidden rounded-2xl border border-brand-gold/15 bg-gradient-to-br from-brand-green-mid/70 to-brand-green-dark p-7 text-center shadow-2xl sm:p-10">
-                <div className="pointer-events-none absolute -bottom-20 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-brand-success/5 blur-[80px]" />
+              <div className="relative h-full min-h-[480px] overflow-hidden rounded-[1.8rem] border border-white/10 bg-gradient-to-br from-brand-green-soft/80 to-black/40 p-7 text-center shadow-[0_35px_100px_-45px_rgba(0,0,0,0.95)] sm:p-10">
+                <div className="pointer-events-none absolute -bottom-20 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-brand-gold/10 blur-[80px]" />
                 <div className="relative z-10 flex h-full flex-col items-center justify-center">
-                  <span className="mb-3 block text-[9px] font-bold uppercase tracking-[0.24em] text-brand-gold">{settings.contactTag}</span>
+                  <span className="mb-4 inline-flex rounded-full border border-brand-gold/20 bg-brand-gold/[0.06] px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.24em] text-brand-gold-light">{settings.contactTag}</span>
                   <h2
                     aria-label={`${settings.contactTitle1} ${settings.contactTitle2}`}
-                    className="mb-5 text-3xl leading-[1.08] text-brand-cream md:text-4xl"
+                    className="mb-5 text-3xl leading-[1.02] tracking-[-0.045em] text-brand-cream md:text-5xl"
                   >
                     {settings.contactTitle1}{" "}
                     <span className="gold-gradient-text font-light italic">
