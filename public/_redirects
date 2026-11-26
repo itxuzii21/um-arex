@@ -4,9 +4,9 @@
 /search    /#collection    301
 /wallets    /?category=Wallets#collection    301
 /accessories    /?category=Accessories#collection    301
-/leather    /    301
-/watch    https://um-arex.store/    301
-/watch/*    https://um-arex.store/:splat    301
+/leather    /    301!
+/watch    https://um-arex.store/    301!
+/watch/*    https://um-arex.store/:splat    301!
 /shipping    /faq    301
 /warranty    /faq    301
 /leather-care    /faq    301
