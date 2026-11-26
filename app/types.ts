@@ -15,6 +15,9 @@ export interface Product {
   isNew?: boolean;
   isBestSeller?: boolean;
   isFeatured?: boolean;
+  legacyIsNew?: boolean;
+  legacyIsBestSeller?: boolean;
+  legacyIsFeatured?: boolean;
   detailTagline?: string;
   detailDescription?: string;
   shippingTitle?: string;
@@ -35,24 +38,23 @@ export interface Category {
   image: string;
 }
 
-import watchCatalog from "./data/watches.json";
+import leatherCatalog from "./data/leather.json";
 
-// Try to load from localStorage first (for admin edits), fallback to static JSON
 const getProducts = (): Product[] => {
   if (typeof window !== "undefined") {
-    const stored = localStorage.getItem("umarex_products");
+    const stored = localStorage.getItem("umarex_leather_products");
     if (stored) {
       try {
-        return JSON.parse(stored);
+        return JSON.parse(stored) as Product[];
       } catch {
-        return watchCatalog;
+        return leatherCatalog as Product[];
       }
     }
   }
-  return watchCatalog;
+  return leatherCatalog as Product[];
 };
 
-export const PRODUCTS: Product[] = typeof window !== "undefined" ? getProducts() : watchCatalog;
+export const PRODUCTS: Product[] = typeof window !== "undefined" ? getProducts() : leatherCatalog as Product[];
 
 export const OWNER_WHATSAPP_NUMBER = "923279595329";
 export const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/EsbVXoDJEvuIjYAp0ipzs0?mode=gi_t";

@@ -2,9 +2,10 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useStore } from "./StoreProvider";
-import type { CurrencyOption } from "./content";
+import type { CountryOption, CurrencyOption } from "./content";
 
-const CURRENCY_KEY = "umarex_currency";
+const CURRENCY_KEY = "umarex_leather_currency";
+const COUNTRY_KEY = "umarex_leather_country";
 
 const REGION_CURRENCIES: Record<string, string> = {
   PK: "PKR",
@@ -21,8 +22,12 @@ interface CurrencyValue {
   currency: CurrencyOption;
   currencyCode: string;
   setCurrencyCode: (code: string) => void;
-  isInternational: boolean;
+  country: CountryOption;
+  countryCode: string;
+  setCountryCode: (code: string) => void;
   detectedCountry: string;
+  isInternational: boolean;
+  deliveryAvailable: boolean;
   formatPrice: (pkr: number) => string;
   formatAmount: (amount: number) => string;
   formatPkr: (pkr: number) => string;
@@ -31,18 +36,7 @@ interface CurrencyValue {
 
 const CurrencyContext = createContext<CurrencyValue | null>(null);
 
-function detectCurrency(available: CurrencyOption[]): string {
-  try {
-    const locale = navigator.language || "en-PK";
-    const region = new Intl.Locale(locale).region || "PK";
-    const code = REGION_CURRENCIES[region] || "USD";
-    return available.some((item) => item.code === code) ? code : "PKR";
-  } catch {
-    return "PKR";
-  }
-}
-
-function detectCountry(): string {
+function detectCountryCode(): string {
   try {
     return new Intl.Locale(navigator.language || "en-PK").region || "PK";
   } catch {
@@ -53,36 +47,72 @@ function detectCountry(): string {
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   const { settings } = useStore();
   const [currencyCode, setCurrencyCodeState] = useState("PKR");
+  const [countryCode, setCountryCodeState] = useState("PK");
   const [detectedCountry, setDetectedCountry] = useState("PK");
   const available = settings.commerce.currencies;
+  const countries = settings.commerce.countries;
+  const enabledCountries = useMemo(() => countries.filter((country) => country.enabled), [countries]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDetectedCountry(detectCountry());
-      const stored = localStorage.getItem(CURRENCY_KEY);
-      const detected = detectCurrency(available);
-      setCurrencyCodeState(stored && available.some((item) => item.code === stored) ? stored : detected);
+      const detected = detectCountryCode();
+      setDetectedCountry(detected);
+      const storedCountry = localStorage.getItem(COUNTRY_KEY);
+      const selectedCountry = enabledCountries.find((country) => country.code === storedCountry)
+        || enabledCountries.find((country) => country.code === detected)
+        || enabledCountries.find((country) => country.code === "PK")
+        || enabledCountries[0];
+      const nextCountry = selectedCountry?.code || "PK";
+      setCountryCodeState(nextCountry);
+
+      const storedCurrency = localStorage.getItem(CURRENCY_KEY);
+      const countryCurrency = selectedCountry?.currency || "PKR";
+      const nextCurrency = storedCurrency && available.some((item) => item.code === storedCurrency)
+        ? storedCurrency
+        : available.some((item) => item.code === countryCurrency)
+          ? countryCurrency
+          : available.some((item) => item.code === REGION_CURRENCIES[detected])
+            ? REGION_CURRENCIES[detected]
+            : "PKR";
+      setCurrencyCodeState(nextCurrency);
     }, 0);
     return () => clearTimeout(timer);
-  }, [available]);
+  }, [available, enabledCountries]);
 
   const setCurrencyCode = useCallback((code: string) => {
     setCurrencyCodeState(code);
     localStorage.setItem(CURRENCY_KEY, code);
   }, []);
 
+  const setCountryCode = useCallback((code: string) => {
+    const country = enabledCountries.find((item) => item.code === code);
+    if (!country) return;
+    setCountryCodeState(country.code);
+    localStorage.setItem(COUNTRY_KEY, country.code);
+    if (available.some((item) => item.code === country.currency)) {
+      setCurrencyCodeState(country.currency);
+      localStorage.setItem(CURRENCY_KEY, country.currency);
+    }
+  }, [available, enabledCountries]);
+
   const currency = useMemo(
     () => available.find((item) => item.code === currencyCode) || available[0] || { code: "PKR", symbol: "Rs", locale: "en-PK", rate: 1 },
     [available, currencyCode]
   );
+  const country = useMemo(
+    () => enabledCountries.find((item) => item.code === countryCode) || enabledCountries[0] || { code: "PK", name: "Pakistan", currency: "PKR", enabled: true },
+    [countryCode, enabledCountries]
+  );
 
-  const isInternational = currency.code !== "PKR";
+  const isInternational = country.code !== "PK";
+  const deliveryAvailable = country.enabled && (!isInternational || settings.commerce.worldwideDeliveryEnabled);
   const margin = Math.max(500, Number(settings.commerce.currencyMarginPkr) || 0);
   const rate = currency.code === "PKR" ? 1 : Number(currency.rate) > 0 ? Number(currency.rate) : 1;
+  const applyMargin = currency.code !== "PKR";
 
   const convertPrice = useCallback(
-    (pkr: number) => Math.ceil(((Number(pkr) || 0) + (isInternational ? margin : 0)) * rate),
-    [isInternational, margin, rate]
+    (pkr: number) => Math.ceil(((Number(pkr) || 0) + (applyMargin ? margin : 0)) * rate),
+    [applyMargin, margin, rate]
   );
 
   const formatPkr = useCallback(
@@ -91,11 +121,7 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   );
 
   const formatAmount = useCallback(
-    (amount: number) => {
-      if (currency.code === "PKR") return `${currency.symbol} ${(Number(amount) || 0).toLocaleString(currency.locale, { maximumFractionDigits: 0 })}`;
-      const number = (Number(amount) || 0).toLocaleString(currency.locale, { maximumFractionDigits: 0 });
-      return `${currency.symbol} ${number}`;
-    },
+    (amount: number) => `${currency.symbol} ${(Number(amount) || 0).toLocaleString(currency.locale, { maximumFractionDigits: 0 })}`,
     [currency]
   );
 
@@ -105,8 +131,22 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   );
 
   const value = useMemo<CurrencyValue>(
-    () => ({ currency, currencyCode: currency.code, setCurrencyCode, isInternational, detectedCountry, formatPrice, formatAmount, formatPkr, convertPrice }),
-    [currency, setCurrencyCode, isInternational, detectedCountry, formatPrice, formatAmount, formatPkr, convertPrice]
+    () => ({
+      currency,
+      currencyCode: currency.code,
+      setCurrencyCode,
+      country,
+      countryCode: country.code,
+      setCountryCode,
+      detectedCountry,
+      isInternational,
+      deliveryAvailable,
+      formatPrice,
+      formatAmount,
+      formatPkr,
+      convertPrice,
+    }),
+    [currency, setCurrencyCode, country, setCountryCode, detectedCountry, isInternational, deliveryAvailable, formatPrice, formatAmount, formatPkr, convertPrice]
   );
 
   return <CurrencyContext.Provider value={value}>{children}</CurrencyContext.Provider>;

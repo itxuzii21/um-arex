@@ -1,0 +1,182 @@
+[
+  {
+    "id": "25",
+    "name": "UM-AREX Executive Vertical",
+    "category": "Wallets",
+    "price": 4500,
+    "image": "https://imgur.com/uqhb98G.jpg",
+    "gallery": [
+      "https://imgur.com/uqhb98G.jpg",
+      "https://imgur.com/a1erIH0.jpg",
+      "https://imgur.com/ufoD6w3.jpg",
+      "https://imgur.com/cDl4ZXH.jpg"
+    ],
+    "description": "The Executive Vertical represents the refined side of UM-AREX Leather. With its premium vertical silhouette, clean finishing, and sophisticated appearance, it is designed for customers who value understated luxury.",
+    "detailTagline": "Executive Collection",
+    "specifications": [
+      { "label": "Design", "value": "Passport Holder" },
+      { "label": "Craft", "value": "Fine Stitching" },
+      { "label": "Finish", "value": "Elegant Minimalist Finish" }
+    ]
+  },
+  {
+    "id": "24",
+    "name": "UM-AREX Long Slim",
+    "category": "Wallets",
+    "price": 4800,
+    "image": "https://imgur.com/flUaxyp.jpg",
+    "gallery": [
+      "https://imgur.com/flUaxyp.jpg",
+      "https://imgur.com/7YxOuEq.jpg",
+      "https://imgur.com/4GfvWtZ.jpg",
+      "https://imgur.com/Z1iHEKx.jpg"
+    ],
+    "description": "A sophisticated long-format leather wallet offering an elegant vertical profile. Designed for customers who prefer a longer silhouette while maintaining a clean and refined appearance.",
+    "detailTagline": "Slim Collection",
+    "specifications": [
+      { "label": "Design", "value": "Long Vertical Design" },
+      { "label": "Silhouette", "value": "Elegant Proportions" },
+      { "label": "Style", "value": "Premium Everyday Carry" }
+    ]
+  },
+  {
+    "id": "23",
+    "name": "UM-AREX Minimal Card",
+    "category": "Card Holders",
+    "price": 3200,
+    "image": "https://imgur.com/5YaFSE3.jpg",
+    "gallery": [
+      "https://imgur.com/5YaFSE3.jpg",
+      "https://imgur.com/lL07Cbh.jpg",
+      "https://imgur.com/GA7uV9l.jpg"
+    ],
+    "description": "Designed for the essentials, the Minimal Card is an ultra-clean leather card holder for those who prefer to carry less. Its simple profile makes it ideal for modern minimalist lifestyles.",
+    "detailTagline": "Minimal Collection",
+    "specifications": [
+      { "label": "Design", "value": "Minimal Card Holder" },
+      { "label": "Profile", "value": "Compact & Lightweight" },
+      { "label": "Craft", "value": "Premium Stitching" }
+    ]
+  },
+  {
+    "id": "22",
+    "name": "UM-AREX Flap Slim",
+    "category": "Wallets",
+    "price": 4800,
+    "image": "https://imgur.com/L8zlho5.jpg",
+    "gallery": [
+      "https://imgur.com/L8zlho5.jpg",
+      "https://imgur.com/v1r2ps8.jpg",
+      "https://imgur.com/Tlq2dss.jpg",
+      "https://imgur.com/U6ak7Sx.jpg"
+    ],
+    "description": "The Flap Slim combines a refined leather exterior with a distinctive flap closure design. Elegant and practical, it is made for customers who want a premium wallet with a unique appearance.",
+    "detailTagline": "Essential Collection",
+    "specifications": [
+      { "label": "Closure", "value": "Flap Design" },
+      { "label": "Profile", "value": "Slim Construction" },
+      { "label": "Style", "value": "Elegant Everyday Style" }
+    ]
+  },
+  {
+    "id": "21",
+    "name": "UM-AREX Classic Slim",
+    "category": "Wallets",
+    "price": 5000,
+    "image": "https://imgur.com/nu3tM3O.jpg",
+    "gallery": [
+      "https://imgur.com/nu3tM3O.jpg",
+      "https://imgur.com/kczs8IP.jpg",
+      "https://imgur.com/k0MMwT1.jpg",
+      "https://imgur.com/QAXutXN.jpg"
+    ],
+    "description": "A clean and understated horizontal wallet made for everyday elegance. The Classic Slim offers a refined appearance with a simple silhouette that fits naturally into your daily essentials.",
+    "detailTagline": "Essential Collection",
+    "specifications": [
+      { "label": "Design", "value": "Horizontal Slim Design" },
+      { "label": "Exterior", "value": "Minimalist Finish" },
+      { "label": "Craft", "value": "Premium Stitching" }
+    ]
+  },
+  {
+    "id": "20",
+    "name": "UM-AREX Diagonal Slim",
+    "category": "Card Holders",
+    "price": 4300,
+    "image": "https://imgur.com/DjrEhUG.jpg",
+    "gallery": [
+      "https://imgur.com/DjrEhUG.jpg",
+      "https://imgur.com/rzPe1X3.jpg",
+      "https://imgur.com/4IDmkG3.jpg",
+      "https://imgur.com/ucQ6Q8j.jpg"
+    ],
+    "description": "Featuring a distinctive diagonal design, this slim leather wallet combines modern style with practical everyday functionality. A perfect choice for customers who want something different from a traditional wallet.",
+    "detailTagline": "Signature Collection",
+    "specifications": [
+      { "label": "Design", "value": "Diagonal Silhouette" },
+      { "label": "Profile", "value": "Easy Pocket Carry" },
+      { "label": "Style", "value": "Modern Signature Style" }
+    ]
+  },
+  {
+    "id": "19",
+    "name": "UM-AREX Vertical Slim",
+    "category": "Wallets",
+    "price": 5800,
+    "image": "https://imgur.com/7sC7bsT.jpg",
+    "gallery": [
+      "https://imgur.com/7sC7bsT.jpg",
+      "https://imgur.com/Z3Ui9Pp.jpg",
+      "https://imgur.com/Uk1iV5J.jpg",
+      "https://imgur.com/t6Cqipk.jpg"
+    ],
+    "description": "A sleek vertical wallet created for modern everyday carry. Its slim construction gives you a sophisticated look while keeping your pocket profile clean and comfortable.",
+    "detailTagline": "Slim Collection",
+    "specifications": [
+      { "label": "Design", "value": "Vertical Slim Design" },
+      { "label": "Profile", "value": "Low-Profile Construction" },
+      { "label": "Craft", "value": "Premium Edge Stitching" }
+    ]
+  },
+  {
+    "id": "18",
+    "name": "UM-AREX Compact Square",
+    "category": "Wallets",
+    "price": 4300,
+    "image": "https://imgur.com/rVjwPmZ.jpg",
+    "gallery": [
+      "https://imgur.com/rVjwPmZ.jpg",
+      "https://imgur.com/p8hOL3K.jpg",
+      "https://imgur.com/He1mRyR.jpg",
+      "https://imgur.com/FOpfb9G.jpg"
+    ],
+    "description": "Compact, stylish, and easy to carry, the Compact Square is designed for those who prefer a smaller wallet without compromising on premium appearance and craftsmanship.",
+    "detailTagline": "Essential Collection",
+    "specifications": [
+      { "label": "Design", "value": "Compact Square Wallet" },
+      { "label": "Profile", "value": "Lightweight & Easy to Carry" },
+      { "label": "Craft", "value": "Durable Construction" }
+    ]
+  },
+  {
+    "id": "17",
+    "name": "UM-AREX Classic Vertical",
+    "category": "Wallets",
+    "price": 4400,
+    "image": "https://imgur.com/7Md6x0H.jpg",
+    "gallery": [
+      "https://imgur.com/7Md6x0H.jpg",
+      "https://imgur.com/ONSZ5Qs.jpg",
+      "https://imgur.com/jOUt06D.jpg",
+      "https://imgur.com/JXlwW8x.jpg"
+    ],
+    "description": "A timeless vertical wallet designed for men who appreciate classic leather craftsmanship. Its clean silhouette, refined stitching, and practical vertical profile make it an elegant everyday companion.",
+    "detailTagline": "Essential Collection",
+    "specifications": [
+      { "label": "Design", "value": "Vertical Wallet Design" },
+      { "label": "Profile", "value": "Slim & Elegant" },
+      { "label": "Craft", "value": "Premium Stitching" },
+      { "label": "Quality", "value": "Durable Construction" }
+    ]
+  }
+]

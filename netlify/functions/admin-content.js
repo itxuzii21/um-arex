@@ -49,7 +49,7 @@ exports.handler = async (event) => {
   }
 
   const id = String(body.id ?? "").trim();
-  const allowed = ["watch_catalog", "watch_settings"];
+  const allowed = ["leather_catalog", "leather_settings", "watch_catalog", "watch_settings"];
   if (!allowed.includes(id)) {
     return json(400, { success: false, error: "Unknown content id." });
   }

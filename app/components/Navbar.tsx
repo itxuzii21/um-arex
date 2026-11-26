@@ -94,7 +94,7 @@ export default function Navbar() {
               {nav.about}
               <span className={underline} />
             </Link>
-            <a href={shared.leatherUrl} target="_blank" rel="noopener noreferrer" className={`${navLink} inline-flex items-center gap-1.5 text-brand-tan hover:text-brand-gold-light`}>
+            <a href={shared.watchUrl} target="_blank" rel="noopener noreferrer" className={`${navLink} inline-flex items-center gap-1.5 text-brand-tan hover:text-brand-gold-light`}>
               {nav.leather}
               <ArrowUpRight size={11} />
               <span className={underline} />
@@ -208,7 +208,7 @@ export default function Navbar() {
 
               <motion.div variants={itemVariants} className="mt-5 px-1">
                 <a
-                  href={shared.leatherUrl}
+                  href={shared.watchUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="leather-sheen leather-surface flex items-center justify-between rounded-2xl border border-brand-tan/30 px-5 py-4"

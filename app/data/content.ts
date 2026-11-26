@@ -252,6 +252,13 @@ export interface PagesContent {
   notFound: NotFoundContent;
   search: SearchContent;
   watch: WatchPageContent;
+  product: WatchPageContent;
+}
+
+export interface ShowcaseSettings {
+  featuredProductIds: string[];
+  newProductIds: string[];
+  bestSellerProductIds: string[];
 }
 
 export interface NavContent {
@@ -306,6 +313,12 @@ export interface SharedContent {
   seoAuthor: string;
   seoLocale: string;
   siteLanguage: string;
+  watchUrl: string;
+  watchLogoUrl: string;
+  watchLogoAlt: string;
+  watchCardLabel: string;
+  watchCardTitle: string;
+  watchCardSubtitle: string;
   leatherUrl: string;
   leatherLogoUrl: string;
   leatherLogoAlt: string;
@@ -324,6 +337,13 @@ export interface CurrencyOption {
   rate: number;
 }
 
+export interface CountryOption {
+  code: string;
+  name: string;
+  currency: string;
+  enabled: boolean;
+}
+
 export interface CommerceSettings {
   worldwideDeliveryEnabled: boolean;
   deliveryQuoteRequired: boolean;
@@ -333,9 +353,11 @@ export interface CommerceSettings {
   dispatchEstimate: string;
   currencyMarginPkr: number;
   currencySelectorLabel: string;
+  countrySelectorLabel: string;
   ratesUpdatedLabel: string;
   ratesNote: string;
   currencies: CurrencyOption[];
+  countries: CountryOption[];
 }
 
 export const DEFAULT_PAGES: PagesContent = {
@@ -347,13 +369,13 @@ export const DEFAULT_PAGES: PagesContent = {
     selectImageLabel: "Select image {index} of {productName}",
     exploreDetailsLabel: "Explore details of {productName}",
     sortLabel: "Sort collection",
-    ratingLabel: "5 out of 5 stars",
+    ratingLabel: "Crafted to the UM-AREX standard",
     dispatchStatValue: "24h",
     featuredLabel: "Featured",
     piecesLabel: "pieces",
     pieceLabel: "piece",
     categoryCollectionSuffix: "Collection",
-    searchPlaceholder: "Search this collection...",
+    searchPlaceholder: "Search wallets and accessories...",
     sortFeaturedLabel: "Sort: Featured",
     sortPriceAscLabel: "Price: Low to High",
     sortPriceDescLabel: "Price: High to Low",
@@ -361,48 +383,48 @@ export const DEFAULT_PAGES: PagesContent = {
     emptyTitle: "No pieces match your search",
     emptyDescription: "Try a different term or browse another collection.",
     clearSearchLabel: "Clear Search",
-    signatureLabel: "Signature Edition",
-    sealText: "UM-AREX • Luxury Timepieces • Worldwide Delivery •",
+    signatureLabel: "Signature Leather",
+    sealText: "UM-AREX • Leather Craft • Worldwide Delivery •",
     scrollLabel: "Scroll",
-    heroImageAlt: "UM-AREX signature timepiece",
-    storyImageAlt: "UM-AREX signature styling",
-    specsImage: "/hero_model_two.png",
-    specsImageAlt: "Mechanical movement detail",
-    specsImageBadge: "21-Jewel Movement",
+    heroImageAlt: "UM-AREX signature leather wallet",
+    storyImageAlt: "UM-AREX leather craftsmanship",
+    specsImage: "https://imgur.com/7Md6x0H.jpg",
+    specsImageAlt: "Premium leather wallet detail",
+    specsImageBadge: "Finished by Hand",
     faqTag: "Good to Know",
     faqTitle: "Frequently Asked Questions",
     faqViewAllLabel: "View All Questions",
-    responseNote: "Typically replies within minutes",
-    testimonialsTag: "Client Voices",
-    testimonialsTitle: "Trusted by Collectors",
+    responseNote: "Personal support on WhatsApp",
+    testimonialsTag: "Our Standard",
+    testimonialsTitle: "Made to Be Kept",
     curatedPiecesLabel: "Curated Pieces",
     collectionsLabel: "Collections",
     dispatchLabel: "Dispatch",
-    orderMessage: "Hello UM-AREX, I want to order a watch. Please confirm availability and my exact delivery charge before payment.",
-    conciergeMessage: "Hello UM-AREX Concierge, I am interested in custom-sourcing a luxury timepiece. Please guide me.",
+    orderMessage: "Hello UM-AREX, I want to order a leather piece. Please confirm availability and my exact delivery charge before payment.",
+    conciergeMessage: "Hello UM-AREX Leather, I would like help choosing a wallet or placing a custom order. Please guide me.",
     leatherTag: "The Sister Maison",
     leatherTitleLead: "UM-AREX",
-    leatherTitleAccent: "Leather",
-    leatherDescription: "The same devotion to craft, expressed in full-grain leather. Explore handcrafted wallets and accessories built to age beautifully.",
-    leatherPrimaryCta: "Visit Leather Website",
-    leatherSecondaryCta: "Preview the Collection",
-    leatherLogoAlt: "UM-AREX Leather",
+    leatherTitleAccent: "Watches",
+    leatherDescription: "Discover the sister collection of curated timepieces, shaped by the same devotion to design, detail, and personal service.",
+    leatherPrimaryCta: "Visit Watches Website",
+    leatherSecondaryCta: "Explore the Timepieces",
+    leatherLogoAlt: "UM-AREX Watches",
     benefits: [
-      { id: "inspection", icon: "shield", title: "Hand-Inspected", description: "Calibrated before dispatch" },
+      { id: "quality", icon: "shield", title: "Quality Inspected", description: "Checked before every dispatch" },
       { id: "delivery", icon: "truck", title: "Worldwide Delivery", description: "Shipping quoted before payment" },
-      { id: "precision", icon: "clock", title: "Mechanical Precision", description: "Battery-free automatics" },
+      { id: "craft", icon: "scissors", title: "Refined Craft", description: "Considered materials and finish" },
       { id: "concierge", icon: "sparkles", title: "WhatsApp Concierge", description: "Personal ordering assistance" },
     ],
     testimonials: [
-      { id: "ahmed", name: "Ahmed R.", location: "Lahore", piece: "Cassino Watch", quote: "The finishing exceeded what I expected at this price. The dial catches light beautifully and delivery was tracked within a day." },
-      { id: "bilal", name: "Bilal K.", location: "Karachi", piece: "Tissot PRX 1853", quote: "Ordered on WhatsApp, received clear payment details, and had my tracking code promptly. The watch feels solid and genuinely premium." },
-      { id: "hassan", name: "Hassan M.", location: "Islamabad", piece: "Cartier Tank", quote: "Understated and elegant. UM-AREX guided me through the dial options patiently. It has become my daily wear for formal meetings." },
+      { id: "material", name: "Material", location: "Selected with care", piece: "Character & Durability", quote: "Leather chosen for a refined appearance, everyday durability, and the ability to develop character over time." },
+      { id: "construction", name: "Construction", location: "Finished with precision", piece: "Stitching & Edges", quote: "Clean silhouettes, careful stitching, and considered finishing create pieces designed for regular use." },
+      { id: "service", name: "Service", location: "Available worldwide", piece: "Personal Assistance", quote: "Our WhatsApp concierge confirms availability, delivery destination, and the final order details before payment." },
     ],
     faqs: [
-      { id: "order", question: "How do I place an order?", answer: "Choose your timepiece and tap ‘Order on WhatsApp’. Our concierge confirms availability, delivery destination, shipping charge, and payment details before your order is dispatched." },
+      { id: "order", question: "How do I place an order?", answer: "Choose your leather piece and tap ‘Order on WhatsApp’. Our concierge confirms availability, delivery destination, shipping charge, and payment details before dispatch." },
       { id: "shipping", question: "How much is worldwide delivery?", answer: "Shipping depends on your country, address, courier, and package weight. We confirm the exact delivery charge on WhatsApp before asking for payment." },
       { id: "timing", question: "How long does delivery take?", answer: "Orders are usually prepared within 24 hours after verification. International transit time depends on the destination and courier and is confirmed with your shipping quote." },
-      { id: "automatic", question: "Are the automatics battery-free?", answer: "Yes. Automatic and semi-automatic movements use mechanical energy generated by wrist movement and do not need battery changes." },
+      { id: "care", question: "How should I care for my leather?", answer: "Keep your piece away from prolonged moisture, direct heat, and harsh chemicals. Wipe it gently with a soft dry cloth and allow it to develop its natural character." },
     ],
   },
   about: {
@@ -410,31 +432,31 @@ export const DEFAULT_PAGES: PagesContent = {
     eyebrow: "Our Story",
     titleLead: "About",
     titleAccent: "UM-AREX",
-    description: "Where precision mechanical engineering meets considered watch design. Curated for collectors who value craftsmanship, transparency, and enduring style.",
+    description: "A Pakistani leather house devoted to considered materials, precise finishing, and timeless everyday design.",
     heritageTag: "Our Heritage",
     heritageTitleLead: "Crafted for Those Who",
-    heritageTitleAccent: "Appreciate Precision",
+    heritageTitleAccent: "Value the Details",
     paragraphs: [
-      "UM-AREX represents a standard in curated watch collections. We assemble models that carry the weight of tradition while expressing the edge of modern styling.",
-      "From semi-automatic movements to clean daily casuals, every piece is checked for calibration and finishing. We focus on honest specifications, transparent pricing, and personal service.",
-      "Our collection is available worldwide. Every destination receives a confirmed shipping quote before payment, with tracking shared after dispatch.",
+      "UM-AREX Leather brings together classic silhouettes and modern everyday function. From wallets to compact card holders, each piece is designed to feel refined without feeling excessive.",
+      "Our focus is simple: selected materials, clean construction, careful stitching, and honest product information. We want every customer to understand what they are ordering before payment.",
+      "Based in Shakargarh, Pakistan, we serve customers locally and internationally. Every destination receives a confirmed shipping quote before payment, with tracking shared after dispatch.",
     ],
-    image: "/hero_model_one.png",
-    imageAlt: "UM-AREX luxury watch craftsmanship",
+    image: "https://imgur.com/uqhb98G.jpg",
+    imageAlt: "UM-AREX leather wallet craftsmanship",
     commitmentTag: "Our Commitment",
     commitmentTitle: "Why Choose UM-AREX",
     values: [
-      { id: "quality", icon: "shield", title: "Quality Inspected", description: "Every timepiece is inspected before dispatch." },
+      { id: "quality", icon: "shield", title: "Quality Inspected", description: "Every leather piece is checked before dispatch." },
       { id: "delivery", icon: "truck", title: "Worldwide Delivery", description: "Destination-specific shipping confirmed in advance." },
-      { id: "precision", icon: "clock", title: "Mechanical Precision", description: "Reliable automatic and semi-automatic movements." },
+      { id: "craft", icon: "scissors", title: "Considered Craft", description: "Clean stitching, refined edges, and practical silhouettes." },
       { id: "pricing", icon: "award", title: "Transparent Pricing", description: "Clear product prices and delivery quotes without hidden charges." },
     ],
     standardTag: "Our Standard",
-    standardTitle: "Uncompromising Materials",
+    standardTitle: "Uncompromising Attention",
     standards: [
-      { id: "movement", icon: "clock", title: "Mechanical Integrity", description: "Automatic and semi-automatic movements run on mechanical energy generated by wrist movement." },
-      { id: "case", icon: "shield", title: "Case & Finish", description: "Carefully selected alloys and finishes are inspected for a balanced, durable timepiece." },
-      { id: "crystal", icon: "gem", title: "Crystal & Clarity", description: "Clear coated crystals are selected for readability, reflections, and everyday resilience." },
+      { id: "material", icon: "gem", title: "Material Character", description: "Leather is selected for appearance, feel, and everyday durability." },
+      { id: "construction", icon: "shield", title: "Construction & Finish", description: "Stitching, edges, and closures are reviewed for a clean and practical finish." },
+      { id: "design", icon: "scroll", title: "Timeless Design", description: "Classic proportions are refined for modern daily carry and lasting versatility." },
     ],
     ctaTag: "Ready to Explore?",
     ctaTitle: "Discover Our Collection",
@@ -446,23 +468,23 @@ export const DEFAULT_PAGES: PagesContent = {
     eyebrow: "Got Questions?",
     titleLead: "Frequently Asked",
     titleAccent: "Questions",
-    description: "Find answers about ordering, worldwide delivery, payment, product care, and our timepieces.",
+    description: "Find answers about ordering, worldwide delivery, payment, leather care, and our wallets and accessories.",
     supportTag: "Still Have Questions?",
     supportTitle: "Contact Our Support Team",
     supportDescription: "Our WhatsApp concierge can help with product availability, delivery quotes, and order support.",
     supportCta: "Chat on WhatsApp",
-    supportMessage: "Hello UM-AREX, I have a question about your collection.",
+    supportMessage: "Hello UM-AREX Leather, I have a question about your collection.",
     items: [
-      { id: "order", question: "How do I place an order?", answer: "Choose a watch and tap ‘Order on WhatsApp’. Our concierge confirms availability, your destination, the delivery charge, and payment details." },
+      { id: "order", question: "How do I place an order?", answer: "Choose a leather piece and tap ‘Order on WhatsApp’. Our concierge confirms availability, your destination, the delivery charge, and payment details." },
       { id: "charges", question: "What are the delivery charges?", answer: "Pakistan delivery is {deliveryCharge}. International shipping varies by destination and is confirmed by our team before payment." },
       { id: "timing", question: "How long does delivery take?", answer: "Preparation usually takes up to 24 hours after verification. International transit estimates are included with your confirmed delivery quote." },
-      { id: "products", question: "How are the watches described?", answer: "Each listing shows its category, price, description, images, and available specifications. Contact us if you need clarification before ordering." },
+      { id: "products", question: "How are the leather pieces described?", answer: "Each listing shows its category, price, description, images, and available specifications. Contact us if you need clarification before ordering." },
       { id: "payment", question: "What payment methods do you accept?", answer: "Accepted payment methods are confirmed personally on WhatsApp and may include bank transfer or supported mobile wallets." },
-      { id: "returns", question: "Can I return or exchange a watch?", answer: "Manufacturing-defect requests must be made within seven days of delivery, in original condition with packaging. See our Return Policy for full details." },
-      { id: "warranty", question: "Do the watches come with a warranty?", answer: "Warranty coverage is product-specific and limited to manufacturing defects. Ask our concierge for the terms of your selected watch." },
+      { id: "returns", question: "Can I return or exchange a leather piece?", answer: "Manufacturing-defect requests must be made within seven days of delivery, in original condition with packaging. See our Return Policy for full details." },
+      { id: "warranty", question: "Do the leather pieces come with a warranty?", answer: "Craftsmanship warranty coverage is limited to manufacturing defects. Ask our concierge for the terms of your selected piece." },
       { id: "tracking", question: "How do I track my order?", answer: "After dispatch we share your courier and tracking details. You can also send your order ID through our Track Order page." },
-      { id: "water", question: "Are the watches water-resistant?", answer: "Everyday splash resistance varies by model. Do not swim or submerge a watch unless its confirmed specifications explicitly allow it." },
-      { id: "sourcing", question: "Do you offer custom sourcing?", answer: "Yes. Send our WhatsApp concierge the model, reference, or dial shade you want and we will check sourcing options." },
+      { id: "care", question: "How should I care for my leather?", answer: "Avoid prolonged moisture, direct heat, and harsh chemicals. Wipe gently with a soft dry cloth and store your piece away from direct sunlight." },
+      { id: "custom", question: "Can I request a custom leather piece?", answer: "Yes. Send our WhatsApp concierge your preferred style, dimensions, and any other requirements and we will check the available options." },
     ],
   },
   privacy: {
@@ -518,11 +540,11 @@ export const DEFAULT_PAGES: PagesContent = {
       { id: "process", icon: "package", title: "Simple Process", description: "Start your request through WhatsApp support." },
     ],
     sections: [
-      { id: "eligibility", title: "1. Return Eligibility", paragraphs: ["A return may be considered when all of the following apply:"], bullets: ["The request is made within seven days of delivery.", "The watch is unused and in original condition.", "Original packaging, tags, and accessories are included.", "The issue is a manufacturing defect, not misuse or accidental damage.", "Proof of purchase or order confirmation is provided."], numbered: [] },
-      { id: "exclusions", title: "2. Non-Returnable Items", paragraphs: ["Returns are not accepted for:"], bullets: ["Misuse, accidents, water damage outside confirmed specifications, or normal wear.", "Removed or tampered serial numbers.", "Products not purchased through an authorized UM-AREX channel.", "Missing packaging or accessories.", "Requests submitted after the seven-day window."], numbered: [] },
+      { id: "eligibility", title: "1. Return Eligibility", paragraphs: ["A return may be considered when all of the following apply:"], bullets: ["The request is made within seven days of delivery.", "The leather piece is unused and in original condition.", "Original packaging, tags, and accessories are included.", "The issue is a manufacturing defect, not misuse or accidental damage.", "Proof of purchase or order confirmation is provided."], numbered: [] },
+      { id: "exclusions", title: "2. Non-Returnable Items", paragraphs: ["Returns are not accepted for:"], bullets: ["Misuse, accidents, prolonged moisture, chemical damage, or normal wear.", "Removed or tampered serial numbers.", "Products not purchased through an authorized UM-AREX channel.", "Missing packaging or accessories.", "Requests submitted after the seven-day window."], numbered: [] },
       { id: "process", title: "3. How to Initiate a Return", paragraphs: ["To request a manufacturing-defect review:"], bullets: [], numbered: ["Contact our WhatsApp concierge within seven days of delivery.", "Provide your order ID and a clear description of the issue.", "Send clear photos or videos showing the defect.", "Wait for our review and return authorization.", "If approved, follow the return instructions provided for your country."] },
       { id: "refund", title: "4. Refund Process", paragraphs: ["After inspection and approval, approved refunds are processed within 7–10 business days. Refund method, original shipping treatment, and any international transfer charges are confirmed before processing."], bullets: [], numbered: [] },
-      { id: "exchange", title: "5. Exchange Policy", paragraphs: ["An approved defective item may be exchanged for the same model, subject to stock. International exchanges may require a revised shipping quote."], bullets: [], numbered: [] },
+      { id: "exchange", title: "5. Exchange Policy", paragraphs: ["An approved defective item may be exchanged for the same piece, subject to stock. International exchanges may require a revised shipping quote."], bullets: [], numbered: [] },
       { id: "shipping", title: "6. Shipping Costs", paragraphs: ["UM-AREX covers return shipping for an approved manufacturing defect. Customers are responsible for unauthorized returns and change-of-mind shipping where such a request is accepted. Original delivery charges are non-refundable unless required by law."], bullets: [], numbered: [] },
       { id: "contact", title: "7. Contact Us", paragraphs: ["Use the WhatsApp concierge shown on this website to start a return request. Keep your order ID and packaging available."], bullets: [], numbered: [] },
     ],
@@ -545,7 +567,7 @@ export const DEFAULT_PAGES: PagesContent = {
     journeyTitle: "Our Delivery Journey",
     steps: [
       { id: "confirmed", icon: "check", title: "Order Confirmed", description: "We confirm product availability, destination, shipping charge, and delivery details on WhatsApp." },
-      { id: "packed", icon: "package", title: "Quality Checked & Packed", description: "Your timepiece is inspected and securely packed for transit." },
+      { id: "packed", icon: "package", title: "Quality Checked & Packed", description: "Your leather piece is inspected and securely packed for transit." },
       { id: "dispatched", icon: "truck", title: "Dispatched Worldwide", description: "After verification, your parcel is dispatched and courier tracking is shared." },
       { id: "delivered", icon: "shield", title: "Delivered to Your Door", description: "Delivery timing depends on your destination, courier, and customs clearance." },
     ],
@@ -591,18 +613,55 @@ export const DEFAULT_PAGES: PagesContent = {
   notFound: {
     backLabel: "Return to Collection",
     eyebrow: "404 Error",
-    titleLead: "Page Lost in Time",
-    titleAccent: "",
-    description: "The requested timepiece or page could not be located. Explore the current collection instead.",
+    titleLead: "Page Not",
+    titleAccent: "Found",
+    description: "The requested leather piece or page could not be located. Explore the current collection instead.",
   },
   search: {
-    placeholder: "Search timepieces by name or category...",
+    placeholder: "Search leather pieces by name or category...",
     closeLabel: "Close search",
     featuredLabel: "Featured pieces",
     resultOne: "1 result",
     resultMany: "{count} results",
-    emptyTitle: "No timepieces match your search.",
+    emptyTitle: "No leather pieces match your search.",
     emptyDescription: "Try a different name or category.",
+  },
+  product: {
+    categorySuffix: "Collection",
+    internationalOrderButtonText: "Request order & delivery quote",
+    internationalUnavailableButtonText: "Ask about international delivery",
+    orderMessage: "Hello UM-AREX Leather, I want to order {productName} at {price}. Display currency: {currency}. Please confirm availability and my exact delivery charge before payment.",
+    noDeliveryQuoteOrderMessage: "Hello UM-AREX Leather, I want to order {productName} at {price}. Display currency: {currency}. Please confirm availability and payment details.",
+    internationalUnavailableMessage: "Hello UM-AREX Leather, I am interested in {productName} at {price}. Display currency: {currency}. Please confirm whether delivery to my country is available.",
+    internationalPriceNote: "I understand the displayed international price includes the store's international pricing margin.",
+    previousImageLabel: "Previous image",
+    nextImageLabel: "Next image",
+    viewImageLabel: "View image",
+    saveLabel: "Save",
+    automaticMovementLabel: "Mechanical Automatic",
+    breadcrumbHome: "Home",
+    breadcrumbCollection: "Collection",
+    newBadgeText: "New",
+    offerBadgeText: "Special Offer",
+    shippingTitle: "Shipping & Delivery",
+    shippingNote1: "Pakistan delivery advance: {deliveryCharge}, unless another amount is confirmed.",
+    shippingNote2: "Worldwide delivery is available where courier and customs services permit.",
+    overviewTitle: "Overview",
+    specificationsTitle: "Product Details",
+    defaultSpecifications: [
+      { label: "Material", value: "Selected Leather" },
+      { label: "Craft", value: "Refined Finish" },
+      { label: "Design", value: "Everyday Essential" },
+      { label: "Delivery", value: "Worldwide Quote" },
+    ],
+    orderButtonText: "Order on WhatsApp",
+    returnLabel: "Return to Gallery",
+    relatedTag: "Complete the Collection",
+    relatedTitle: "More from {category}",
+    notFoundEyebrow: "Not Found",
+    notFoundTitle: "This piece is no longer available",
+    notFoundDescription: "It may have been sold or moved. Explore the current collection instead.",
+    notFoundCta: "Back to Collection",
   },
   watch: {
     categorySuffix: "Edition",
@@ -645,17 +704,23 @@ export const DEFAULT_PAGES: PagesContent = {
 
 export const DEFAULT_SHARED: SharedContent = {
   brandName: "UM-AREX",
-  brandSubtitle: "Luxury Timepieces",
-  logoUrl: "/logo.png",
-  logoAlt: "UM-AREX logo",
+  brandSubtitle: "Leather Craft",
+  logoUrl: "/leather-logo.png",
+  logoAlt: "UM-AREX Leather logo",
   faviconUrl: "/icon.png",
   appleIconUrl: "/apple-icon.png",
-  seoTitle: "UM-AREX | Premium Luxury Watches",
-  seoDescription: "Discover curated watches with worldwide delivery, confirmed shipping charges, and personal WhatsApp service.",
-  seoKeywords: "luxury watches, automatic watches, UM-AREX, premium watches, worldwide watch delivery",
+  seoTitle: "UM-AREX | Premium Leather Wallets & Accessories",
+  seoDescription: "Discover curated leather wallets and accessories with worldwide delivery, confirmed shipping charges, and personal WhatsApp service.",
+  seoKeywords: "leather wallets, card holders, UM-AREX Leather, premium wallets, worldwide leather delivery",
   seoAuthor: "UM-AREX",
   seoLocale: "en_PK",
   siteLanguage: "en",
+  watchUrl: "https://um-arex.store",
+  watchLogoUrl: "/logo.png",
+  watchLogoAlt: "UM-AREX Watches",
+  watchCardLabel: "Visit the UM-AREX Watches website",
+  watchCardTitle: "Explore the Watch Maison",
+  watchCardSubtitle: "Curated timepieces & personal service",
   leatherUrl: "https://leather.um-arex.store",
   leatherLogoUrl: "/leather-logo.png",
   leatherLogoAlt: "UM-AREX Leather",
@@ -666,11 +731,11 @@ export const DEFAULT_SHARED: SharedContent = {
     home: "Home",
     collection: "Collection",
     about: "About",
-    leather: "Leather",
+    leather: "Watches",
     faq: "FAQ",
     trackOrder: "Track Order",
     contact: "Contact",
-    search: "Search timepieces",
+    search: "Search leather pieces",
     openMenu: "Open navigation menu",
     closeMenu: "Close navigation menu",
     sisterMaison: "Sister Maison",
@@ -686,9 +751,9 @@ export const DEFAULT_SHARED: SharedContent = {
     trackOrder: "Track Order",
     returns: "Return Policy",
     connectedTitle: "Stay Connected",
-    connectedDescription: "New releases, client stories, and private collection previews.",
+    connectedDescription: "New leather pieces, care guidance, and personal collection previews.",
     homeLabel: "home",
-    leatherLabel: "UM-AREX Leather",
+    leatherLabel: "UM-AREX Watches",
     privacy: "Privacy Policy",
     terms: "Terms & Conditions",
   },
@@ -708,7 +773,8 @@ export const DEFAULT_COMMERCE: CommerceSettings = {
   internationalDeliveryNote: "International shipping is quoted by destination. Import duties and taxes are confirmed separately where applicable.",
   dispatchEstimate: "Dispatch within 24 hours after verification",
   currencyMarginPkr: 500,
-  currencySelectorLabel: "Currency / country",
+  currencySelectorLabel: "Display currency",
+  countrySelectorLabel: "Delivery country",
   ratesUpdatedLabel: "Indicative rates",
   ratesNote: "International prices add {currencyMargin} before conversion. Rates are editable and the final order total is confirmed on WhatsApp.",
   currencies: [
@@ -726,5 +792,53 @@ export const DEFAULT_COMMERCE: CommerceSettings = {
     { code: "TRY", symbol: "₺", locale: "tr-TR", rate: 0.12 },
     { code: "CHF", symbol: "CHF", locale: "de-CH", rate: 0.0031 },
     { code: "NZD", symbol: "NZ$", locale: "en-NZ", rate: 0.006 },
+  ],
+  countries: [
+    { code: "PK", name: "Pakistan", currency: "PKR", enabled: true },
+    { code: "US", name: "United States", currency: "USD", enabled: true },
+    { code: "CA", name: "Canada", currency: "CAD", enabled: true },
+    { code: "MX", name: "Mexico", currency: "USD", enabled: true },
+    { code: "PA", name: "Panama", currency: "USD", enabled: true },
+    { code: "DO", name: "Dominican Republic", currency: "USD", enabled: true },
+    { code: "GT", name: "Guatemala", currency: "USD", enabled: true },
+    { code: "CR", name: "Costa Rica", currency: "USD", enabled: true },
+    { code: "GB", name: "United Kingdom", currency: "GBP", enabled: true },
+    { code: "IE", name: "Ireland", currency: "GBP", enabled: true },
+    { code: "AT", name: "Austria", currency: "EUR", enabled: true },
+    { code: "BE", name: "Belgium", currency: "EUR", enabled: true },
+    { code: "HR", name: "Croatia", currency: "EUR", enabled: true },
+    { code: "CY", name: "Cyprus", currency: "EUR", enabled: true },
+    { code: "EE", name: "Estonia", currency: "EUR", enabled: true },
+    { code: "FI", name: "Finland", currency: "EUR", enabled: true },
+    { code: "FR", name: "France", currency: "EUR", enabled: true },
+    { code: "DE", name: "Germany", currency: "EUR", enabled: true },
+    { code: "GR", name: "Greece", currency: "EUR", enabled: true },
+    { code: "IT", name: "Italy", currency: "EUR", enabled: true },
+    { code: "LV", name: "Latvia", currency: "EUR", enabled: true },
+    { code: "LT", name: "Lithuania", currency: "EUR", enabled: true },
+    { code: "LU", name: "Luxembourg", currency: "EUR", enabled: true },
+    { code: "MT", name: "Malta", currency: "EUR", enabled: true },
+    { code: "NL", name: "Netherlands", currency: "EUR", enabled: true },
+    { code: "PT", name: "Portugal", currency: "EUR", enabled: true },
+    { code: "SK", name: "Slovakia", currency: "EUR", enabled: true },
+    { code: "SI", name: "Slovenia", currency: "EUR", enabled: true },
+    { code: "ES", name: "Spain", currency: "EUR", enabled: true },
+    { code: "AE", name: "United Arab Emirates", currency: "AED", enabled: true },
+    { code: "SA", name: "Saudi Arabia", currency: "SAR", enabled: true },
+    { code: "QA", name: "Qatar", currency: "SAR", enabled: true },
+    { code: "KW", name: "Kuwait", currency: "SAR", enabled: true },
+    { code: "BH", name: "Bahrain", currency: "SAR", enabled: true },
+    { code: "OM", name: "Oman", currency: "SAR", enabled: true },
+    { code: "AU", name: "Australia", currency: "AUD", enabled: true },
+    { code: "NZ", name: "New Zealand", currency: "NZD", enabled: true },
+    { code: "JP", name: "Japan", currency: "JPY", enabled: true },
+    { code: "CN", name: "China", currency: "CNY", enabled: true },
+    { code: "HK", name: "Hong Kong", currency: "CNY", enabled: true },
+    { code: "MO", name: "Macau", currency: "CNY", enabled: true },
+    { code: "TW", name: "Taiwan", currency: "CNY", enabled: true },
+    { code: "IN", name: "India", currency: "INR", enabled: true },
+    { code: "TR", name: "Türkiye", currency: "TRY", enabled: true },
+    { code: "CH", name: "Switzerland", currency: "CHF", enabled: true },
+    { code: "LI", name: "Liechtenstein", currency: "CHF", enabled: true },
   ],
 };

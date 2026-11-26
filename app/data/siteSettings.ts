@@ -5,12 +5,11 @@ import {
   type CommerceSettings,
   type PagesContent,
   type SharedContent,
+  type ShowcaseSettings,
 } from "./content";
 
 export interface SiteSettings {
-  // Navbar
   bannerText: string;
-  // Hero Section
   heroTagline: string;
   heroTitle1: string;
   heroTitle2: string;
@@ -20,13 +19,10 @@ export interface SiteSettings {
   heroCta2Text: string;
   heroQuote: string;
   heroImage: string;
-  // Category Section
   categorySectionTag: string;
   categorySectionTitle: string;
-  // Collection Section
   collectionTag: string;
   collectionTitleFeatured: string;
-  // Brand Story Section
   storyTag: string;
   storyTitle1: string;
   storyTitle2: string;
@@ -37,14 +33,12 @@ export interface SiteSettings {
   storyStat2Value: string;
   storyStat2Label: string;
   storyImage: string;
-  // Cinematic Banner
   bannerTag: string;
   bannerTitle1: string;
   bannerTitle2: string;
   bannerDescription: string;
   bannerCtaText: string;
   bannerImage: string;
-  // Technical Specs
   specsTag: string;
   specsTitle: string;
   spec1Title: string;
@@ -53,17 +47,14 @@ export interface SiteSettings {
   spec2Description: string;
   spec3Title: string;
   spec3Description: string;
-  // Contact/WhatsApp Section
   contactTag: string;
   contactTitle1: string;
   contactTitle2: string;
   contactDescription: string;
   contactCtaText: string;
-  // Footer
   footerDescription: string;
   footerCopyright: string;
   footerCredit: string;
-  // Social & Contact
   whatsappNumber: string;
   whatsappGroupUrl: string;
   tiktokUrl: string;
@@ -72,65 +63,56 @@ export interface SiteSettings {
   pages: PagesContent;
   shared: SharedContent;
   commerce: CommerceSettings;
+  showcase: ShowcaseSettings;
 }
 
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
-  // Navbar
-  bannerText: "Worldwide delivery • Shipping charge confirmed before payment • Dispatch within 24 hours",
-  // Hero Section
-  heroTagline: "The Art of Modern Horology",
-  heroTitle1: "WHERE TIME",
-  heroTitle2: "MEETS",
-  heroTitle3: "ELEGANCE.",
-  heroDescription: "Mechanical precision, considered proportions, and enduring style. Discover timepieces curated for those who value quiet distinction.",
+  bannerText: "Premium leather goods • Worldwide delivery • Shipping charge confirmed before payment • Dispatch within 24 hours",
+  heroTagline: "The Art of Leather Craft",
+  heroTitle1: "CRAFTED",
+  heroTitle2: "FOR",
+  heroTitle3: "LEGACY.",
+  heroDescription: "Refined leather wallets and accessories shaped by considered materials, precise finishing, and timeless everyday design.",
   heroCta1Text: "Explore Collection",
   heroCta2Text: "Speak to a Concierge",
-  heroQuote: "\"A watch does more than count hours; it quietly expresses personal character.\"",
-  heroImage: "/hero_model_three.png",
-  // Category Section
+  heroQuote: "\"True luxury is found in the details you feel every day.\"",
+  heroImage: "https://imgur.com/uqhb98G.jpg",
   categorySectionTag: "The UM-AREX Selection",
   categorySectionTitle: "Shop by Collection",
-  // Collection Section
-  collectionTag: "Curated Timepieces",
+  collectionTag: "Curated Leather Pieces",
   collectionTitleFeatured: "The Signature Collection",
-  // Brand Story Section
   storyTag: "Our Heritage",
-  storyTitle1: "Where Precision",
-  storyTitle2: "Meets Pure Elegance",
-  storyParagraph1: "UM-AREX represents a standard in curated watch collections. We assemble models that carry the weight of tradition while expressing the edge of modern styling. From masterfully crafted semi-automatic movements to clean daily casuals, every piece is checked for immaculate calibration and finishing.",
-  storyParagraph2: "We eliminate excessive markup to bring luxury-grade aesthetics to collectors who value mechanical purity and robust design above all else.",
-  storyStat1Value: "Zero",
-  storyStat1Label: "Batteries in Automatics",
-  storyStat2Value: "100%",
-  storyStat2Label: "Hand-inspected Calibration",
-  storyImage: "/hero_model_one.png",
-  // Cinematic Banner
-  bannerTag: "Limited Editions",
+  storyTitle1: "Where Quality",
+  storyTitle2: "Meets Quiet Elegance",
+  storyParagraph1: "UM-AREX Leather brings together classic silhouettes and modern everyday function. From refined vertical wallets to minimal card holders, each piece is designed to feel considered without feeling excessive.",
+  storyParagraph2: "Our focus is simple: selected materials, clean construction, careful stitching, and honest product information. Every order receives personal confirmation before payment.",
+  storyStat1Value: "100%",
+  storyStat1Label: "Quality Inspected",
+  storyStat2Value: "24h",
+  storyStat2Label: "Dispatch After Verification",
+  storyImage: "https://imgur.com/flUaxyp.jpg",
+  bannerTag: "The Leather Standard",
   bannerTitle1: "Built for Those Who",
-  bannerTitle2: "Appreciate Precision",
-  bannerDescription: "A premium watch is a study in calibration. Crafted with high-grade mechanical components, coated mineral crystal glass, and meticulously brushed alloys.",
-  bannerCtaText: "Custom Order Inquiries",
-  bannerImage: "/hero_model_two.png",
-  // Technical Specs
+  bannerTitle2: "Value the Details",
+  bannerDescription: "Clean lines, refined proportions, and practical everyday carry. Discover leather pieces selected for appearance, durability, and lasting character.",
+  bannerCtaText: "Ask About a Piece",
+  bannerImage: "https://imgur.com/7Md6x0H.jpg",
   specsTag: "Our Standard",
-  specsTitle: "Uncompromising Materials",
-  spec1Title: "Mechanical Integrity",
-  spec1Description: "Our automatic and semi-automatic movements run entirely on mechanical energy generated by wrist movement. Engineered to provide reliable motion with no battery changes.",
-  spec2Title: "Chassis Metallurgy",
-  spec2Description: "Machined using premium grade steel alloys, polished to yield dual textures (matte brushed casing with high-polished bezels). Scratch-resistant surfaces keep the finish pristine.",
-  spec3Title: "Crystal & Clarity",
-  spec3Description: "Fitted with high-clarity coated mineral glass crystals. Offers a stunning reflective luster while resisting direct impacts, scrapes, and environmental moisture.",
-  // Contact/WhatsApp Section
-  contactTag: "Bespoke Client Services",
-  contactTitle1: "Looking for Something",
-  contactTitle2: "Rare?",
-  contactDescription: "Need a particular automatic configuration, dial shade, or looking to source a high-end luxury master build? Our WhatsApp concierge is online to consult, assist, and confirm bespoke order specifications.",
+  specsTitle: "Considered in Every Detail",
+  spec1Title: "Material Character",
+  spec1Description: "Leather is selected for its appearance, feel, and suitability for regular everyday use.",
+  spec2Title: "Construction & Finish",
+  spec2Description: "Stitching, edges, and closures are reviewed for a clean finish and a practical, durable construction.",
+  spec3Title: "Timeless Design",
+  spec3Description: "Classic proportions are refined for modern daily carry, creating versatile pieces that remain stylish beyond a single season.",
+  contactTag: "Personal Client Services",
+  contactTitle1: "Need Help Choosing",
+  contactTitle2: "Your Piece?",
+  contactDescription: "Looking for a particular silhouette, a gift, or a custom leather piece? Our WhatsApp concierge can help with dimensions, availability, and delivery to your country.",
   contactCtaText: "Chat on WhatsApp",
-  // Footer
-  footerDescription: "Where precision mechanical engineering meets bespoke high-fashion watch design. Curated for distinguished collectors.",
-  footerCopyright: "UM-AREX Luxury Group. All rights reserved.",
-  footerCredit: "A UM-AREX Experience · Dubai",
-  // Social & Contact
+  footerDescription: "Refined leather wallets and accessories, curated for everyday elegance and delivered with personal service.",
+  footerCopyright: "UM-AREX Leather. All rights reserved.",
+  footerCredit: "A UM-AREX Experience · Pakistan",
   whatsappNumber: "923279595329",
   whatsappGroupUrl: "https://chat.whatsapp.com/EsbVXoDJEvuIjYAp0ipzs0?mode=gi_t",
   tiktokUrl: "https://www.tiktok.com/@um__arex?_r=1&_t=ZS-960Ngidjmul",
@@ -139,27 +121,14 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   pages: DEFAULT_PAGES,
   shared: DEFAULT_SHARED,
   commerce: DEFAULT_COMMERCE,
+  showcase: {
+    featuredProductIds: ["25", "24", "23", "22", "21"],
+    newProductIds: ["25", "23", "20"],
+    bestSellerProductIds: ["24", "21", "17"],
+  },
 };
 
-const STORAGE_KEY_SETTINGS = "umarex_site_settings";
-
-const COPY_UPGRADES = {
-  bannerText: ["⚡ Rs 250/- Delivery Charges in Advance • Dispatch Within 24 Hours Nationwide ⚡", DEFAULT_SITE_SETTINGS.bannerText],
-  heroTagline: ["The Epitome of Horology", DEFAULT_SITE_SETTINGS.heroTagline],
-  heroDescription: ["Impeccably engineered mechanical precision meets high-fashion styling. Discover watches designed for those who command presence.", DEFAULT_SITE_SETTINGS.heroDescription],
-  heroCta1Text: ["Explore Catalog", DEFAULT_SITE_SETTINGS.heroCta1Text],
-  heroCta2Text: ["Talk to Get Yours Watch", DEFAULT_SITE_SETTINGS.heroCta2Text],
-  heroQuote: ["\"A watch isn't just about counting hours; it is an statement of personal character.\"", DEFAULT_SITE_SETTINGS.heroQuote],
-  categorySectionTag: ["Curated Portfolios", DEFAULT_SITE_SETTINGS.categorySectionTag],
-  categorySectionTitle: ["Select Category", DEFAULT_SITE_SETTINGS.categorySectionTitle],
-  collectionTag: ["The Collection Gallery", DEFAULT_SITE_SETTINGS.collectionTag],
-  collectionTitleFeatured: ["Curated Pieces", DEFAULT_SITE_SETTINGS.collectionTitleFeatured],
-  storyStat1Label: ["Battery Waste on Automatics", DEFAULT_SITE_SETTINGS.storyStat1Label],
-  bannerDescription: ["A premium watch is a testament to calibration. Crafted using high-grade mechanical parts, sapphire-coated crystal glass, and meticulously brushed alloys.", DEFAULT_SITE_SETTINGS.bannerDescription],
-  spec3Title: ["Sapphire Glass", DEFAULT_SITE_SETTINGS.spec3Title],
-  contactCtaText: ["Contact Us", DEFAULT_SITE_SETTINGS.contactCtaText],
-  footerCredit: ["Developed By UM-AREX H/O Dubai", DEFAULT_SITE_SETTINGS.footerCredit],
-} satisfies Record<string, readonly [string, string]>;
+const STORAGE_KEY_SETTINGS = "umarex_leather_site_settings";
 
 function mergeContent<T>(defaults: T, input: unknown): T {
   if (Array.isArray(defaults)) {
@@ -179,17 +148,29 @@ function mergeContent<T>(defaults: T, input: unknown): T {
 
 export function mergeSiteSettings(input?: Partial<SiteSettings> | null): SiteSettings {
   const merged = mergeContent(DEFAULT_SITE_SETTINGS, input || {}) as SiteSettings;
-  for (const [key, [previous, next]] of Object.entries(COPY_UPGRADES)) {
-    const settingKey = key as keyof SiteSettings;
-    if (merged[settingKey] === previous) (merged as unknown as Record<string, unknown>)[settingKey] = next;
-  }
-  if (["⚡ Rs 250/- Delivery Charges in Advance • Dispatch Within 24 Hours Nationwide ⚡", "Rs 250 advance delivery charge • Nationwide dispatch within 24 hours"].includes(merged.bannerText)) {
-    merged.bannerText = DEFAULT_SITE_SETTINGS.bannerText;
-  }
   const currencies = Array.isArray(merged.commerce.currencies) ? merged.commerce.currencies : [];
-  merged.commerce.currencies = currencies.some((currency) => currency.code === "PKR")
-    ? currencies
-    : [DEFAULT_COMMERCE.currencies[0], ...currencies];
+  const normalizedCurrencies = currencies.map((currency) => ({
+    ...currency,
+    rate: currency.code === "PKR" ? 1 : Number(currency.rate) > 0 ? Number(currency.rate) : 1,
+  }));
+  merged.commerce.currencies = normalizedCurrencies.some((currency) => currency.code === "PKR")
+    ? normalizedCurrencies
+    : [DEFAULT_COMMERCE.currencies[0], ...normalizedCurrencies];
+  merged.commerce.currencyMarginPkr = Math.max(500, Number(merged.commerce.currencyMarginPkr) || 500);
+
+  const countries = Array.isArray(merged.commerce.countries) ? merged.commerce.countries : [];
+  merged.commerce.countries = countries.some((country) => country.code === "PK")
+    ? countries.map((country) => country.code === "PK" ? { ...country, currency: "PKR", enabled: true } : country)
+    : [DEFAULT_COMMERCE.countries[0], ...countries];
+
+  const normalizeIds = (value: unknown) => Array.isArray(value)
+    ? [...new Set(value.map((id) => String(id)).filter(Boolean))]
+    : [];
+  merged.showcase = {
+    featuredProductIds: normalizeIds(merged.showcase?.featuredProductIds),
+    newProductIds: normalizeIds(merged.showcase?.newProductIds),
+    bestSellerProductIds: normalizeIds(merged.showcase?.bestSellerProductIds),
+  };
   return merged;
 }
 

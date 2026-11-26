@@ -23,7 +23,7 @@ import { useStore } from "./data/StoreProvider";
 import { getCategories, productHref } from "./data/catalog";
 import { useCurrency } from "./data/CurrencyProvider";
 import CurrencySelector from "./components/CurrencySelector";
-import LeatherBrandCard from "./components/LeatherBrandCard";
+import WatchBrandCard from "./components/WatchBrandCard";
 import Reveal from "./components/Reveal";
 import ContentIcon from "./components/ContentIcon";
 
@@ -203,7 +203,7 @@ function HomeContent() {
                 {settings.heroCta2Text}
               </a>
             </div>
-            <LeatherBrandCard className="mt-6 hidden w-[250px] lg:block [@media(max-width:1279px)]:hidden [@media(max-height:850px)]:hidden" />
+            <WatchBrandCard className="mt-6 hidden w-[250px] lg:block [@media(max-width:1279px)]:hidden [@media(max-height:850px)]:hidden" />
           </motion.div>
 
           <div className="relative z-10 mx-auto h-[390px] w-full max-w-[780px] sm:h-[470px] lg:absolute lg:left-[34%] lg:top-[5%] lg:h-[88%] lg:max-w-none lg:w-[49%]">
@@ -334,7 +334,7 @@ function HomeContent() {
                   </div>
                 ))}
               </div>
-              <LeatherBrandCard className="mt-6 w-full max-w-[280px] xl:hidden" />
+              <WatchBrandCard className="mt-6 w-full max-w-[280px] xl:hidden" />
             </div>
           </motion.aside>
 
@@ -567,23 +567,25 @@ function HomeContent() {
                   </p>
                   <div className="flex flex-col gap-3 sm:flex-row">
                     <a
-                      href={shared.leatherUrl}
+                      href={shared.watchUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="gold-button inline-flex h-12 items-center justify-center gap-2.5 px-7 active:scale-[0.98]"
                     >
                       {content.leatherPrimaryCta} <ArrowUpRight size={14} />
                     </a>
-                    <Link
-                      href="/leather"
+                    <a
+                      href={shared.watchUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-brand-tan/40 px-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-cream transition-all duration-500 hover:border-brand-gold hover:bg-brand-gold/5 active:scale-[0.98]"
                     >
                       {content.leatherSecondaryCta}
-                    </Link>
+                    </a>
                   </div>
                 </div>
                 <div className="flex justify-center md:col-span-5">
-                  <Image src={shared.leatherLogoUrl} alt={content.leatherLogoAlt} width={420} height={140} className="h-auto w-full max-w-[320px] object-contain" />
+                  <Image src={shared.watchLogoUrl} alt={content.leatherLogoAlt} width={420} height={140} className="h-auto w-full max-w-[320px] object-contain" />
                 </div>
               </div>
             </div>

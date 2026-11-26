@@ -8,9 +8,9 @@ import { CurrencyProvider } from "./data/CurrencyProvider";
 import SeoManager from "./components/SeoManager";
 
 export const metadata: Metadata = {
-  title: "UM-AREX | Premium Luxury Watches",
-  description: "Discover curated watches at UM-AREX with worldwide delivery, confirmed shipping charges, and personal WhatsApp service.",
-  keywords: ["luxury watches", "automatic watches", "UM-AREX", "premium watches", "worldwide watch delivery"],
+  title: "UM-AREX | Premium Leather Wallets & Accessories",
+  description: "Discover curated leather wallets and accessories at UM-AREX with worldwide delivery, confirmed shipping charges, and personal WhatsApp service.",
+  keywords: ["leather wallets", "card holders", "UM-AREX Leather", "premium wallets", "worldwide leather delivery"],
   icons: {
     icon: [
       { url: "/icon.png", sizes: "512x512", type: "image/png" },
@@ -21,8 +21,8 @@ export const metadata: Metadata = {
   },
   authors: [{ name: "UM-AREX" }],
   openGraph: {
-    title: "UM-AREX | Premium Luxury Watches",
-    description: "Discover curated watches with worldwide delivery and confirmed shipping charges.",
+    title: "UM-AREX | Premium Leather Wallets & Accessories",
+    description: "Discover curated leather wallets and accessories with worldwide delivery and confirmed shipping charges.",
     type: "website",
     locale: "en_PK",
   },

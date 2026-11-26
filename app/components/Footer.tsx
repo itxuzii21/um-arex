@@ -49,7 +49,7 @@ export default function Footer() {
             {settings.footerDescription}
           </p>
           <a
-            href={shared.leatherUrl}
+            href={shared.watchUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="group mt-6 inline-flex items-center gap-2 rounded-full border border-brand-tan/30 bg-brand-leather/40 px-4 py-2.5 text-[9px] font-semibold uppercase tracking-[0.16em] text-brand-tan transition-all duration-300 hover:border-brand-gold hover:text-brand-gold-light"

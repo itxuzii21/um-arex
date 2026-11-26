@@ -1,11 +1,9 @@
 import { Product } from "../types";
 
 export const CATEGORY_ORDER = [
-  "Casual",
-  "Semi Automatic",
-  "Automatic",
-  "Ladies",
-  "Master Copy",
+  "Wallets",
+  "Card Holders",
+  "Accessories",
 ];
 
 export function sortCategories(names: string[]): string[] {
@@ -37,5 +35,5 @@ export function getCategories(products: Product[]): { name: string; image: strin
 }
 
 export function productHref(product: Product): string {
-  return `/watch?id=${encodeURIComponent(product.id)}`;
+  return `/product?id=${encodeURIComponent(product.id)}`;
 }

@@ -4,20 +4,24 @@ import { useState, useEffect, useRef, useCallback, useId, useMemo } from "react"
 import Image from "next/image";
 import Link from "next/link";
 import {
-  AlertCircle, ArrowLeft, ArrowUpRight, BookOpenText, Check, CheckCircle2,
+  AlertCircle, ArrowDown, ArrowLeft, ArrowUp, ArrowUpRight, BookOpenText, Check, CheckCircle2,
   ChevronRight, Cloud, CloudOff, ContactRound, Database, Edit3, ExternalLink,
   Eye, EyeOff, FileText, Globe2, Image as ImageIcon, KeyRound, Loader2, LockKeyhole,
   LogOut, Mail, Menu, Megaphone, Package, PanelTop, Plus, RefreshCw, Save, Search,
-  Settings2, Share2, ShieldCheck, Sparkles, Trash2, Truck, UserRound, X,
+  Settings2, Share2, ShieldCheck, ShoppingBag, Sparkles, Trash2, Truck, UserRound, X,
 } from "lucide-react";
-import { Product } from "../types";
+import { Product, ProductSpecification } from "../types";
+import type { CountryOption } from "../data/content";
 import { SiteSettings, DEFAULT_SITE_SETTINGS } from "../data/siteSettings";
 import {
   useStore, CATALOG_CONTENT_ID, SETTINGS_CONTENT_ID,
 } from "../data/StoreProvider";
 import { supabase, isSupabaseConfigured, ADMIN_ACCOUNT_EMAIL } from "@/lib/supabase";
 
-type Tab = "products" | "shared" | "pages" | "trackOrder" | "commerce" | "hero" | "navbar" | "story" | "banner" | "specs" | "contact" | "footer" | "social" | "security";
+type AdminProduct = Product & { collectionTag?: string };
+
+type Tab = "products" | "showcase" | "shared" | "pages" | "trackOrder" | "commerce" | "hero" | "navbar" | "story" | "banner" | "specs" | "contact" | "footer" | "social" | "security";
+type ShowcaseField = keyof SiteSettings["showcase"];
 type SaveStatus = "idle" | "saving" | "saved" | "error" | "local";
 type Notice = { type: "success" | "error" | "info"; text: string } | null;
 const PAGE_LABELS = {
@@ -31,13 +35,16 @@ const PAGE_LABELS = {
   leather: "Leather page",
   notFound: "404 page",
   search: "Search overlay",
-  watch: "Product detail defaults",
+  product: "Product detail defaults",
 } as const;
 
 const navigation: { label: string; tabs: { key: Tab; label: string; icon: typeof Package }[] }[] = [
   {
-    label: "Catalog",
-    tabs: [{ key: "products", label: "Products", icon: Package }],
+    label: "Leather catalog",
+    tabs: [
+      { key: "products", label: "Products", icon: Package },
+      { key: "showcase", label: "Product Showcase", icon: Sparkles },
+    ],
   },
   {
     label: "Website content",
@@ -57,7 +64,7 @@ const navigation: { label: string; tabs: { key: Tab; label: string; icon: typeof
   },
   {
     label: "International sales",
-    tabs: [{ key: "commerce", label: "Delivery & currency", icon: Globe2 }],
+    tabs: [{ key: "commerce", label: "Commerce", icon: Globe2 }],
   },
   {
     label: "System",
@@ -66,18 +73,19 @@ const navigation: { label: string; tabs: { key: Tab; label: string; icon: typeof
 ];
 
 const pageMeta: Record<Tab, { eyebrow: string; title: string; description: string }> = {
-  products: { eyebrow: "Catalog management", title: "Product collection", description: "Manage products, galleries, pricing, and every field on each product detail page." },
-  shared: { eyebrow: "Website content", title: "Brand, navigation & SEO", description: "Control the brand name, logos, navigation labels, footer labels, leather links, and search metadata." },
+  products: { eyebrow: "Leather catalog", title: "Wallets & accessories", description: "Manage leather products, galleries, pricing, materials, and every field on each product detail page." },
+  showcase: { eyebrow: "Leather catalog", title: "Product Showcase", description: "Choose featured, new, and best-seller wallets and accessories, and arrange the featured collection." },
+  shared: { eyebrow: "Website content", title: "Brand, navigation & SEO", description: "Control the leather brand name, logos, navigation labels, footer labels, links, and search metadata." },
   pages: { eyebrow: "Website content", title: "Pages & policies", description: "Edit homepage extras, About, FAQ, policies, leather content, search messages, and product-page defaults." },
   trackOrder: { eyebrow: "Website content", title: "Track order page", description: "Edit the tracking form, delivery journey, support messages, and WhatsApp request flow." },
-  commerce: { eyebrow: "International sales", title: "Delivery & currency", description: "Configure worldwide delivery, shipping-charge confirmation, country currencies, exchange rates, and the international margin." },
-  navbar: { eyebrow: "Website content", title: "Header & announcement", description: "Update the announcement message displayed above the main navigation." },
-  hero: { eyebrow: "Website content", title: "Hero section", description: "Control the first impression visitors see when they enter your store." },
-  story: { eyebrow: "Website content", title: "Brand story", description: "Share your heritage, philosophy and quality standards with customers." },
-  banner: { eyebrow: "Website content", title: "Promotional banner", description: "Highlight a collection, offer or featured message in the cinematic banner." },
-  specs: { eyebrow: "Website content", title: "Technical specifications", description: "Present the materials and engineering behind your collection." },
+  commerce: { eyebrow: "International sales", title: "Delivery, countries & currency", description: "Configure delivery, enabled countries, currencies, exchange rates, and the international pricing margin." },
+  navbar: { eyebrow: "Website content", title: "Header & announcement", description: "Update the announcement message displayed above the leather storefront navigation." },
+  hero: { eyebrow: "Website content", title: "Hero section", description: "Control the first impression visitors see when they enter your leather store." },
+  story: { eyebrow: "Website content", title: "Brand story", description: "Share your leather heritage, philosophy, materials, and quality standards with customers." },
+  banner: { eyebrow: "Website content", title: "Promotional banner", description: "Highlight a leather collection, offer, or featured message in the cinematic banner." },
+  specs: { eyebrow: "Website content", title: "Materials & details", description: "Present the leather, craftsmanship, and finishing standards behind your collection." },
   contact: { eyebrow: "Website content", title: "Contact section", description: "Update the invitation and call to action for customer enquiries." },
-  footer: { eyebrow: "Website content", title: "Footer content", description: "Manage your brand description, copyright and credit information." },
+  footer: { eyebrow: "Website content", title: "Footer content", description: "Manage your leather brand description, copyright, and credit information." },
   social: { eyebrow: "Website content", title: "Social & contact links", description: "Keep your WhatsApp and social media destinations up to date." },
   security: { eyebrow: "Account settings", title: "Account security", description: "Change your administrator password and manage secure access." },
 };
@@ -89,11 +97,136 @@ type SearchResult = {
   tab: Tab;
   page?: keyof typeof PAGE_LABELS;
   path?: string;
-  product?: Product;
+  product?: AdminProduct;
   searchText: string;
 };
 
 type SearchLocation = { tab: Tab; section: string; page?: keyof typeof PAGE_LABELS };
+
+function normalizeCode(value: unknown): string {
+  return String(value ?? "").trim().toUpperCase();
+}
+
+function normalizeIdList(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return Array.from(new Set(value.filter((id) => id !== null && id !== undefined).map(String)));
+}
+
+function normalizeShowcase(value: unknown): SiteSettings["showcase"] {
+  const source = value && typeof value === "object" ? value as Record<string, unknown> : {};
+  return {
+    featuredProductIds: normalizeIdList(source.featuredProductIds),
+    newProductIds: normalizeIdList(source.newProductIds),
+    bestSellerProductIds: normalizeIdList(source.bestSellerProductIds),
+  };
+}
+
+function initialShowcase(settings: SiteSettings, products: Product[]): SiteSettings["showcase"] {
+  if (settings.showcase && typeof settings.showcase === "object") return normalizeShowcase(settings.showcase);
+  return {
+    featuredProductIds: products.filter((product) => product.isFeatured).map((product) => String(product.id)),
+    newProductIds: products.filter((product) => product.isNew).map((product) => String(product.id)),
+    bestSellerProductIds: products.filter((product) => product.isBestSeller).map((product) => String(product.id)),
+  };
+}
+
+function nextUnusedCode(codes: string[], length: number): string {
+  const used = new Set(codes.map(normalizeCode));
+  for (let index = 0; index < 26 ** length; index += 1) {
+    let remaining = index;
+    let code = "";
+    for (let position = 0; position < length; position += 1) {
+      code = String.fromCharCode(65 + (remaining % 26)) + code;
+      remaining = Math.floor(remaining / 26);
+    }
+    if (!used.has(code)) return code;
+  }
+  return "";
+}
+
+function databaseSpecifications(value: unknown): ProductSpecification[] {
+  const raw = value;
+  let source: unknown = value;
+  if (typeof raw === "string") {
+    try {
+      source = JSON.parse(raw) as unknown;
+    } catch {
+      source = raw.split(/\r?\n/);
+    }
+  }
+  const items = Array.isArray(source) ? source : source && (typeof source === "string" || typeof source === "object") ? [source] : [];
+  return items.flatMap((item, index) => {
+    if (item && typeof item === "object" && !Array.isArray(item)) {
+      const specification = item as Record<string, unknown>;
+      const label = String(specification.label ?? `Detail ${index + 1}`).trim();
+      const detail = String(specification.value ?? "").trim();
+      return label && detail ? [{ label, value: detail }] : [];
+    }
+    const detail = String(item ?? "").trim();
+    if (!detail) return [];
+    const separator = detail.indexOf(":");
+    if (separator > 0 && separator < 60) {
+      return [{ label: detail.slice(0, separator).trim(), value: detail.slice(separator + 1).trim() }];
+    }
+    return [{ label: `Detail ${index + 1}`, value: detail }];
+  });
+}
+
+function databaseImages(value: unknown): string[] {
+  if (Array.isArray(value)) return value.map(String).map((item) => item.trim()).filter(Boolean);
+  if (typeof value === "string") return value.split(",").map((item) => item.trim()).filter(Boolean);
+  return [];
+}
+
+function commerceValidationError(commerce: SiteSettings["commerce"]): string {
+  const currencies = Array.isArray(commerce.currencies) ? commerce.currencies : [];
+  const currencyCodes = currencies.map((currency) => normalizeCode(currency.code));
+  if (!currencyCodes.includes("PKR")) return "PKR must remain in the currency list as the base currency.";
+  if (currencyCodes.some((code) => !/^[A-Z]{3}$/.test(code))) return "Enter a three-letter code for every currency.";
+  if (new Set(currencyCodes).size !== currencyCodes.length) return "Currency codes must be unique.";
+  if (currencies.some((currency) => !Number.isFinite(Number(currency.rate)) || Number(currency.rate) <= 0)) return "Every currency rate must be greater than zero.";
+  const pkr = currencies.find((currency) => normalizeCode(currency.code) === "PKR");
+  if (pkr && Number(pkr.rate) !== 1) return "The PKR exchange rate is protected and must remain 1.";
+  if (!Number.isFinite(Number(commerce.domesticDeliveryChargePkr)) || Number(commerce.domesticDeliveryChargePkr) < 0) return "The Pakistan delivery charge cannot be negative.";
+  if (!Number.isFinite(Number(commerce.currencyMarginPkr)) || Number(commerce.currencyMarginPkr) < 500) return "The international currency margin must be at least PKR 500.";
+
+  const countries = Array.isArray(commerce.countries) ? commerce.countries : [];
+  const countryCodes = countries.map((country) => normalizeCode(country.code));
+  if (countryCodes.some((code) => !/^[A-Z]{2}$/.test(code))) return "Enter a two-letter code for every country.";
+  if (new Set(countryCodes).size !== countryCodes.length) return "Country codes must be unique.";
+  const invalidCountry = countries.find((country) => {
+    if (country.enabled === false) return false;
+    return !String(country.name ?? "").trim() || !currencyCodes.includes(normalizeCode(country.currency));
+  });
+  if (invalidCountry) {
+    return !String(invalidCountry.name ?? "").trim()
+      ? `Enter a name for enabled country ${normalizeCode(invalidCountry.code) || "entry"}.`
+      : `Select a configured currency for enabled country ${normalizeCode(invalidCountry.code) || "entry"}.`;
+  }
+  return "";
+}
+
+function settingsForSave(settings: SiteSettings): SiteSettings {
+  return {
+    ...settings,
+    showcase: normalizeShowcase(settings.showcase),
+    commerce: {
+      ...settings.commerce,
+      domesticDeliveryChargePkr: Number(settings.commerce.domesticDeliveryChargePkr),
+      currencyMarginPkr: Number(settings.commerce.currencyMarginPkr),
+      currencies: settings.commerce.currencies.map((currency) => {
+        const code = normalizeCode(currency.code);
+        return { ...currency, code, rate: code === "PKR" ? 1 : Number(currency.rate) };
+      }),
+      countries: settings.commerce.countries.map((country) => ({
+        ...country,
+        code: normalizeCode(country.code),
+        currency: normalizeCode(country.currency),
+        enabled: country.enabled !== false,
+      })),
+    },
+  };
+}
 
 function addSearchResults(value: unknown, path: string, labels: string[], location: SearchLocation, results: SearchResult[]) {
   if (Array.isArray(value)) {
@@ -128,7 +261,7 @@ function topLevelSearchLocation(key: string): SearchLocation | null {
   if (key.startsWith("hero")) return { tab: "hero", section: "Hero section" };
   if (key.startsWith("story")) return { tab: "story", section: "Brand story" };
   if (key.startsWith("banner")) return { tab: "banner", section: "Promotional banner" };
-  if (key.startsWith("spec")) return { tab: "specs", section: "Technical specifications" };
+  if (key.startsWith("spec")) return { tab: "specs", section: "Materials & details" };
   if (key.startsWith("contact")) return { tab: "contact", section: "Contact section" };
   if (key.startsWith("footer")) return { tab: "footer", section: "Footer content" };
   if (["whatsappNumber", "whatsappGroupUrl", "tiktokUrl", "instagramUrl", "facebookUrl"].includes(key)) return { tab: "social", section: "Social & contact links" };
@@ -136,7 +269,7 @@ function topLevelSearchLocation(key: string): SearchLocation | null {
   return null;
 }
 
-function Field({ label, value, onChange, type = "text", textarea = false, placeholder, hint, min, step, required, disabled, fieldPath }: {
+function Field({ label, value, onChange, type = "text", textarea = false, placeholder, hint, min, step, required, disabled, maxLength, fieldPath }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
@@ -148,6 +281,7 @@ function Field({ label, value, onChange, type = "text", textarea = false, placeh
   step?: number | "any";
   required?: boolean;
   disabled?: boolean;
+  maxLength?: number;
   fieldPath?: string;
 }) {
   const id = useId();
@@ -161,7 +295,7 @@ function Field({ label, value, onChange, type = "text", textarea = false, placeh
       {textarea ? (
         <textarea id={id} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className={inputClass} required={required} disabled={disabled} />
       ) : (
-        <input id={id} type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} min={min} step={step} className={inputClass} required={required} disabled={disabled} />
+        <input id={id} type={type} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} min={min} step={step} maxLength={maxLength} className={inputClass} required={required} disabled={disabled} />
       )}
       {hint && <p className="mt-2 text-[11px] leading-relaxed text-[#71837a]">{hint}</p>}
     </div>
@@ -269,9 +403,9 @@ export default function AdminPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [focusedField, setFocusedField] = useState<{ path: string; token: number } | null>(null);
   const [deliveryEditorOpen, setDeliveryEditorOpen] = useState(false);
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<AdminProduct[]>([]);
   const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SITE_SETTINGS);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState<AdminProduct | null>(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [saveError, setSaveError] = useState("");
@@ -282,8 +416,8 @@ export default function AdminPage() {
   const [showSecurityPasswords, setShowSecurityPasswords] = useState(false);
   const [securityBusy, setSecurityBusy] = useState(false);
   const [securityNotice, setSecurityNotice] = useState<Notice>(null);
-  const [leatherNotice, setLeatherNotice] = useState("");
-  const [leatherImportBusy, setLeatherImportBusy] = useState(false);
+  const [inventoryNotice, setInventoryNotice] = useState("");
+  const [inventoryImportBusy, setInventoryImportBusy] = useState(false);
   const initialized = useRef(false);
 
   useEffect(() => {
@@ -338,7 +472,16 @@ export default function AdminPage() {
     if (!isAuthenticated || initialized.current || store.status === "loading") return;
     initialized.current = true;
     setProducts(store.products);
-    setSettings(store.settings);
+    setSettings({
+      ...store.settings,
+      showcase: initialShowcase(store.settings, store.products),
+      commerce: {
+        ...store.settings.commerce,
+        currencies: store.settings.commerce.currencies.map((currency) => (
+          normalizeCode(currency.code) === "PKR" ? { ...currency, code: "PKR", rate: 1 } : currency
+        )),
+      },
+    });
   }, [isAuthenticated, store.status, store.products, store.settings]);
 
   const searchResults = useMemo(() => {
@@ -353,7 +496,8 @@ export default function AdminPage() {
       });
     }));
     addSearchResults(settings.shared, "settings.shared", ["Brand, navigation & SEO"], { tab: "shared", section: "Brand, navigation & SEO" }, results);
-    addSearchResults(settings.commerce, "settings.commerce", ["Delivery & currency"], { tab: "commerce", section: "Delivery & currency" }, results);
+    addSearchResults(settings.showcase, "settings.showcase", ["Product Showcase"], { tab: "showcase", section: "Product Showcase" }, results);
+    addSearchResults(settings.commerce, "settings.commerce", ["Delivery, countries & currency"], { tab: "commerce", section: "Delivery, countries & currency" }, results);
     addSearchResults(settings.pages.trackOrder, "settings.pages.trackOrder", ["Track order page"], { tab: "trackOrder", section: "Track order page" }, results);
     (Object.keys(PAGE_LABELS) as (keyof typeof PAGE_LABELS)[]).forEach((page) => {
       if (page === "trackOrder") return;
@@ -372,7 +516,7 @@ export default function AdminPage() {
         detail,
         tab: "products",
         product,
-        searchText: `${product.name} ${product.category} ${product.description} ${detail}`.toLowerCase(),
+        searchText: `${product.name} ${product.category} ${product.collectionTag || ""} ${product.description} ${detail}`.toLowerCase(),
       });
     });
     return results;
@@ -380,10 +524,12 @@ export default function AdminPage() {
 
   const quickSearchResults = useMemo<SearchResult[]>(() => [
     { id: "quick:delivery", label: "Delivery charge", detail: `Pakistan advance: Rs ${settings.commerce.domesticDeliveryChargePkr.toLocaleString()}`, tab: "commerce", path: "settings.commerce.domesticDeliveryChargePkr", searchText: "delivery charge shipping" },
+    { id: "quick:countries", label: "Countries & currencies", detail: "Enabled destinations, exchange rates and international margin", tab: "commerce", path: "settings.commerce.countries", searchText: "countries currency exchange rate margin" },
     { id: "quick:tracking", label: "Track order page", detail: "Form, delivery journey and WhatsApp message", tab: "trackOrder", searchText: "track order tracking" },
-    { id: "quick:watch", label: "Product detail defaults", detail: "Shipping, specifications and order buttons", tab: "pages", page: "watch", path: "settings.pages.watch", searchText: "product detail watch specifications" },
+    { id: "quick:product", label: "Product detail defaults", detail: "Shipping, materials and order buttons", tab: "pages", page: "product", path: "settings.pages.product", searchText: "product detail leather materials specifications" },
+    { id: "quick:showcase", label: "Product Showcase", detail: "Featured ordering, new arrivals and best sellers", tab: "showcase", searchText: "featured new best seller showcase wallets accessories" },
     { id: "quick:home", label: "Homepage section headings", detail: "Category and collection titles", tab: "pages", page: "home", path: "settings.categorySectionTag", searchText: "home category collection headings" },
-    { id: "quick:products", label: "Products", detail: `${products.length} products in your collection`, tab: "products", searchText: "products catalog watches" },
+    { id: "quick:products", label: "Leather products", detail: `${products.length} wallets and accessories in your catalog`, tab: "products", searchText: "products catalog wallets accessories leather" },
     { id: "quick:security", label: "Change administrator password", detail: "Account security and reset email", tab: "security", searchText: "password security reset" },
   ], [settings.commerce.domesticDeliveryChargePkr, products.length]);
 
@@ -529,15 +675,23 @@ export default function AdminPage() {
   };
 
   const handleSave = useCallback(async () => {
+    const validationError = commerceValidationError(settings.commerce);
+    if (validationError) {
+      setSaveStatus("error");
+      setSaveError(validationError);
+      setActiveTab("commerce");
+      return;
+    }
     if (!accessToken) {
       setSaveStatus("error");
       setSaveError("Your session has expired. Sign out and sign in again before saving.");
       return;
     }
+    const normalizedSettings = settingsForSave(settings);
     setSaveStatus("saving");
     setSaveError("");
+    store.setSettings(normalizedSettings);
     store.setProducts(products);
-    store.setSettings(settings);
 
     if (!isSupabaseConfigured) {
       setSaveStatus("local");
@@ -548,7 +702,7 @@ export default function AdminPage() {
 
     const [catalogRes, settingsRes] = await Promise.all([
       store.persist(CATALOG_CONTENT_ID, { products }, accessToken),
-      store.persist(SETTINGS_CONTENT_ID, settings, accessToken),
+      store.persist(SETTINGS_CONTENT_ID, normalizedSettings, accessToken),
     ]);
 
     if (catalogRes.ok && settingsRes.ok) {
@@ -567,6 +721,94 @@ export default function AdminPage() {
     markDirty();
   };
 
+  const showcase = normalizeShowcase(settings.showcase);
+
+  const updateShowcaseField = (field: ShowcaseField, ids: string[]) => {
+    setSettings((prev) => ({
+      ...prev,
+      showcase: { ...normalizeShowcase(prev.showcase), [field]: normalizeIdList(ids) },
+    }));
+    markDirty();
+  };
+
+  const toggleShowcaseProduct = (productId: string, field: ShowcaseField) => {
+    const id = String(productId);
+    const currentIds = normalizeShowcase(settings.showcase)[field];
+    updateShowcaseField(field, currentIds.includes(id) ? currentIds.filter((currentId) => currentId !== id) : [...currentIds, id]);
+  };
+
+  const moveShowcaseProduct = (productId: string, direction: -1 | 1) => {
+    const id = String(productId);
+    const currentIds = normalizeShowcase(settings.showcase).featuredProductIds;
+    const currentIndex = currentIds.indexOf(id);
+    const nextIndex = currentIndex + direction;
+    if (currentIndex < 0 || nextIndex < 0 || nextIndex >= currentIds.length) return;
+    const nextIds = [...currentIds];
+    [nextIds[currentIndex], nextIds[nextIndex]] = [nextIds[nextIndex], nextIds[currentIndex]];
+    updateShowcaseField("featuredProductIds", nextIds);
+  };
+
+  const updateProductBadge = (productId: string, field: ShowcaseField, enabled: boolean) => {
+    const currentIds = normalizeShowcase(settings.showcase)[field];
+    updateShowcaseField(field, enabled ? normalizeIdList([...currentIds, productId]) : currentIds.filter((id) => id !== productId));
+    const productField = field === "featuredProductIds" ? "isFeatured" : field === "newProductIds" ? "isNew" : "isBestSeller";
+    setEditingProduct((current) => current && String(current.id) === productId ? { ...current, [productField]: enabled } : current);
+  };
+
+  const updateCommerce = (update: (commerce: SiteSettings["commerce"]) => SiteSettings["commerce"]) => {
+    setSettings((prev) => ({ ...prev, commerce: update(prev.commerce) }));
+    markDirty();
+  };
+
+  const updateCurrency = (index: number, field: keyof SiteSettings["commerce"]["currencies"][number], value: string) => {
+    updateCommerce((commerce) => ({
+      ...commerce,
+      currencies: commerce.currencies.map((currency, currencyIndex) => {
+        if (currencyIndex !== index) return currency;
+        const code = normalizeCode(currency.code);
+        if (code === "PKR" && (field === "code" || field === "rate")) return currency;
+        if (field === "code") return { ...currency, code: normalizeCode(value).slice(0, 3) };
+        if (field === "rate") return { ...currency, rate: Number(value) };
+        return { ...currency, [field]: value };
+      }),
+    }));
+  };
+
+  const addCurrency = () => {
+    updateCommerce((commerce) => ({
+      ...commerce,
+      currencies: [...commerce.currencies, { code: nextUnusedCode(commerce.currencies.map((currency) => currency.code), 3), symbol: "", locale: "en-US", rate: 0 }],
+    }));
+  };
+
+  const removeCurrency = (code: string) => {
+    if (normalizeCode(code) === "PKR") return;
+    updateCommerce((commerce) => ({ ...commerce, currencies: commerce.currencies.filter((currency) => normalizeCode(currency.code) !== normalizeCode(code)) }));
+  };
+
+  const updateCountry = (index: number, field: keyof CountryOption, value: string | boolean) => {
+    updateCommerce((commerce) => ({
+      ...commerce,
+      countries: commerce.countries.map((country, countryIndex) => {
+        if (countryIndex !== index) return country;
+        if (field === "code") return { ...country, code: normalizeCode(value).slice(0, 2) };
+        return { ...country, [field]: value };
+      }),
+    }));
+  };
+
+  const addCountry = () => {
+    updateCommerce((commerce) => ({
+      ...commerce,
+      countries: [...commerce.countries, { code: nextUnusedCode(commerce.countries.map((country) => country.code), 2), name: "", currency: "PKR", enabled: true }],
+    }));
+  };
+
+  const removeCountry = (code: string) => {
+    if (normalizeCode(code) === "PK") return;
+    updateCommerce((commerce) => ({ ...commerce, countries: commerce.countries.filter((country) => normalizeCode(country.code) !== normalizeCode(code)) }));
+  };
+
   const updateSpec = (number: 1 | 2 | 3, field: "Title" | "Description", value: string) => {
     const key = `spec${number}${field}` as keyof SiteSettings;
     setSettings((prev) => ({ ...prev, [key]: value }));
@@ -574,8 +816,17 @@ export default function AdminPage() {
   };
 
   const handleDeleteProduct = (id: string) => {
-    if (confirm("Delete this product? It will be removed from the live catalog when you save changes.")) {
-      setProducts((prev) => prev.filter((p) => p.id !== id));
+    if (confirm("Delete this leather product? It will be removed from the live catalog when you save changes.")) {
+      const productId = String(id);
+      setProducts((prev) => prev.filter((p) => String(p.id) !== productId));
+      setSettings((prev) => ({
+        ...prev,
+        showcase: {
+          featuredProductIds: normalizeShowcase(prev.showcase).featuredProductIds.filter((currentId) => currentId !== productId),
+          newProductIds: normalizeShowcase(prev.showcase).newProductIds.filter((currentId) => currentId !== productId),
+          bestSellerProductIds: normalizeShowcase(prev.showcase).bestSellerProductIds.filter((currentId) => currentId !== productId),
+        },
+      }));
       markDirty();
     }
   };
@@ -586,14 +837,32 @@ export default function AdminPage() {
       alert("Product ID, name and main image URL are required.");
       return;
     }
-    if (editingProduct.price <= 0) {
+    if (!Number.isFinite(Number(editingProduct.price)) || editingProduct.price <= 0) {
       alert("Please enter a valid product price.");
       return;
     }
+    const productId = String(editingProduct.id).trim();
+    const currentShowcase = normalizeShowcase(settings.showcase);
+    const featured = isAddingNew ? editingProduct.isFeatured === true : currentShowcase.featuredProductIds.includes(productId);
+    const newArrival = isAddingNew ? editingProduct.isNew === true : currentShowcase.newProductIds.includes(productId);
+    const bestSeller = isAddingNew ? editingProduct.isBestSeller === true : currentShowcase.bestSellerProductIds.includes(productId);
+    const nextShowcase: SiteSettings["showcase"] = {
+      featuredProductIds: featured ? normalizeIdList([...currentShowcase.featuredProductIds, productId]) : currentShowcase.featuredProductIds.filter((id) => id !== productId),
+      newProductIds: newArrival ? normalizeIdList([...currentShowcase.newProductIds, productId]) : currentShowcase.newProductIds.filter((id) => id !== productId),
+      bestSellerProductIds: bestSeller ? normalizeIdList([...currentShowcase.bestSellerProductIds, productId]) : currentShowcase.bestSellerProductIds.filter((id) => id !== productId),
+    };
+    const productToSave: AdminProduct = {
+      ...editingProduct,
+      id: productId,
+      isFeatured: nextShowcase.featuredProductIds.includes(productId),
+      isNew: nextShowcase.newProductIds.includes(productId),
+      isBestSeller: nextShowcase.bestSellerProductIds.includes(productId),
+    };
+    setSettings((prev) => ({ ...prev, showcase: nextShowcase }));
     setProducts((prev) =>
       isAddingNew
-        ? [...prev, editingProduct]
-        : prev.map((p) => p.id === editingProduct.id ? editingProduct : p)
+        ? [...prev, productToSave]
+        : prev.map((p) => String(p.id) === productId ? productToSave : p)
     );
     setEditingProduct(null);
     setIsAddingNew(false);
@@ -602,44 +871,78 @@ export default function AdminPage() {
 
   const handleAddNew = () => {
     setEditingProduct({
-      id: `watch-${Date.now().toString(36)}`,
-      name: "", category: "Casual", price: 0, image: "",
+      id: `leather-${Date.now().toString(36)}`,
+      name: "", category: "wallet", collectionTag: "", price: 0, image: "",
       gallery: [], description: "", isNew: true, isFeatured: false,
     });
     setIsAddingNew(true);
   };
 
-  const handleImportLeather = async () => {
+  const handleImportInventory = async () => {
     if (!supabase) {
-      setLeatherNotice("The database is not configured in this browser.");
+      setInventoryNotice("The database is not configured in this browser.");
       return;
     }
-    setLeatherImportBusy(true);
-    setLeatherNotice("");
+    setInventoryImportBusy(true);
+    setInventoryNotice("");
     try {
       const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false }).limit(100);
       if (error) throw error;
-      const items = (data || []).map((item) => ({
-        id: String(item.id),
-        name: String(item.name || ""),
-        category: String(item.category || ""),
-        collectionTag: String(item.collection_tag || ""),
-        price: Number(item.price) || 0,
-        imageUrl: String(item.image_url || ""),
-        imageUrls: Array.isArray(item.image_urls) ? item.image_urls.join(", ") : "",
-        description: String(item.description || ""),
-      }));
-      updateSetting("pages", { ...settings.pages, leather: { ...settings.pages.leather, products: items } });
-      setLeatherNotice(`Imported ${items.length} leather products. Click Save all changes to publish them.`);
+      const items: AdminProduct[] = (data || []).map((item) => {
+        const optionalText = (value: unknown) => value === null || value === undefined || value === "" ? undefined : String(value);
+        const oldPrice = Number(item.old_price ?? item.oldPrice);
+        return {
+          id: String(item.id ?? ""),
+          name: String(item.name || ""),
+          category: String(item.category || "accessory"),
+          collectionTag: String(item.collection_tag || item.collectionTag || ""),
+          price: Number(item.price) || 0,
+          oldPrice: Number.isFinite(oldPrice) && oldPrice > 0 ? oldPrice : undefined,
+          image: String(item.image_url || item.image || ""),
+          gallery: databaseImages(item.image_urls ?? item.gallery),
+          description: String(item.description || ""),
+          specifications: databaseSpecifications(item.specs ?? item.specifications),
+          isNew: Boolean(item.is_new ?? item.isNew),
+          isBestSeller: Boolean(item.is_best_seller ?? item.isBestSeller),
+          isFeatured: Boolean(item.is_featured ?? item.isFeatured),
+          detailTagline: optionalText(item.detail_tagline ?? item.detailTagline),
+          detailDescription: optionalText(item.detail_description ?? item.detailDescription),
+          shippingTitle: optionalText(item.shipping_title ?? item.shippingTitle),
+          shippingNote1: optionalText(item.shipping_note1 ?? item.shippingNote1),
+          shippingNote2: optionalText(item.shipping_note2 ?? item.shippingNote2),
+          overviewTitle: optionalText(item.overview_title ?? item.overviewTitle),
+          specificationsTitle: optionalText(item.specifications_title ?? item.specificationsTitle),
+          orderButtonText: optionalText(item.order_button_text ?? item.orderButtonText),
+          relatedTag: optionalText(item.related_tag ?? item.relatedTag),
+          relatedTitle: optionalText(item.related_title ?? item.relatedTitle),
+          newBadgeText: optionalText(item.new_badge_text ?? item.newBadgeText),
+          offerBadgeText: optionalText(item.offer_badge_text ?? item.offerBadgeText),
+        };
+      });
+      setProducts(items);
+      setSettings((prev) => {
+        const current = normalizeShowcase(prev.showcase);
+        const addFlagged = (ids: string[], flagged: AdminProduct[]) => normalizeIdList([...ids, ...flagged.map((product) => product.id)]);
+        return {
+          ...prev,
+          showcase: {
+            featuredProductIds: addFlagged(current.featuredProductIds, items.filter((product) => product.isFeatured)),
+            newProductIds: addFlagged(current.newProductIds, items.filter((product) => product.isNew)),
+            bestSellerProductIds: addFlagged(current.bestSellerProductIds, items.filter((product) => product.isBestSeller)),
+          },
+        };
+      });
+      markDirty();
+      setInventoryNotice(`Imported ${items.length} leather products. Click Save all changes to publish them.`);
     } catch {
-      setLeatherNotice("Could not import leather products. Check the database connection and try again.");
+      setInventoryNotice("Could not import leather products. Check the database connection and try again.");
     } finally {
-      setLeatherImportBusy(false);
+      setInventoryImportBusy(false);
     }
   };
 
   const handleReset = () => {
-    if (confirm("Reset products and website text to the built-in defaults? Click Save all afterwards to publish the reset.")) {
+    if (confirm("Reset the leather catalog and website text to the loaded defaults? Click Save all afterwards to publish the reset.")) {
       setProducts(store.products.length ? store.products : []);
       setSettings(DEFAULT_SITE_SETTINGS);
       markDirty();
@@ -710,19 +1013,19 @@ export default function AdminPage() {
           <div className="absolute -right-40 -top-20 h-[30rem] w-[30rem] rounded-full bg-[#1d5b40]/20 blur-3xl" />
           <Link href="/" className="relative flex w-fit items-center gap-3">
             <span className="grid h-12 w-12 place-items-center rounded-full border border-brand-gold/25 bg-black/10">
-              <Image src="/logo.png" alt="UM-AREX" width={40} height={40} className="object-contain" />
+              <Image src="/leather-logo.png" alt="UM-AREX Leather" width={40} height={40} className="object-contain" />
             </span>
             <span>
               <span className="block font-serif text-lg font-semibold tracking-[0.28em] text-brand-gold">UM-AREX</span>
-              <span className="mt-1 block text-[8px] uppercase tracking-[0.42em] text-[#8da094]">Luxury timepieces</span>
+              <span className="mt-1 block text-[8px] uppercase tracking-[0.42em] text-[#8da094]">Leather atelier</span>
             </span>
           </Link>
           <div className="relative max-w-xl py-16">
             <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-brand-gold/20 bg-brand-gold/5 px-4 py-2 text-[10px] uppercase tracking-[0.22em] text-brand-gold">
               <Sparkles size={13} /> Management console
             </div>
-            <h1 className="font-serif text-4xl leading-[1.3] text-[#f1eadb] xl:text-5xl">Precision in every detail.</h1>
-            <p className="mt-6 max-w-md text-sm leading-7 text-[#9caca3]">A private workspace to curate your collection, refine your brand and keep your storefront current.</p>
+            <h1 className="font-serif text-4xl leading-[1.3] text-[#f1eadb] xl:text-5xl">Crafted for enduring style.</h1>
+            <p className="mt-6 max-w-md text-sm leading-7 text-[#9caca3]">A private workspace to curate your wallets and accessories, refine your leather brand, and keep your storefront current.</p>
             <div className="mt-12 grid gap-5 sm:grid-cols-3">
               {[{ icon: ShieldCheck, label: "Secure access" }, { icon: Database, label: "Live catalog" }, { icon: Sparkles, label: "Brand control" }].map(({ icon: Icon, label }) => (
                 <div key={label} className="flex items-center gap-3 text-xs text-[#b7c4bc]">
@@ -732,21 +1035,21 @@ export default function AdminPage() {
               ))}
             </div>
           </div>
-          <p className="relative text-[10px] uppercase tracking-[0.25em] text-[#5f776a]">UM-AREX · Authorized personnel only</p>
+          <p className="relative text-[10px] uppercase tracking-[0.25em] text-[#5f776a]">UM-AREX Leather · Authorized personnel only</p>
         </section>
 
         <section className="flex min-h-screen items-center justify-center px-5 py-12 sm:px-10">
           <div className="w-full max-w-md">
             <div className="mb-10 lg:hidden">
               <Link href="/" className="inline-flex items-center gap-3">
-                <Image src="/logo.png" alt="UM-AREX" width={44} height={44} className="rounded-full border border-brand-gold/20 bg-brand-green-mid p-1" />
-                <span className="font-serif text-base font-semibold tracking-[0.25em] text-brand-gold">UM-AREX</span>
+                <Image src="/leather-logo.png" alt="UM-AREX Leather" width={44} height={44} className="rounded-full border border-brand-gold/20 bg-brand-green-mid p-1" />
+                <span><span className="block font-serif text-base font-semibold tracking-[0.25em] text-brand-gold">UM-AREX</span><span className="mt-1 block text-[8px] uppercase tracking-[0.3em] text-[#8da094]">Leather atelier</span></span>
               </Link>
             </div>
             <div className="mb-8">
               <span className="mb-4 grid h-12 w-12 place-items-center rounded-2xl border border-brand-gold/20 bg-brand-gold/5 text-brand-gold"><LockKeyhole size={21} /></span>
               <h2 className="font-serif text-3xl text-[#f1eadb]">Welcome back</h2>
-              <p className="mt-2 text-sm text-[#8fa198]">Sign in to access your administration workspace.</p>
+              <p className="mt-2 text-sm text-[#8fa198]">Sign in to manage your leather storefront and catalog.</p>
             </div>
 
             <form onSubmit={handleLogin} className="rounded-3xl border border-white/10 bg-[#0b2018]/90 p-6 shadow-2xl shadow-black/20 sm:p-8">
@@ -786,6 +1089,12 @@ export default function AdminPage() {
   }
 
   const meta = pageMeta[activeTab];
+  const currentCommerceError = commerceValidationError(settings.commerce);
+  const featuredProductIds = showcase.featuredProductIds.filter((id) => products.some((product) => String(product.id) === id));
+  const orderedShowcaseProducts: AdminProduct[] = [
+    ...featuredProductIds.map((id) => products.find((product) => String(product.id) === id)).filter((product): product is AdminProduct => Boolean(product)),
+    ...products.filter((product) => !featuredProductIds.includes(String(product.id))),
+  ];
   const statusBadge = store.status === "live"
     ? { icon: Cloud, text: "Live database", cls: "border-brand-success/20 bg-brand-success/5 text-[#82d6a0]" }
     : store.status === "loading"
@@ -801,10 +1110,10 @@ export default function AdminPage() {
       <aside className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-white/[0.07] bg-[#091c15] transition-transform duration-300 lg:translate-x-0 ${mobileNavOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex h-24 items-center justify-between border-b border-white/[0.06] px-6">
           <Link href="/" className="flex items-center gap-3">
-            <Image src="/logo.png" alt="UM-AREX" width={42} height={42} className="rounded-full border border-brand-gold/20 bg-black/10 p-1" />
+            <Image src="/leather-logo.png" alt="UM-AREX Leather" width={42} height={42} className="rounded-full border border-brand-gold/20 bg-black/10 p-1" />
             <span>
               <span className="block font-serif text-base font-semibold tracking-[0.24em] text-brand-gold">UM-AREX</span>
-              <span className="mt-1 block text-[8px] uppercase tracking-[0.35em] text-[#71837a]">Admin portal</span>
+              <span className="mt-1 block text-[8px] uppercase tracking-[0.35em] text-[#71837a]">Leather admin</span>
             </span>
           </Link>
           <button onClick={() => setMobileNavOpen(false)} aria-label="Close navigation" className="rounded-lg p-2 text-[#8fa198] hover:bg-white/5 lg:hidden"><X size={18} /></button>
@@ -856,7 +1165,7 @@ export default function AdminPage() {
             {saveStatus === "local" && <span className="hidden items-center gap-1.5 text-xs text-brand-gold md:flex"><Check size={14} /> Saved locally</span>}
             <button onClick={() => setSearchOpen(true)} aria-label="Search admin settings" title="Search settings (Ctrl+K)" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2.5 text-[11px] font-medium text-[#a7b7ae] transition hover:border-brand-gold/30 hover:text-brand-gold"><Search size={15} /><span className="hidden xl:inline">Search</span><kbd className="hidden rounded border border-white/10 px-1.5 py-0.5 text-[9px] text-[#607168] lg:inline">Ctrl K</kbd></button>
             <button onClick={() => setDeliveryEditorOpen(true)} aria-label="Change delivery charge" title="Change delivery charge" className="inline-flex items-center gap-2 rounded-xl border border-brand-gold/20 bg-brand-gold/5 px-3 py-2.5 text-[11px] font-semibold text-brand-gold transition hover:bg-brand-gold hover:text-[#082016]"><Truck size={15} /><span className="hidden xl:inline">Rs {settings.commerce.domesticDeliveryChargePkr.toLocaleString()}</span></button>
-            <button onClick={handleSave} disabled={saveStatus === "saving" || !dirty || activeTab === "security"} className="flex items-center gap-2 rounded-xl bg-brand-gold px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[#082016] transition hover:bg-brand-gold-light disabled:cursor-not-allowed disabled:opacity-40"><Save size={14} /><span className="hidden sm:inline">Save all</span></button>
+            <button onClick={handleSave} disabled={saveStatus === "saving" || !dirty || activeTab === "security" || Boolean(currentCommerceError)} title={currentCommerceError || "Save all pending changes"} className="flex items-center gap-2 rounded-xl bg-brand-gold px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[#082016] transition hover:bg-brand-gold-light disabled:cursor-not-allowed disabled:opacity-40"><Save size={14} /><span className="hidden sm:inline">Save all</span></button>
             <button onClick={handleLogout} aria-label="Sign out" title="Sign out" className="rounded-xl border border-white/10 p-2.5 text-[#8fa198] transition hover:border-brand-danger/30 hover:text-brand-danger"><LogOut size={16} /></button>
           </div>
         </header>
@@ -868,20 +1177,27 @@ export default function AdminPage() {
               <h1 className="font-serif text-2xl text-[#f0eadf] sm:text-3xl">{meta.title}</h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-[#81958a]">{meta.description}</p>
             </div>
-            {activeTab === "products" && <button onClick={handleAddNew} className="flex w-fit items-center gap-2 rounded-xl border border-brand-gold/30 bg-brand-gold/5 px-4 py-3 text-xs font-semibold text-brand-gold transition hover:bg-brand-gold hover:text-[#082016]"><Plus size={16} /> Add product</button>}
+            {activeTab === "products" && <button onClick={handleAddNew} className="flex w-fit items-center gap-2 rounded-xl border border-brand-gold/30 bg-brand-gold/5 px-4 py-3 text-xs font-semibold text-brand-gold transition hover:bg-brand-gold hover:text-[#082016]"><Plus size={16} /> Add leather product</button>}
           </div>
 
           {dirty && activeTab !== "security" && <div className="mb-6 flex items-center gap-3 rounded-xl border border-brand-gold/15 bg-brand-gold/5 px-4 py-3 text-xs text-[#c7b98e]"><span className="h-1.5 w-1.5 rounded-full bg-brand-gold" />You have unpublished changes. Select <strong className="font-semibold text-brand-gold">Save all</strong> to update the live store.</div>}
-          {saveStatus === "error" && saveError && <div role="alert" className="mb-6 flex items-start gap-3 rounded-xl border border-brand-danger/20 bg-brand-danger/5 p-4 text-xs leading-6 text-[#e5aaaa]"><AlertCircle size={17} className="mt-0.5 shrink-0" /><span><strong className="font-semibold">Could not save to the database.</strong> {saveError}</span></div>}
+          {activeTab === "commerce" && currentCommerceError && <div role="alert" className="mb-6 flex items-start gap-3 rounded-xl border border-brand-danger/20 bg-brand-danger/5 p-4 text-xs leading-6 text-[#e5aaaa]"><AlertCircle size={17} className="mt-0.5 shrink-0" /><span><strong className="font-semibold">Commerce settings need attention.</strong> {currentCommerceError}</span></div>}
+          {saveStatus === "error" && saveError && <div role="alert" className="mb-6 flex items-start gap-3 rounded-xl border border-brand-danger/20 bg-brand-danger/5 p-4 text-xs leading-6 text-[#e5aaaa]"><AlertCircle size={17} className="mt-0.5 shrink-0" /><span><strong className="font-semibold">Changes could not be saved.</strong> {saveError}</span></div>}
 
           {activeTab === "products" && (
             <section>
-              <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/[0.07] bg-[#0b2018] px-5 py-4">
-                <div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-gold/10 text-brand-gold"><Package size={18} /></span><div><p className="text-sm font-medium text-[#dbe4de]">{products.length} {products.length === 1 ? "product" : "products"}</p><p className="mt-0.5 text-[11px] text-[#71837a]">in your current collection</p></div></div>
-                <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[10px] ${statusBadge.cls}`}><StatusIcon size={11} />{statusBadge.text}</span>
+              <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/[0.07] bg-[#0b2018] px-5 py-4">
+                <div className="flex items-center gap-3"><span className="grid h-10 w-10 place-items-center rounded-xl bg-brand-gold/10 text-brand-gold"><ShoppingBag size={18} /></span><div><p className="text-sm font-medium text-[#dbe4de]">{products.length} leather {products.length === 1 ? "product" : "products"}</p><p className="mt-0.5 text-[11px] text-[#71837a]">Wallets and accessories in your current catalog</p></div></div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <button type="button" onClick={handleImportInventory} disabled={inventoryImportBusy} className="inline-flex items-center gap-2 rounded-xl border border-brand-gold/25 px-3 py-2 text-[11px] font-semibold text-brand-gold transition hover:bg-brand-gold hover:text-[#082016] disabled:cursor-not-allowed disabled:opacity-50">
+                    {inventoryImportBusy ? <Loader2 size={13} className="animate-spin" /> : <RefreshCw size={13} />} {inventoryImportBusy ? "Importing…" : "Import live inventory"}
+                  </button>
+                  <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[10px] ${statusBadge.cls}`}><StatusIcon size={11} />{statusBadge.text}</span>
+                </div>
               </div>
+              {inventoryNotice && <div role="status" className="mb-6 flex items-start gap-3 rounded-xl border border-brand-gold/15 bg-brand-gold/5 p-4 text-xs leading-6 text-[#c7b98e]"><Database size={16} className="mt-0.5 shrink-0 text-brand-gold" />{inventoryNotice}</div>}
               {products.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-20 text-center"><Package size={30} className="mx-auto mb-4 text-[#4f6859]" /><h2 className="font-serif text-lg text-[#dbe4de]">Your collection is empty</h2><p className="mt-2 text-sm text-[#71837a]">Add your first timepiece to get started.</p><button onClick={handleAddNew} className="mt-6 rounded-xl bg-brand-gold px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#082016]">Add product</button></div>
+                <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-20 text-center"><ShoppingBag size={30} className="mx-auto mb-4 text-[#4f6859]" /><h2 className="font-serif text-lg text-[#dbe4de]">Your leather collection is empty</h2><p className="mt-2 text-sm text-[#71837a]">Add your first wallet or accessory, or import the live inventory.</p><button onClick={handleAddNew} className="mt-6 rounded-xl bg-brand-gold px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#082016]">Add leather product</button></div>
               ) : (
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
                   {products.map((product) => (
@@ -891,8 +1207,12 @@ export default function AdminPage() {
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={product.image} alt={product.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
                         ) : <div className="grid h-full place-items-center text-[#3e5a4b]"><Package size={34} /></div>}
-                        <span className="absolute left-3 top-3 rounded-full border border-white/10 bg-[#06130f]/85 px-3 py-1 text-[9px] font-medium uppercase tracking-[0.14em] text-[#c5d1c9] backdrop-blur-md">{product.category}</span>
-                        {product.isFeatured && <span className="absolute right-3 top-3 rounded-full bg-brand-gold px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-[#082016]">Featured</span>}
+                        <span className="absolute left-3 top-3 rounded-full border border-white/10 bg-[#06130f]/85 px-3 py-1 text-[9px] font-medium uppercase tracking-[0.14em] text-[#c5d1c9] backdrop-blur-md">{product.category}{product.collectionTag ? ` · ${product.collectionTag}` : ""}</span>
+                        <div className="absolute right-3 top-3 flex flex-col items-end gap-1.5">
+                          {showcase.featuredProductIds.includes(String(product.id)) && <span className="rounded-full bg-brand-gold px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-[#082016]">Featured</span>}
+                          {showcase.newProductIds.includes(String(product.id)) && <span className="rounded-full border border-white/10 bg-[#06130f]/85 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-[#d5dfd8] backdrop-blur-md">New</span>}
+                          {showcase.bestSellerProductIds.includes(String(product.id)) && <span className="rounded-full border border-brand-gold/20 bg-[#06130f]/85 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-brand-gold backdrop-blur-md">Best seller</span>}
+                        </div>
                       </div>
                       <div className="p-5">
                         <h2 className="line-clamp-1 text-sm font-semibold text-[#e4eae6]">{product.name}</h2>
@@ -909,7 +1229,54 @@ export default function AdminPage() {
             </section>
           )}
 
-          {activeTab !== "products" && activeTab !== "security" && (
+          {activeTab === "showcase" && (
+            <section data-admin-field="settings.showcase" className="scroll-mt-32 space-y-5">
+              <div className="flex flex-col justify-between gap-4 rounded-2xl border border-brand-gold/15 bg-brand-gold/5 p-5 sm:flex-row sm:items-center">
+                <div className="flex items-start gap-3"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-gold/10 text-brand-gold"><Sparkles size={18} /></span><div><h2 className="text-sm font-semibold text-[#e4eae6]">Curate the storefront showcase</h2><p className="mt-1 max-w-2xl text-[11px] leading-6 text-[#9caca3]">Featured selections control homepage ordering. New and best-seller selections control their badges without changing the underlying leather product data.</p></div></div>
+                <div className="flex shrink-0 flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-wider">
+                  <span className="rounded-full border border-brand-gold/20 px-3 py-1.5 text-brand-gold">{featuredProductIds.length} featured</span>
+                  <span className="rounded-full border border-white/10 px-3 py-1.5 text-[#a7b7ae]">{showcase.newProductIds.length} new</span>
+                  <span className="rounded-full border border-white/10 px-3 py-1.5 text-[#a7b7ae]">{showcase.bestSellerProductIds.length} best sellers</span>
+                </div>
+              </div>
+              {orderedShowcaseProducts.length === 0 ? (
+                <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-16 text-center"><Package size={28} className="mx-auto mb-4 text-[#4f6859]" /><h2 className="font-serif text-lg text-[#dbe4de]">No leather products to showcase</h2><p className="mt-2 text-sm text-[#71837a]">Add or import wallets and accessories in the Products tab first.</p><button type="button" onClick={() => setActiveTab("products")} className="mt-6 rounded-xl bg-brand-gold px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#082016]">Open Products</button></div>
+              ) : (
+                <div className="space-y-3">
+                  {orderedShowcaseProducts.map((product) => {
+                    const productId = String(product.id);
+                    const featuredIndex = featuredProductIds.indexOf(productId);
+                    return (
+                      <article key={productId} className="flex flex-col gap-5 rounded-2xl border border-white/[0.07] bg-[#0b2018] p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
+                        <div className="flex min-w-0 items-center gap-4">
+                          <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-white/[0.07] bg-[#06130f]">
+                            {product.image ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
+                            ) : <div className="grid h-full place-items-center text-[#4f6859]"><ShoppingBag size={22} /></div>}
+                          </div>
+                          <div className="min-w-0"><h3 className="truncate text-sm font-semibold text-[#e4eae6]">{product.name}</h3><p className="mt-1 text-[11px] capitalize text-[#71837a]">{product.category || "Uncategorized"}{product.collectionTag ? ` · ${product.collectionTag}` : ""}</p><p className="mt-1 font-serif text-sm text-brand-gold">Rs {product.price.toLocaleString()}</p></div>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-4">
+                          {([
+                            { field: "featuredProductIds", label: "Featured" },
+                            { field: "newProductIds", label: "New" },
+                            { field: "bestSellerProductIds", label: "Best seller" },
+                          ] as { field: ShowcaseField; label: string }[]).map(({ field, label }) => (
+                            <label key={field} className="flex cursor-pointer items-center gap-2 text-xs text-[#b6c4bc]"><input type="checkbox" checked={showcase[field].includes(productId)} onChange={() => toggleShowcaseProduct(productId, field)} className="h-4 w-4 accent-brand-gold" />{label}</label>
+                          ))}
+                          {featuredIndex >= 0 && <div className="flex items-center gap-2 rounded-xl border border-white/[0.07] bg-black/10 px-2 py-1.5"><button type="button" onClick={() => moveShowcaseProduct(productId, -1)} disabled={featuredIndex === 0} aria-label={`Move ${product.name} up`} className="rounded-lg p-1.5 text-brand-gold transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-30"><ArrowUp size={14} /></button><span className="min-w-12 text-center text-[10px] font-medium text-[#8fa198]">{featuredIndex + 1} / {featuredProductIds.length}</span><button type="button" onClick={() => moveShowcaseProduct(productId, 1)} disabled={featuredIndex === featuredProductIds.length - 1} aria-label={`Move ${product.name} down`} className="rounded-lg p-1.5 text-brand-gold transition hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-30"><ArrowDown size={14} /></button></div>}
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
+              <p className="text-[11px] leading-6 text-[#71837a]">Use the arrows to set the featured sequence. Select <strong className="font-medium text-brand-gold">Save all</strong> to publish showcase changes.</p>
+            </section>
+          )}
+
+          {activeTab !== "products" && activeTab !== "showcase" && activeTab !== "security" && (
             <div className="rounded-2xl border border-white/[0.07] bg-[#0b2018] p-5 sm:p-7">
               {activeTab === "shared" && <ContentEditor label="Brand, navigation, footer & SEO" path="settings.shared" value={settings.shared} onChange={(value) => updateSetting("shared", value as SiteSettings["shared"])} />}
 
@@ -944,23 +1311,7 @@ export default function AdminPage() {
                         value={Object.fromEntries(Object.entries(settings.pages.leather).filter(([key]) => key !== "products"))}
                         onChange={(value) => updateSetting("pages", { ...settings.pages, leather: { ...(value as Omit<SiteSettings["pages"]["leather"], "products">), products: settings.pages.leather.products } })}
                       />
-                      <div className="rounded-xl border border-brand-gold/15 bg-brand-gold/5 p-4 text-[11px] leading-6 text-[#c7b98e]">
-                        Manage the leather products shown in the preview. Import the current inventory once, then edit it here. Leaving this list empty uses the live database preview again.
-                        <div className="mt-3 flex flex-wrap items-center gap-3">
-                          <button type="button" onClick={handleImportLeather} disabled={leatherImportBusy} className="inline-flex items-center gap-2 rounded-lg border border-brand-gold/30 px-3 py-2 text-[11px] font-semibold text-brand-gold transition hover:bg-brand-gold hover:text-[#082016] disabled:opacity-50">
-                            {leatherImportBusy ? <Loader2 size={13} className="animate-spin" /> : <RefreshCw size={13} />} {leatherImportBusy ? "Importing…" : "Import current leather inventory"}
-                          </button>
-                          {leatherNotice && <span role="status">{leatherNotice}</span>}
-                        </div>
-                      </div>
-                      <ContentEditor
-                        label="Leather products"
-                        path="settings.pages.leather.products"
-                        value={settings.pages.leather.products}
-                        itemTemplate={{ id: "", name: "", category: "", collectionTag: "", price: 0, imageUrl: "", imageUrls: "", description: "" }}
-                        allowEmpty
-                        onChange={(value) => updateSetting("pages", { ...settings.pages, leather: { ...settings.pages.leather, products: value as SiteSettings["pages"]["leather"]["products"] } })}
-                      />
+                      <div className="rounded-xl border border-brand-gold/15 bg-brand-gold/5 p-4 text-[11px] leading-6 text-[#c7b98e]">Leather inventory is managed in the Products tab. This section edits only the page presentation; existing preview product data is preserved.</div>
                     </div>
                   ) : (
                     <ContentEditor label={PAGE_LABELS[selectedPage]} path={`settings.pages.${selectedPage}`} value={settings.pages[selectedPage]} onChange={(value) => updateSetting("pages", { ...settings.pages, [selectedPage]: value } as SiteSettings["pages"])} />
@@ -977,7 +1328,62 @@ export default function AdminPage() {
                     <button type="button" onClick={() => setDeliveryEditorOpen(true)} className="inline-flex items-center justify-center gap-2 rounded-xl border border-brand-gold/30 px-4 py-3 text-xs font-semibold text-brand-gold transition hover:bg-brand-gold hover:text-[#082016]"><Edit3 size={14} /> Change delivery charge</button>
                   </div>
                   <div className="rounded-xl border border-brand-gold/15 bg-brand-gold/5 p-4 text-[11px] leading-6 text-[#c7b98e]">International prices add a minimum PKR 500 margin before conversion and round up to the next whole currency unit. Each rate is the number of currency units per 1 PKR and is multiplied after adding the margin. PKR prices stay unchanged. Delivery charges are confirmed on WhatsApp before payment.</div>
-                  <ContentEditor label="Worldwide delivery & currency" path="settings.commerce" value={settings.commerce} onChange={(value) => updateSetting("commerce", value as SiteSettings["commerce"])} />
+                  <ContentEditor
+                    label="Delivery & international ordering"
+                    path="settings.commerce"
+                    value={Object.fromEntries(Object.entries(settings.commerce).filter(([key]) => key !== "currencies" && key !== "countries"))}
+                    onChange={(value) => updateSetting("commerce", { ...settings.commerce, ...(value as Partial<SiteSettings["commerce"]>) })}
+                  />
+
+                  <section data-admin-field="settings.commerce.currencies" className="scroll-mt-32 space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-gold">Currencies</h3><p className="mt-2 text-[11px] leading-5 text-[#71837a]">Rates are currency units per 1 PKR. PKR is the protected base currency and always uses rate 1.</p></div><button type="button" onClick={addCurrency} className="inline-flex items-center gap-1.5 rounded-lg border border-brand-gold/25 px-3 py-2 text-[11px] text-brand-gold transition hover:bg-brand-gold hover:text-[#082016]"><Plus size={13} /> Add currency</button></div>
+                    <div className="grid gap-4 xl:grid-cols-2">
+                      {settings.commerce.currencies.map((currency, index) => {
+                        const code = normalizeCode(currency.code);
+                        const isPkr = code === "PKR";
+                        const invalidRate = !Number.isFinite(Number(currency.rate)) || Number(currency.rate) <= 0 || (isPkr && Number(currency.rate) !== 1);
+                        return (
+                          <div key={`currency-${index}`} className="space-y-4 rounded-xl border border-white/[0.07] bg-black/10 p-5">
+                            <div className="flex items-center justify-between gap-3"><span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8fa198]">{isPkr ? "Base currency" : `Currency ${index + 1}`}</span><button type="button" onClick={() => removeCurrency(currency.code)} disabled={isPkr} aria-label={`Remove ${code || "currency"}`} title={isPkr ? "PKR is required as the base currency." : "Remove currency"} className="rounded-lg border border-brand-danger/20 p-2 text-[#c47e7e] transition hover:bg-brand-danger/10 hover:text-brand-danger disabled:cursor-not-allowed disabled:opacity-30"><Trash2 size={13} /></button></div>
+                            <div className="grid gap-4 sm:grid-cols-2">
+                              <Field label="Code" value={currency.code} onChange={(value) => updateCurrency(index, "code", value)} maxLength={3} disabled={isPkr} required fieldPath={`settings.commerce.currencies.${index}.code`} hint={isPkr ? "PKR cannot be renamed." : "Three-letter currency code."} />
+                              <Field label="Symbol" value={currency.symbol} onChange={(value) => updateCurrency(index, "symbol", value)} placeholder="$" fieldPath={`settings.commerce.currencies.${index}.symbol`} />
+                              <Field label="Locale" value={currency.locale} onChange={(value) => updateCurrency(index, "locale", value)} placeholder="en-US" fieldPath={`settings.commerce.currencies.${index}.locale`} />
+                              <Field label="Rate per PKR" type="number" value={String(currency.rate)} onChange={(value) => updateCurrency(index, "rate", value)} min={0.00000001} step="any" disabled={isPkr} required fieldPath={`settings.commerce.currencies.${index}.rate`} hint={isPkr ? "Protected at 1. PKR prices are never increased." : "Example: 1 PKR = 0.00355 USD, so enter 0.00355."} />
+                            </div>
+                            {invalidRate && <p role="alert" className="text-[11px] text-[#f19797]">{isPkr ? "The PKR rate must remain 1." : "Enter a rate greater than zero."}</p>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+
+                  <section data-admin-field="settings.commerce.countries" className="scroll-mt-32 space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-gold">Countries</h3><p className="mt-2 text-[11px] leading-5 text-[#71837a]">Enabled countries appear in the storefront selector. Every enabled country must use a configured currency.</p></div><button type="button" onClick={addCountry} className="inline-flex items-center gap-1.5 rounded-lg border border-brand-gold/25 px-3 py-2 text-[11px] text-brand-gold transition hover:bg-brand-gold hover:text-[#082016]"><Plus size={13} /> Add country</button></div>
+                    <div className="grid gap-4 xl:grid-cols-2">
+                      {settings.commerce.countries.map((country, index) => {
+                        const code = normalizeCode(country.code);
+                        const isPakistan = code === "PK";
+                        const duplicateCode = settings.commerce.countries.filter((item) => normalizeCode(item.code) === code).length > 1;
+                        const invalidCode = !/^[A-Z]{2}$/.test(code) || duplicateCode;
+                        const invalidName = country.enabled !== false && !String(country.name || "").trim();
+                        const currencyExists = settings.commerce.currencies.some((currency) => normalizeCode(currency.code) === normalizeCode(country.currency));
+                        const invalidCurrency = country.enabled !== false && !currencyExists;
+                        return (
+                          <div key={`country-${index}`} className="space-y-4 rounded-xl border border-white/[0.07] bg-black/10 p-5">
+                            <div className="flex items-center justify-between gap-3"><span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8fa198]">{isPakistan ? "Domestic destination" : `Country ${index + 1}`}</span><button type="button" onClick={() => removeCountry(country.code)} disabled={isPakistan} aria-label={`Remove ${country.name || code || "country"}`} title={isPakistan ? "Pakistan is required for domestic delivery." : "Remove country"} className="rounded-lg border border-brand-danger/20 p-2 text-[#c47e7e] transition hover:bg-brand-danger/10 hover:text-brand-danger disabled:cursor-not-allowed disabled:opacity-30"><Trash2 size={13} /></button></div>
+                            <div className="grid gap-4 sm:grid-cols-2">
+                              <Field label="Country code" value={country.code} onChange={(value) => updateCountry(index, "code", value)} maxLength={2} disabled={isPakistan} required fieldPath={`settings.commerce.countries.${index}.code`} hint={isPakistan ? "Pakistan uses the fixed PK code." : "Unique two-letter country code."} />
+                              <Field label="Country name" value={country.name} onChange={(value) => updateCountry(index, "name", value)} placeholder="Pakistan" required={country.enabled !== false} fieldPath={`settings.commerce.countries.${index}.name`} />
+                              <div data-admin-field={`settings.commerce.countries.${index}.currency`} className="scroll-mt-32"><label className="mb-2 block text-xs font-medium text-[#cbd5ce]">Currency{country.enabled !== false && <span className="ml-1 text-brand-gold">*</span>}</label><select value={country.currency} onChange={(event) => updateCountry(index, "currency", event.target.value)} aria-invalid={invalidCurrency} className="w-full rounded-xl border border-white/10 bg-[#071711] px-4 py-3 text-sm text-brand-cream outline-none focus:border-brand-gold/60"><option value="">Select currency</option>{settings.commerce.currencies.map((currency, currencyIndex) => <option key={`${currency.code}-${currencyIndex}`} value={currency.code}>{currency.code || "Unnamed currency"}</option>)}</select></div>
+                              <label className={`flex cursor-pointer items-center gap-3 self-end rounded-xl border border-white/[0.06] bg-black/10 p-4 text-xs text-[#b6c4bc] ${isPakistan ? "cursor-default" : ""}`}><input type="checkbox" checked={country.enabled !== false} disabled={isPakistan} onChange={(event) => updateCountry(index, "enabled", event.target.checked)} className="h-4 w-4 accent-brand-gold" />Enabled in storefront</label>
+                            </div>
+                            {(invalidCode || invalidName || invalidCurrency) && <p role="alert" className="text-[11px] leading-5 text-[#f19797]">{invalidCode ? "Enter a unique two-letter country code." : invalidName ? "Enter a country name." : "Select a configured currency for this enabled country."}</p>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
                 </div>
               )}
 
@@ -990,7 +1396,7 @@ export default function AdminPage() {
                   <Field label="Description" fieldPath="settings.heroDescription" value={settings.heroDescription} onChange={(v) => updateSetting("heroDescription", v)} textarea />
                   <div className="grid gap-6 md:grid-cols-2"><Field label="Primary button text" fieldPath="settings.heroCta1Text" value={settings.heroCta1Text} onChange={(v) => updateSetting("heroCta1Text", v)} /><Field label="Secondary button text" fieldPath="settings.heroCta2Text" value={settings.heroCta2Text} onChange={(v) => updateSetting("heroCta2Text", v)} /></div>
                   <Field label="Quote text" fieldPath="settings.heroQuote" value={settings.heroQuote} onChange={(v) => updateSetting("heroQuote", v)} textarea />
-                  <Field label="Hero image path" fieldPath="settings.heroImage" value={settings.heroImage} onChange={(v) => updateSetting("heroImage", v)} placeholder="/hero_model_three.png" hint="Use a public file path such as /hero_model_three.png or a full HTTPS image URL." />
+                  <Field label="Hero image path" fieldPath="settings.heroImage" value={settings.heroImage} onChange={(v) => updateSetting("heroImage", v)} placeholder="/leather-hero.jpg" hint="Use a public leather image path such as /leather-hero.jpg or a full HTTPS image URL." />
                 </div>
               )}
 
@@ -1001,7 +1407,7 @@ export default function AdminPage() {
                   <Field label="Paragraph 1" fieldPath="settings.storyParagraph1" value={settings.storyParagraph1} onChange={(v) => updateSetting("storyParagraph1", v)} textarea />
                   <Field label="Paragraph 2" fieldPath="settings.storyParagraph2" value={settings.storyParagraph2} onChange={(v) => updateSetting("storyParagraph2", v)} textarea />
                   <div className="grid gap-6 md:grid-cols-2"><div className="rounded-xl border border-white/[0.06] bg-black/10 p-5"><p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-gold">Quality stat 1</p><div className="space-y-5"><Field label="Value" fieldPath="settings.storyStat1Value" value={settings.storyStat1Value} onChange={(v) => updateSetting("storyStat1Value", v)} /><Field label="Label" fieldPath="settings.storyStat1Label" value={settings.storyStat1Label} onChange={(v) => updateSetting("storyStat1Label", v)} /></div></div><div className="rounded-xl border border-white/[0.06] bg-black/10 p-5"><p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-gold">Quality stat 2</p><div className="space-y-5"><Field label="Value" fieldPath="settings.storyStat2Value" value={settings.storyStat2Value} onChange={(v) => updateSetting("storyStat2Value", v)} /><Field label="Label" fieldPath="settings.storyStat2Label" value={settings.storyStat2Label} onChange={(v) => updateSetting("storyStat2Label", v)} /></div></div></div>
-                  <Field label="Story image path" fieldPath="settings.storyImage" value={settings.storyImage} onChange={(v) => updateSetting("storyImage", v)} />
+                  <Field label="Atelier image path" fieldPath="settings.storyImage" value={settings.storyImage} onChange={(v) => updateSetting("storyImage", v)} placeholder="/leather-atelier.jpg" />
                 </div>
               )}
 
@@ -1011,7 +1417,7 @@ export default function AdminPage() {
                   <div className="grid gap-6 md:grid-cols-2"><Field label="Title line 1" fieldPath="settings.bannerTitle1" value={settings.bannerTitle1} onChange={(v) => updateSetting("bannerTitle1", v)} /><Field label="Title line 2 (gold italic)" fieldPath="settings.bannerTitle2" value={settings.bannerTitle2} onChange={(v) => updateSetting("bannerTitle2", v)} /></div>
                   <Field label="Description" fieldPath="settings.bannerDescription" value={settings.bannerDescription} onChange={(v) => updateSetting("bannerDescription", v)} textarea />
                   <Field label="Call to action text" fieldPath="settings.bannerCtaText" value={settings.bannerCtaText} onChange={(v) => updateSetting("bannerCtaText", v)} />
-                  <Field label="Background image path" fieldPath="settings.bannerImage" value={settings.bannerImage} onChange={(v) => updateSetting("bannerImage", v)} />
+                  <Field label="Background image path" fieldPath="settings.bannerImage" value={settings.bannerImage} onChange={(v) => updateSetting("bannerImage", v)} placeholder="/leather-collection.jpg" />
                 </div>
               )}
 
@@ -1021,7 +1427,7 @@ export default function AdminPage() {
                   <Field label="Section title" fieldPath="settings.specsTitle" value={settings.specsTitle} onChange={(v) => updateSetting("specsTitle", v)} />
                   {([1, 2, 3] as const).map((number) => (
                     <div key={number} className="rounded-xl border border-white/[0.06] bg-black/10 p-5">
-                      <h2 className="mb-5 text-xs font-semibold uppercase tracking-[0.16em] text-brand-gold">Specification {number}</h2>
+                      <h2 className="mb-5 text-xs font-semibold uppercase tracking-[0.16em] text-brand-gold">Material &amp; craft detail {number}</h2>
                       <div className="space-y-5"><Field label="Title" fieldPath={`settings.spec${number}Title`} value={settings[`spec${number}Title`]} onChange={(v) => updateSpec(number, "Title", v)} /><Field label="Description" fieldPath={`settings.spec${number}Description`} value={settings[`spec${number}Description`]} onChange={(v) => updateSpec(number, "Description", v)} textarea /></div>
                     </div>
                   ))}
@@ -1072,7 +1478,7 @@ export default function AdminPage() {
 
           {activeTab !== "security" && (
             <section className="mt-8 rounded-2xl border border-white/[0.07] bg-[#0b2018] p-5 sm:p-6">
-              <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-center"><div className="flex max-w-3xl items-start gap-3"><Database size={17} className="mt-0.5 shrink-0 text-brand-gold/70" /><p className="text-[11px] leading-6 text-[#7f9388]"><strong className="font-medium text-[#b7c4bc]">Shared live database.</strong> Saving publishes your products and content to the storefront. A local copy is kept in this browser as a fallback.</p></div><div className="flex shrink-0 flex-wrap gap-4"><button onClick={() => { initialized.current = false; store.refresh(); }} className="inline-flex items-center gap-2 text-xs text-[#9caca3] transition hover:text-brand-gold"><RefreshCw size={13} /> Reload from database</button><button onClick={handleReset} className="inline-flex items-center gap-2 text-xs text-[#c47e7e] transition hover:text-brand-danger"><Trash2 size={13} /> Reset content</button></div></div>
+              <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-center"><div className="flex max-w-3xl items-start gap-3"><Database size={17} className="mt-0.5 shrink-0 text-brand-gold/70" /><p className="text-[11px] leading-6 text-[#7f9388]"><strong className="font-medium text-[#b7c4bc]">Leather catalog &amp; content database.</strong> Saving publishes your wallets, accessories, showcase, and content to the storefront. A local copy is kept in this browser as a fallback.</p></div><div className="flex shrink-0 flex-wrap gap-4"><button onClick={() => { initialized.current = false; store.refresh(); }} className="inline-flex items-center gap-2 text-xs text-[#9caca3] transition hover:text-brand-gold"><RefreshCw size={13} /> Reload from database</button><button onClick={handleReset} className="inline-flex items-center gap-2 text-xs text-[#c47e7e] transition hover:text-brand-danger"><Trash2 size={13} /> Reset content</button></div></div>
             </section>
           )}
         </main>
@@ -1083,7 +1489,7 @@ export default function AdminPage() {
           <div role="dialog" aria-modal="true" aria-labelledby="admin-search-title" className="w-full max-w-2xl overflow-hidden rounded-2xl border border-white/10 bg-[#0b2018] shadow-2xl">
             <div className="flex items-center gap-3 border-b border-white/[0.07] px-5 py-4">
               <Search size={19} className="shrink-0 text-brand-gold" />
-              <input autoFocus value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && visibleSearchResults[0]) openSearchResult(visibleSearchResults[0]); }} placeholder="Search delivery, track order, hero, FAQs, products…" aria-label="Search all admin options" className="min-w-0 flex-1 bg-transparent text-sm text-brand-cream outline-none placeholder:text-[#607168]" />
+              <input autoFocus value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && visibleSearchResults[0]) openSearchResult(visibleSearchResults[0]); }} placeholder="Search wallets, accessories, showcase, delivery, pages…" aria-label="Search all admin options" className="min-w-0 flex-1 bg-transparent text-sm text-brand-cream outline-none placeholder:text-[#607168]" />
               <button type="button" onClick={() => setSearchOpen(false)} aria-label="Close search" className="rounded-lg border border-white/10 p-2 text-[#8fa198] transition hover:text-brand-cream"><X size={16} /></button>
             </div>
             <div className="max-h-[60vh] overflow-y-auto p-2">
@@ -1121,7 +1527,7 @@ export default function AdminPage() {
               <Field label="Delivery confirmation message" value={settings.commerce.deliveryConfirmationText} onChange={(value) => updateSetting("commerce", { ...settings.commerce, deliveryConfirmationText: value })} textarea />
               <Field label="International delivery note" value={settings.commerce.internationalDeliveryNote} onChange={(value) => updateSetting("commerce", { ...settings.commerce, internationalDeliveryNote: value })} textarea />
             </div>
-            <div className="sticky bottom-0 flex flex-col-reverse gap-3 border-t border-white/[0.07] bg-[#0b2018]/95 px-6 py-5 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:px-8"><p className="text-[10px] leading-5 text-[#71837a]">Saving publishes all pending admin changes.</p><div className="flex gap-3"><button onClick={() => setDeliveryEditorOpen(false)} className="rounded-xl border border-white/10 px-5 py-3 text-xs font-medium text-[#9caca3] transition hover:bg-white/5 hover:text-brand-cream">Cancel</button><button onClick={() => { setDeliveryEditorOpen(false); void handleSave(); }} disabled={saveStatus === "saving" || !dirty} className="flex items-center justify-center gap-2 rounded-xl bg-brand-gold px-5 py-3 text-xs font-bold uppercase tracking-[0.1em] text-[#082016] transition hover:bg-brand-gold-light disabled:cursor-not-allowed disabled:opacity-50"><Save size={14} /> Save changes</button></div></div>
+            <div className="sticky bottom-0 flex flex-col-reverse gap-3 border-t border-white/[0.07] bg-[#0b2018]/95 px-6 py-5 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:px-8"><p className="text-[10px] leading-5 text-[#71837a]">Saving publishes all pending admin changes.</p><div className="flex gap-3"><button onClick={() => setDeliveryEditorOpen(false)} className="rounded-xl border border-white/10 px-5 py-3 text-xs font-medium text-[#9caca3] transition hover:bg-white/5 hover:text-brand-cream">Cancel</button><button onClick={() => { setDeliveryEditorOpen(false); void handleSave(); }} disabled={saveStatus === "saving" || !dirty || Boolean(currentCommerceError)} title={currentCommerceError || "Save all pending changes"} className="flex items-center justify-center gap-2 rounded-xl bg-brand-gold px-5 py-3 text-xs font-bold uppercase tracking-[0.1em] text-[#082016] transition hover:bg-brand-gold-light disabled:cursor-not-allowed disabled:opacity-50"><Save size={14} /> Save changes</button></div></div>
           </div>
         </div>
       )}
@@ -1129,35 +1535,36 @@ export default function AdminPage() {
       {editingProduct && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 p-4 backdrop-blur-md" onMouseDown={(e) => { if (e.target === e.currentTarget) { setEditingProduct(null); setIsAddingNew(false); } }}>
           <div role="dialog" aria-modal="true" aria-labelledby="product-dialog-title" className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/10 bg-[#0b2018] shadow-2xl">
-            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/[0.07] bg-[#0b2018]/95 px-6 py-5 backdrop-blur-xl sm:px-8"><div><p className="mb-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-brand-gold">Catalog management</p><h2 id="product-dialog-title" className="font-serif text-lg text-[#e8e2d6]">{isAddingNew ? "Add a new product" : "Edit product"}</h2></div><button onClick={() => { setEditingProduct(null); setIsAddingNew(false); }} aria-label="Close product editor" className="rounded-xl border border-white/10 p-2 text-[#8fa198] transition hover:bg-white/5 hover:text-brand-cream"><X size={18} /></button></div>
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-white/[0.07] bg-[#0b2018]/95 px-6 py-5 backdrop-blur-xl sm:px-8"><div><p className="mb-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-brand-gold">Leather catalog</p><h2 id="product-dialog-title" className="font-serif text-lg text-[#e8e2d6]">{isAddingNew ? "Add a leather product" : "Edit leather product"}</h2></div><button onClick={() => { setEditingProduct(null); setIsAddingNew(false); }} aria-label="Close product editor" className="rounded-xl border border-white/10 p-2 text-[#8fa198] transition hover:bg-white/5 hover:text-brand-cream"><X size={18} /></button></div>
             <div className="space-y-5 px-6 py-7 sm:px-8">
-              <Field label="Product ID" value={editingProduct.id} onChange={(v) => setEditingProduct({ ...editingProduct, id: v })} disabled={!isAddingNew} required hint="A unique internal identifier. It cannot be changed after creation." />
-              <Field label="Product name" value={editingProduct.name} onChange={(v) => setEditingProduct({ ...editingProduct, name: v })} placeholder="e.g. Rolex Daytona" required />
-              <div className="grid gap-5 md:grid-cols-2"><Field label="Category" value={editingProduct.category} onChange={(v) => setEditingProduct({ ...editingProduct, category: v })} placeholder="Casual, Automatic, Ladies…" required hint="Use a new category name to create another collection." /><Field label="Base price (PKR)" type="number" value={String(editingProduct.price)} onChange={(v) => setEditingProduct({ ...editingProduct, price: Number(v) })} min={1} required /></div>
+              <Field label="Product ID" value={editingProduct.id} onChange={(v) => setEditingProduct({ ...editingProduct, id: v })} disabled={!isAddingNew} required hint="A unique internal identifier, such as classic-bifold-wallet. It cannot be changed after creation." />
+              <Field label="Product name" value={editingProduct.name} onChange={(v) => setEditingProduct({ ...editingProduct, name: v })} placeholder="e.g. Classic Bifold Wallet" required />
+              <div className="grid gap-5 md:grid-cols-2"><Field label="Category" value={editingProduct.category} onChange={(v) => setEditingProduct({ ...editingProduct, category: v })} placeholder="wallet, accessory, collection…" required hint="Use a new category name to create another leather collection." /><Field label="Collection tag" value={editingProduct.collectionTag || ""} onChange={(v) => setEditingProduct({ ...editingProduct, collectionTag: v })} placeholder="Signature Leather" hint="Optional collection name from the leather inventory." /></div>
+              <Field label="Base price (PKR)" type="number" value={String(editingProduct.price)} onChange={(v) => setEditingProduct({ ...editingProduct, price: Number(v) })} min={1} required />
               <Field label="Previous price (optional)" type="number" value={editingProduct.oldPrice ? String(editingProduct.oldPrice) : ""} onChange={(v) => setEditingProduct({ ...editingProduct, oldPrice: v ? Number(v) : undefined })} min={1} />
-              <Field label="Main image URL" value={editingProduct.image} onChange={(v) => setEditingProduct({ ...editingProduct, image: v })} type="url" placeholder="https://… or /watches/…" required />
+              <Field label="Main image URL" value={editingProduct.image} onChange={(v) => setEditingProduct({ ...editingProduct, image: v })} type="url" placeholder="https://… or /wallets/…" required />
               <Field label="Gallery image URLs" value={editingProduct.gallery?.join(", ") || ""} onChange={(v) => setEditingProduct({ ...editingProduct, gallery: v.split(",").map((s) => s.trim()).filter(Boolean) })} textarea hint="Separate multiple image URLs with commas." />
               <Field label="Product description" value={editingProduct.description} onChange={(v) => setEditingProduct({ ...editingProduct, description: v })} textarea />
 
               <div className="space-y-5 rounded-2xl border border-brand-gold/15 bg-brand-gold/[0.03] p-5">
-                <div><h3 className="font-serif text-lg text-[#e8e2d6]">Product detail page</h3><p className="mt-1 text-[11px] leading-5 text-[#71837a]">Leave optional fields blank to use the global defaults from Pages &amp; policies → Product detail defaults.</p></div>
-                <div className="grid gap-5 md:grid-cols-2"><Field label="Detail tagline" value={editingProduct.detailTagline || ""} onChange={(v) => setEditingProduct({ ...editingProduct, detailTagline: v || undefined })} placeholder="Automatic Edition" /><Field label="Order button text" value={editingProduct.orderButtonText || ""} onChange={(v) => setEditingProduct({ ...editingProduct, orderButtonText: v || undefined })} /></div>
-                <Field label="Detail-page description" value={editingProduct.detailDescription || ""} onChange={(v) => setEditingProduct({ ...editingProduct, detailDescription: v || undefined })} textarea placeholder="Optional longer overview for this watch" />
+                <div><h3 className="font-serif text-lg text-[#e8e2d6]">Leather product detail page</h3><p className="mt-1 text-[11px] leading-5 text-[#71837a]">Leave optional fields blank to use the global defaults from Pages &amp; policies → Product detail defaults.</p></div>
+                <div className="grid gap-5 md:grid-cols-2"><Field label="Detail tagline" value={editingProduct.detailTagline || ""} onChange={(v) => setEditingProduct({ ...editingProduct, detailTagline: v || undefined })} placeholder="Full-Grain Collection" /><Field label="Order button text" value={editingProduct.orderButtonText || ""} onChange={(v) => setEditingProduct({ ...editingProduct, orderButtonText: v || undefined })} /></div>
+                <Field label="Detail-page description" value={editingProduct.detailDescription || ""} onChange={(v) => setEditingProduct({ ...editingProduct, detailDescription: v || undefined })} textarea placeholder="Optional longer overview for this wallet or accessory" />
                 <div className="grid gap-5 md:grid-cols-2"><Field label="Shipping section title" value={editingProduct.shippingTitle || ""} onChange={(v) => setEditingProduct({ ...editingProduct, shippingTitle: v || undefined })} /><Field label="Overview title" value={editingProduct.overviewTitle || ""} onChange={(v) => setEditingProduct({ ...editingProduct, overviewTitle: v || undefined })} /></div>
                 <Field label="Shipping note 1" value={editingProduct.shippingNote1 || ""} onChange={(v) => setEditingProduct({ ...editingProduct, shippingNote1: v || undefined })} textarea />
                 <Field label="Shipping note 2" value={editingProduct.shippingNote2 || ""} onChange={(v) => setEditingProduct({ ...editingProduct, shippingNote2: v || undefined })} textarea />
-                <Field label="Specifications title" value={editingProduct.specificationsTitle || ""} onChange={(v) => setEditingProduct({ ...editingProduct, specificationsTitle: v || undefined })} />
+                <Field label="Materials & details title" value={editingProduct.specificationsTitle || ""} onChange={(v) => setEditingProduct({ ...editingProduct, specificationsTitle: v || undefined })} />
                 <div className="space-y-3">
-                  {editingProduct.specifications && <button type="button" onClick={() => setEditingProduct({ ...editingProduct, specifications: undefined })} className="text-[11px] font-medium text-brand-gold underline underline-offset-4 hover:text-brand-gold-light">Use global specification defaults</button>}
-                  <ContentEditor label="Product specifications" value={editingProduct.specifications?.length ? editingProduct.specifications : settings.pages.watch.defaultSpecifications} itemTemplate={{ label: "", value: "" }} allowEmpty onChange={(value) => setEditingProduct({ ...editingProduct, specifications: value as Product["specifications"] })} />
+                  {editingProduct.specifications && <button type="button" onClick={() => setEditingProduct({ ...editingProduct, specifications: undefined })} className="text-[11px] font-medium text-brand-gold underline underline-offset-4 hover:text-brand-gold-light">Use global material defaults</button>}
+                  <ContentEditor label="Product materials & details" value={editingProduct.specifications?.length ? editingProduct.specifications : settings.pages.product.defaultSpecifications} itemTemplate={{ label: "", value: "" }} allowEmpty onChange={(value) => setEditingProduct({ ...editingProduct, specifications: value as Product["specifications"] })} />
                 </div>
                 <div className="grid gap-5 md:grid-cols-2"><Field label="Related section tag" value={editingProduct.relatedTag || ""} onChange={(v) => setEditingProduct({ ...editingProduct, relatedTag: v || undefined })} /><Field label="Related section title" value={editingProduct.relatedTitle || ""} onChange={(v) => setEditingProduct({ ...editingProduct, relatedTitle: v || undefined })} placeholder="More from {category}" /></div>
                 <div className="grid gap-5 md:grid-cols-2"><Field label="New badge text" value={editingProduct.newBadgeText || ""} onChange={(v) => setEditingProduct({ ...editingProduct, newBadgeText: v || undefined })} /><Field label="Offer badge text" value={editingProduct.offerBadgeText || ""} onChange={(v) => setEditingProduct({ ...editingProduct, offerBadgeText: v || undefined })} /></div>
               </div>
 
-              <div className="flex flex-wrap gap-6 rounded-xl border border-white/[0.06] bg-black/10 p-4"><label className="flex cursor-pointer items-center gap-2 text-xs text-[#b6c4bc]"><input type="checkbox" checked={editingProduct.isNew || false} onChange={(e) => setEditingProduct({ ...editingProduct, isNew: e.target.checked })} className="h-4 w-4 accent-brand-gold" />New arrival</label><label className="flex cursor-pointer items-center gap-2 text-xs text-[#b6c4bc]"><input type="checkbox" checked={editingProduct.isBestSeller || false} onChange={(e) => setEditingProduct({ ...editingProduct, isBestSeller: e.target.checked })} className="h-4 w-4 accent-brand-gold" />Best seller</label><label className="flex cursor-pointer items-center gap-2 text-xs text-[#b6c4bc]"><input type="checkbox" checked={editingProduct.isFeatured || false} onChange={(e) => setEditingProduct({ ...editingProduct, isFeatured: e.target.checked })} className="h-4 w-4 accent-brand-gold" />Featured product</label></div>
+              <div className="flex flex-wrap gap-6 rounded-xl border border-white/[0.06] bg-black/10 p-4"><label className="flex cursor-pointer items-center gap-2 text-xs text-[#b6c4bc]"><input type="checkbox" checked={isAddingNew ? editingProduct.isNew || false : showcase.newProductIds.includes(String(editingProduct.id))} onChange={(e) => updateProductBadge(String(editingProduct.id), "newProductIds", e.target.checked)} className="h-4 w-4 accent-brand-gold" />New arrival</label><label className="flex cursor-pointer items-center gap-2 text-xs text-[#b6c4bc]"><input type="checkbox" checked={isAddingNew ? editingProduct.isBestSeller || false : showcase.bestSellerProductIds.includes(String(editingProduct.id))} onChange={(e) => updateProductBadge(String(editingProduct.id), "bestSellerProductIds", e.target.checked)} className="h-4 w-4 accent-brand-gold" />Best seller</label><label className="flex cursor-pointer items-center gap-2 text-xs text-[#b6c4bc]"><input type="checkbox" checked={isAddingNew ? editingProduct.isFeatured || false : showcase.featuredProductIds.includes(String(editingProduct.id))} onChange={(e) => updateProductBadge(String(editingProduct.id), "featuredProductIds", e.target.checked)} className="h-4 w-4 accent-brand-gold" />Featured product</label></div>
             </div>
-            <div className="sticky bottom-0 flex flex-col-reverse gap-3 border-t border-white/[0.07] bg-[#0b2018]/95 px-6 py-5 backdrop-blur-xl sm:flex-row sm:justify-end sm:px-8"><button onClick={() => { setEditingProduct(null); setIsAddingNew(false); }} className="rounded-xl border border-white/10 px-5 py-3 text-xs font-medium text-[#9caca3] transition hover:bg-white/5 hover:text-brand-cream">Cancel</button><button onClick={handleSaveProduct} className="flex items-center justify-center gap-2 rounded-xl bg-brand-gold px-5 py-3 text-xs font-bold uppercase tracking-[0.1em] text-[#082016] transition hover:bg-brand-gold-light"><Save size={14} /> Save product</button></div>
+            <div className="sticky bottom-0 flex flex-col-reverse gap-3 border-t border-white/[0.07] bg-[#0b2018]/95 px-6 py-5 backdrop-blur-xl sm:flex-row sm:justify-end sm:px-8"><button onClick={() => { setEditingProduct(null); setIsAddingNew(false); }} className="rounded-xl border border-white/10 px-5 py-3 text-xs font-medium text-[#9caca3] transition hover:bg-white/5 hover:text-brand-cream">Cancel</button><button onClick={handleSaveProduct} className="flex items-center justify-center gap-2 rounded-xl bg-brand-gold px-5 py-3 text-xs font-bold uppercase tracking-[0.1em] text-[#082016] transition hover:bg-brand-gold-light"><Save size={14} /> Save leather product</button></div>
           </div>
         </div>
       )}
