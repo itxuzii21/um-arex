@@ -105,7 +105,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] } }
       }}
-      className="group relative aspect-[4/5] overflow-hidden rounded-[1.6rem] border border-white/10 bg-brand-green-mid shadow-[0_24px_70px_-32px_rgba(0,0,0,0.9)] transition-all duration-500 hover:-translate-y-1 hover:border-brand-gold/45 hover:shadow-[0_30px_80px_-30px_rgba(229,138,85,0.22)]"
+      className="group relative aspect-[4/5] overflow-hidden rounded-[1.6rem] border border-brand-gold/15 bg-brand-green-mid shadow-[0_24px_70px_-32px_rgba(0,0,0,0.8)] transition-all duration-500 hover:-translate-y-1 hover:border-brand-gold/45 hover:shadow-[0_30px_80px_-30px_rgba(198,168,91,0.22)]"
     >
       <div
         className="relative h-full w-full select-none touch-pan-y"
@@ -138,7 +138,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </motion.div>
         </AnimatePresence>
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/10 to-black/20" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-green-dark via-brand-green-dark/10 to-brand-green-dark/20" />
         <Link
           href={productHref(product)}
           onClick={handleImageLinkClick}
@@ -153,14 +153,14 @@ export default function ProductCard({ product }: ProductCardProps) {
             </span>
           )}
           {product.oldPrice && (
-            <span className="w-fit rounded-full border border-brand-gold/35 bg-black/55 px-3 py-1.5 text-[8px] font-bold uppercase tracking-[0.16em] text-brand-gold backdrop-blur-md">
+            <span className="w-fit rounded-full border border-brand-gold/35 bg-brand-green-dark/65 px-3 py-1.5 text-[8px] font-bold uppercase tracking-[0.16em] text-brand-gold backdrop-blur-md">
               {product.offerBadgeText || settings.pages.home.offerBadgeText}
             </span>
           )}
         </div>
 
         {galleryImages.length > 1 && (
-          <div className="absolute right-4 top-4 z-20 flex items-center gap-1.5 rounded-full bg-black/45 px-3 py-2.5 backdrop-blur-md">
+          <div className="absolute right-4 top-4 z-20 flex items-center gap-1.5 rounded-full bg-brand-green-dark/65 px-3 py-2.5 backdrop-blur-md">
             {galleryImages.map((src, index) => {
               const currentIndex = galleryImages.indexOf(displayImage);
               const handleSelect = () => {
@@ -174,7 +174,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                   onClick={handleSelect}
                   onMouseEnter={handleSelect}
                   className={`h-1.5 rounded-full transition-all duration-300 ${
-                    selectedImage === src ? "w-5 bg-brand-gold" : "w-1.5 bg-white/45 hover:bg-brand-gold/70"
+                    selectedImage === src ? "w-5 bg-brand-gold" : "w-1.5 bg-brand-cream/45 hover:bg-brand-gold/70"
                   }`}
                   aria-label={resolveContentText(settings.pages.home.selectImageLabel, { index: index + 1, productName: product.name })}
                   aria-pressed={selectedImage === src}
@@ -184,12 +184,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
 
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black via-black/80 to-transparent px-5 pb-5 pt-20">
-          <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/55">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-brand-green-dark via-brand-green-dark/85 to-transparent px-5 pb-5 pt-20">
+          <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-brand-cream/60">
             {product.category}
           </p>
           <Link href={productHref(product)} className="pointer-events-auto mt-2 block w-fit">
-            <h3 className="line-clamp-2 text-[1.35rem] leading-[1.08] tracking-[-0.025em] text-white transition-colors duration-300 group-hover:text-brand-gold-light">
+            <h3 className="line-clamp-2 text-[1.35rem] leading-[1.08] tracking-[-0.025em] text-brand-cream transition-colors duration-300 group-hover:text-brand-gold-light">
               {product.name}
             </h3>
           </Link>
@@ -199,7 +199,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               {formatPrice(product.price)}
             </span>
             {product.oldPrice && (
-              <span className="text-xs font-light text-white/45 line-through">
+              <span className="text-xs font-light text-brand-cream/45 line-through">
                 {formatPrice(product.oldPrice)}
               </span>
             )}
@@ -207,7 +207,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
           <Link
             href={productHref(product)}
-            className="pointer-events-auto mt-4 inline-flex w-fit items-center gap-2 border-b border-brand-gold/30 pb-1.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/65 transition-colors duration-300 hover:border-brand-gold hover:text-brand-gold-light"
+            className="pointer-events-auto mt-4 inline-flex w-fit items-center gap-2 border-b border-brand-gold/30 pb-1.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-brand-cream/70 transition-colors duration-300 hover:border-brand-gold hover:text-brand-gold-light"
             aria-label={resolveContentText(settings.pages.home.exploreDetailsLabel, { productName: product.name })}
           >
             {settings.pages.home.viewPieceLabel}

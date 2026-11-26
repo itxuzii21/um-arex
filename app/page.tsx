@@ -28,9 +28,9 @@ import Reveal from "./components/Reveal";
 import ContentIcon from "./components/ContentIcon";
 
 const HERO_THEME = {
-  accent: "#e58a55",
-  glow: "rgba(87, 43, 25, 0.34)",
-  deep: "#09090b",
+  accent: "#c6a85b",
+  glow: "rgba(17, 62, 46, 0.4)",
+  deep: "#041a14",
 };
 
 function SearchParamsHandler({
@@ -160,7 +160,7 @@ function HomeContent() {
           sizes="100vw"
           className="pointer-events-none -z-20 scale-110 object-cover opacity-[0.07] blur-2xl"
         />
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_64%_48%,var(--hero-glow),transparent_34%),linear-gradient(115deg,rgba(9,9,11,0.97),rgba(17,17,20,0.68)_48%,rgba(9,9,11,0.94))] transition-colors duration-1000" />
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_64%_48%,var(--hero-glow),transparent_34%),linear-gradient(115deg,rgba(4,26,20,0.98),rgba(10,42,31,0.76)_48%,rgba(4,26,20,0.96))] transition-colors duration-1000" />
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         <div className="grain-overlay opacity-40" />
 
@@ -171,24 +171,24 @@ function HomeContent() {
             transition={{ duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
             className="relative z-20 px-5 pt-9 sm:px-8 lg:absolute lg:left-[5.5%] lg:top-[19%] lg:w-[43%] lg:px-0 lg:pt-0"
           >
-            <div className="mb-5 flex items-center gap-3 text-[8px] font-semibold uppercase tracking-[0.3em] text-white/55 lg:mb-7">
+            <div className="mb-5 flex items-center gap-3 text-[8px] font-semibold uppercase tracking-[0.3em] text-brand-cream/55 lg:mb-7">
               <span className="h-px w-8 bg-[var(--hero-accent)]" />
               {settings.heroTagline}
             </div>
-            <h1 className="max-w-[680px] text-[clamp(3rem,12vw,5.8rem)] font-medium uppercase leading-[0.84] tracking-[-0.065em] text-white lg:text-[clamp(4.8rem,6.7vw,7.6rem)]">
+            <h1 className="max-w-[680px] text-[clamp(3rem,12vw,5.8rem)] font-medium uppercase leading-[0.84] tracking-[-0.065em] text-brand-cream lg:text-[clamp(4.8rem,6.7vw,7.6rem)]">
               {settings.heroTitle1}
               <br />
               <span className="font-serif italic text-[var(--hero-accent)]">{settings.heroTitle2}</span>
               <br />
               {settings.heroTitle3}
             </h1>
-            <p className="mt-6 max-w-[350px] text-[12px] font-light leading-6 text-white/55 lg:mt-8 lg:text-[13px] lg:leading-7">
+            <p className="mt-6 max-w-[350px] text-[12px] font-light leading-6 text-brand-cream/55 lg:mt-8 lg:text-[13px] lg:leading-7">
               {settings.heroDescription}
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3 lg:mt-8">
               <a
                 href="#collection"
-                className="inline-flex h-11 items-center justify-center gap-3 rounded-full bg-[var(--hero-accent)] px-6 text-[9px] font-bold uppercase tracking-[0.18em] text-[#09090b] transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
+                className="inline-flex h-11 items-center justify-center gap-3 rounded-full bg-[var(--hero-accent)] px-6 text-[9px] font-bold uppercase tracking-[0.18em] text-brand-green-dark transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
               >
                 {settings.heroCta1Text}
                 <ArrowRight size={14} />
@@ -197,7 +197,7 @@ function HomeContent() {
                 href={conciergeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 px-5 text-[9px] font-semibold uppercase tracking-[0.16em] text-white/75 transition-colors hover:border-[var(--hero-accent)] hover:text-white"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 px-5 text-[9px] font-semibold uppercase tracking-[0.16em] text-brand-cream/75 transition-colors hover:border-[var(--hero-accent)] hover:text-brand-cream"
               >
                 <MessageCircle size={14} />
                 {settings.heroCta2Text}
@@ -229,10 +229,10 @@ function HomeContent() {
               </motion.div>
             </AnimatePresence>
 
-            <div className="absolute bottom-3 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/35 p-1.5 backdrop-blur-xl lg:bottom-auto lg:left-0 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 lg:flex-col lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
+            <div className="absolute bottom-3 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-brand-green-dark/70 p-1.5 backdrop-blur-xl lg:bottom-auto lg:left-0 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 lg:flex-col lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
               {heroProducts.map((product, index) => (
                 <div key={product.id} className="flex items-center gap-3 lg:flex-row-reverse">
-                  <span className={`hidden w-5 text-right font-mono text-[8px] tracking-widest lg:block ${activeHeroIndex === index ? "text-[var(--hero-accent)]" : "text-white/30"}`}>
+                  <span className={`hidden w-5 text-right font-mono text-[8px] tracking-widest lg:block ${activeHeroIndex === index ? "text-[var(--hero-accent)]" : "text-brand-cream/30"}`}>
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <button
@@ -246,9 +246,9 @@ function HomeContent() {
                     className={`group relative h-[62px] w-[54px] shrink-0 overflow-hidden rounded-xl border transition-all duration-500 sm:h-[72px] sm:w-[62px] lg:h-[82px] lg:w-[68px] ${activeHeroIndex === index ? "border-[var(--hero-accent)] bg-[var(--hero-accent)]/10 shadow-[0_0_28px_var(--hero-glow)]" : "border-white/10 bg-white/[0.035] opacity-55 hover:opacity-100"}`}
                   >
                     <Image src={product.image} alt="" fill sizes="68px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
-                    <span className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+                    <span className="absolute inset-0 bg-gradient-to-t from-brand-green-dark/65 to-transparent" />
                     {product.isNew && (
-                      <span className="absolute left-1 top-1 rounded-full bg-[var(--hero-accent)] px-1.5 py-0.5 text-[5px] font-bold uppercase tracking-wider text-[#09090b]">
+                      <span className="absolute left-1 top-1 rounded-full bg-[var(--hero-accent)] px-1.5 py-0.5 text-[5px] font-bold uppercase tracking-wider text-brand-green-dark">
                         {product.newBadgeText || content.newBadgeText}
                       </span>
                     )}
@@ -259,7 +259,7 @@ function HomeContent() {
 
             <div className="pointer-events-none absolute bottom-24 left-[7%] hidden max-w-[240px] lg:block">
               <span className="mb-2 block text-[7px] font-bold uppercase tracking-[0.28em] text-[var(--hero-accent)]">{content.signatureLabel}</span>
-              <p className="text-[10px] font-light leading-5 text-white/45">{settings.heroQuote}</p>
+              <p className="text-[10px] font-light leading-5 text-brand-cream/45">{settings.heroQuote}</p>
             </div>
           </div>
 
@@ -275,24 +275,24 @@ function HomeContent() {
               <div className="mb-4 flex items-center justify-between gap-3">
                 <span className="text-[8px] font-bold uppercase tracking-[0.28em] text-[var(--hero-accent)]">{heroProduct.category}</span>
                 {(heroProduct.isNew || heroProduct.isBestSeller) && (
-                  <span className="rounded-full border border-white/15 px-2.5 py-1 text-[6px] font-bold uppercase tracking-[0.2em] text-white/55">
+                  <span className="rounded-full border border-white/15 px-2.5 py-1 text-[6px] font-bold uppercase tracking-[0.2em] text-brand-cream/55">
                     {heroProduct.isNew ? heroProduct.newBadgeText || content.newBadgeText : heroProduct.offerBadgeText || content.offerBadgeText}
                   </span>
                 )}
               </div>
-              <h2 className="text-[25px] font-medium uppercase leading-[1.05] tracking-[-0.04em] text-white">{heroProduct.name}</h2>
+              <h2 className="text-[25px] font-medium uppercase leading-[1.05] tracking-[-0.04em] text-brand-cream">{heroProduct.name}</h2>
               <div className="mt-3 flex items-baseline gap-2">
-                <span className="font-serif text-[22px] text-white">{formatPrice(heroProduct.price)}</span>
-                {heroProduct.oldPrice && <span className="text-[10px] text-white/35 line-through">{formatPrice(heroProduct.oldPrice)}</span>}
+                <span className="font-serif text-[22px] text-brand-cream">{formatPrice(heroProduct.price)}</span>
+                {heroProduct.oldPrice && <span className="text-[10px] text-brand-cream/35 line-through">{formatPrice(heroProduct.oldPrice)}</span>}
               </div>
-              <p className="mt-4 line-clamp-3 text-[11px] font-light leading-6 text-white/50">{heroProduct.description}</p>
+              <p className="mt-4 line-clamp-3 text-[11px] font-light leading-6 text-brand-cream/50">{heroProduct.description}</p>
 
               {heroProduct.specifications?.length ? (
                 <div className="mt-5 divide-y divide-white/10 border-y border-white/10">
                   {heroProduct.specifications.slice(0, 3).map((spec) => (
                     <div key={`${spec.label}-${spec.value}`} className="flex items-center justify-between gap-3 py-2.5">
-                      <span className="text-[7px] font-semibold uppercase tracking-[0.18em] text-white/35">{spec.label}</span>
-                      <span className="text-right text-[9px] text-white/70">{spec.value}</span>
+                      <span className="text-[7px] font-semibold uppercase tracking-[0.18em] text-brand-cream/35">{spec.label}</span>
+                      <span className="text-right text-[9px] text-brand-cream/70">{spec.value}</span>
                     </div>
                   ))}
                 </div>
@@ -301,7 +301,7 @@ function HomeContent() {
               <div className="mt-5 flex flex-col gap-2.5">
                 <Link
                   href={productHref(heroProduct)}
-                  className="group flex h-11 items-center justify-between rounded-full border border-[var(--hero-accent)]/60 px-5 text-[8px] font-bold uppercase tracking-[0.2em] text-white transition-all hover:bg-[var(--hero-accent)] hover:text-[#09090b]"
+                  className="group flex h-11 items-center justify-between rounded-full border border-[var(--hero-accent)]/60 px-5 text-[8px] font-bold uppercase tracking-[0.2em] text-brand-cream transition-all hover:bg-[var(--hero-accent)] hover:text-brand-green-dark"
                 >
                   {content.viewPieceLabel}
                   <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -310,7 +310,7 @@ function HomeContent() {
                   href={heroOrderUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-10 items-center justify-center gap-2 rounded-full bg-white text-[8px] font-bold uppercase tracking-[0.18em] text-[#09090b] transition-colors hover:bg-[var(--hero-accent)]"
+                  className="flex h-10 items-center justify-center gap-2 rounded-full bg-brand-gold text-[8px] font-bold uppercase tracking-[0.18em] text-brand-green-dark transition-colors hover:bg-brand-gold-light"
                 >
                   <MessageCircle size={13} />
                   {content.orderMessage.split(".")[0]}
@@ -319,7 +319,7 @@ function HomeContent() {
 
               <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4">
                 <CurrencySelector />
-                <span className="text-[6px] font-semibold uppercase tracking-[0.22em] text-white/30">{shared.brandName}</span>
+                <span className="text-[6px] font-semibold uppercase tracking-[0.22em] text-brand-cream/30">{shared.brandName}</span>
               </div>
 
               <div className="mt-5 grid grid-cols-3 gap-2 xl:mt-6">
@@ -329,8 +329,8 @@ function HomeContent() {
                   { value: content.dispatchStatValue, label: content.dispatchLabel },
                 ].map((stat) => (
                   <div key={stat.label}>
-                    <span className="block font-serif text-lg text-white/85">{stat.value}</span>
-                    <span className="mt-1 block text-[6px] uppercase leading-3 tracking-[0.14em] text-white/30">{stat.label}</span>
+                    <span className="block font-serif text-lg text-brand-cream/85">{stat.value}</span>
+                    <span className="mt-1 block text-[6px] uppercase leading-3 tracking-[0.14em] text-brand-cream/30">{stat.label}</span>
                   </div>
                 ))}
               </div>
@@ -338,7 +338,7 @@ function HomeContent() {
             </div>
           </motion.aside>
 
-          <a href="#categories" className="absolute bottom-7 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-1 text-[7px] font-bold uppercase tracking-[0.24em] text-white/35 transition-colors hover:text-[var(--hero-accent)] xl:flex">
+          <a href="#categories" className="absolute bottom-7 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-1 text-[7px] font-bold uppercase tracking-[0.24em] text-brand-cream/35 transition-colors hover:text-[var(--hero-accent)] xl:flex">
             <span>{content.scrollLabel}</span>
             <ChevronDown size={13} className="animate-bounce" />
           </a>
@@ -348,7 +348,7 @@ function HomeContent() {
       <section className="relative z-10 border-y border-white/[0.06] bg-white/[0.018] px-5 py-8 sm:px-8 md:px-12">
         <div className="mx-auto grid max-w-[1500px] grid-cols-2 gap-3 md:grid-cols-4">
           {content.benefits.map((item) => (
-            <Reveal key={item.id} className="flex flex-col items-start gap-3 rounded-2xl border border-white/[0.06] bg-black/10 p-4 lg:flex-row lg:p-5">
+            <Reveal key={item.id} className="flex flex-col items-start gap-3 rounded-2xl border border-white/[0.06] bg-brand-green-dark/15 p-4 lg:flex-row lg:p-5">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-gold/20 bg-brand-gold/[0.06] text-brand-gold">
                 <ContentIcon name={item.icon} size={18} />
               </span>
@@ -361,7 +361,7 @@ function HomeContent() {
         </div>
       </section>
 
-      <section id="categories" className="relative z-10 scroll-mt-28 border-b border-white/[0.06] bg-[#0c0c0f] px-5 py-20 sm:px-8 md:px-12 md:py-24">
+      <section id="categories" className="relative z-10 scroll-mt-28 border-b border-white/[0.06] bg-brand-green-dark px-5 py-20 sm:px-8 md:px-12 md:py-24">
         <div className="mx-auto max-w-[1500px]">
           <Reveal className="mb-8">
             <span className="mb-3 block text-[9px] font-bold uppercase tracking-[0.28em] text-brand-gold">{settings.categorySectionTag}</span>
@@ -378,7 +378,7 @@ function HomeContent() {
               <button type="button" key={category.name} onClick={() => handleCategorySelect(category.name)} className={`group flex shrink-0 snap-center items-center gap-3 rounded-2xl border p-2 pr-5 text-left transition-all duration-300 ${selectedCategory === category.name ? "border-brand-gold/60 bg-brand-gold/[0.09]" : "border-white/10 bg-white/[0.025] hover:border-brand-gold/35 hover:bg-white/[0.045]"}`}>
                 <span className={`relative h-14 w-14 overflow-hidden rounded-xl border bg-brand-green-mid ${selectedCategory === category.name ? "border-brand-gold/40" : "border-white/10"}`}>
                   <Image src={category.image} alt={category.name} fill sizes="56px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
-                  <span className="absolute inset-0 bg-black/10 transition-colors group-hover:bg-transparent" />
+                  <span className="absolute inset-0 bg-brand-green-dark/15 transition-colors group-hover:bg-transparent" />
                 </span>
                 <span>
                   <span className={`block text-[10px] font-bold uppercase tracking-[0.16em] ${selectedCategory === category.name ? "text-brand-gold-light" : "text-brand-cream-muted group-hover:text-brand-gold"}`}>{category.name}</span>
@@ -411,7 +411,7 @@ function HomeContent() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder={content.searchPlaceholder}
-                className="w-full rounded-xl border border-white/10 bg-black/20 py-3.5 pl-11 pr-4 text-xs text-brand-cream placeholder:text-brand-cream-muted/55 transition-colors focus:border-brand-gold/60 focus:outline-none"
+                className="w-full rounded-xl border border-white/10 bg-brand-green-dark/65 py-3.5 pl-11 pr-4 text-xs text-brand-cream placeholder:text-brand-cream-muted/55 transition-colors focus:border-brand-gold/60 focus:outline-none"
               />
             </div>
             <div className="flex items-center justify-between gap-4 md:justify-end">
@@ -473,7 +473,7 @@ function HomeContent() {
               </h2>
               <p className="mb-5 max-w-xl text-sm font-light leading-7 text-brand-cream-muted md:text-[15px]">{settings.storyParagraph1}</p>
               <p className="mb-8 max-w-xl text-sm font-light leading-7 text-brand-cream-muted md:text-[15px]">{settings.storyParagraph2}</p>
-              <div className="grid w-full grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-black/15 p-4 backdrop-blur-sm sm:p-5">
+              <div className="grid w-full grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-brand-green-mid/35 p-4 backdrop-blur-sm sm:p-5">
                 <div className="rounded-xl border border-brand-gold/10 bg-white/[0.025] p-4 sm:p-5">
                   <span className="mb-2 block font-serif text-3xl tracking-tight text-brand-gold-light sm:text-4xl">{settings.storyStat1Value}</span>
                   <span className="block max-w-[150px] text-[9px] uppercase leading-5 tracking-[0.14em] text-brand-cream-muted">{settings.storyStat1Label}</span>
@@ -498,8 +498,8 @@ function HomeContent() {
             <Reveal className="lg:col-span-5">
               <div className="relative aspect-square overflow-hidden rounded-[1.8rem] border border-white/10 shadow-[0_35px_90px_-40px_rgba(0,0,0,0.9)]">
                 <Image src={settings.bannerImage} alt={content.specsImageAlt} fill sizes="(max-width: 1024px) 90vw, 480px" className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/5" />
-                <div className="absolute bottom-5 left-5 rounded-full border border-brand-gold/25 bg-black/65 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-brand-gold-light backdrop-blur-md">
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-green-dark/65 via-transparent to-brand-green-dark/10" />
+                <div className="absolute bottom-5 left-5 rounded-full border border-brand-gold/25 bg-brand-green-dark/75 px-4 py-2 text-[8px] uppercase tracking-[0.16em] text-brand-gold-light backdrop-blur-md">
                   {content.specsImageBadge}
                 </div>
               </div>
@@ -533,7 +533,7 @@ function HomeContent() {
           </Reveal>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {content.testimonials.map((testimonial, index) => (
-              <Reveal key={testimonial.id} delay={index * 0.12} className="flex h-full flex-col rounded-2xl border border-white/[0.07] bg-black/15 p-6 transition-colors duration-500 hover:border-brand-gold/25 sm:p-7">
+              <Reveal key={testimonial.id} delay={index * 0.12} className="flex h-full flex-col rounded-2xl border border-white/[0.07] bg-brand-green-mid/35 p-6 transition-colors duration-500 hover:border-brand-gold/25 sm:p-7">
                 <div className="mb-6 flex gap-1 text-brand-gold" aria-label={content.ratingLabel}>
                   {Array.from({ length: 5 }).map((_, star) => (
                     <Star key={star} size={13} fill="currentColor" />
@@ -623,7 +623,7 @@ function HomeContent() {
 
           <div className="lg:col-span-6">
             <Reveal delay={0.1}>
-              <div className="relative h-full min-h-[480px] overflow-hidden rounded-[1.8rem] border border-white/10 bg-gradient-to-br from-brand-green-soft/80 to-black/40 p-7 text-center shadow-[0_35px_100px_-45px_rgba(0,0,0,0.95)] sm:p-10">
+              <div className="relative h-full min-h-[480px] overflow-hidden rounded-[1.8rem] border border-white/10 bg-gradient-to-br from-brand-green-soft/80 to-brand-green-dark/60 p-7 text-center shadow-[0_35px_100px_-45px_rgba(0,0,0,0.95)] sm:p-10">
                 <div className="pointer-events-none absolute -bottom-20 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-brand-gold/10 blur-[80px]" />
                 <div className="relative z-10 flex h-full flex-col items-center justify-center">
                   <span className="mb-4 inline-flex rounded-full border border-brand-gold/20 bg-brand-gold/[0.06] px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.24em] text-brand-gold-light">{settings.contactTag}</span>

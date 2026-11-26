@@ -56,9 +56,9 @@ export default function Navbar() {
   return (
     <>
       <header className={`sticky top-0 z-50 border-b transition-all duration-500 ${scrolled ? "border-brand-gold/20 bg-brand-green-dark/95 shadow-lg shadow-black/30 backdrop-blur-xl" : "border-brand-gold/10 bg-brand-green-dark/90 backdrop-blur-xl"}`}>
-        <div className="relative z-50 overflow-hidden border-b border-brand-gold/15 bg-gradient-to-r from-[#17100c] via-[#24160f] to-[#17100c] py-2">
+        <div className="relative z-50 overflow-hidden border-b border-brand-gold-dark/40 bg-gradient-to-r from-brand-gold-dark via-brand-gold to-brand-gold-dark py-2">
           <div className="flex w-full overflow-hidden">
-            <div className="animate-marquee-infinite whitespace-nowrap text-[9px] md:text-[10px] font-bold uppercase tracking-[0.18em] text-brand-gold-light">
+            <div className="animate-marquee-infinite whitespace-nowrap text-[9px] md:text-[10px] font-bold uppercase tracking-[0.18em] text-brand-green-dark">
               <span className="px-8">{settings.bannerText}</span>
               <span className="px-8">{settings.bannerText}</span>
               <span className="px-8">{settings.bannerText}</span>

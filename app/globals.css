@@ -5,23 +5,23 @@
   --font-serif: "Space Grotesk", sans-serif;
   --font-sans: "Manrope", sans-serif;
 
-  --color-brand-green-dark: #09090b;
-  --color-brand-green-mid: #111114;
-  --color-brand-green-glow: #321b12;
-  --color-brand-green-soft: #19191e;
-  --color-brand-gold: #e58a55;
-  --color-brand-gold-dark: #b96335;
-  --color-brand-gold-light: #f3b084;
-  --color-brand-input: #17171c;
-  --color-brand-cream: #f3f0eb;
-  --color-brand-cream-muted: #aaa49c;
+  --color-brand-green-dark: #041a14;
+  --color-brand-green-mid: #0a2a1f;
+  --color-brand-green-glow: #113e2e;
+  --color-brand-green-soft: #0e3527;
+  --color-brand-gold: #c6a85b;
+  --color-brand-gold-dark: #a8893d;
+  --color-brand-gold-light: #e6cd85;
+  --color-brand-input: #0e3527;
+  --color-brand-cream: #ede6d6;
+  --color-brand-cream-muted: #b8b0a0;
   --color-brand-white: #ffffff;
 
-  --color-brand-leather: #171210;
-  --color-brand-leather-mid: #241a15;
-  --color-brand-leather-glow: #4a2d1d;
-  --color-brand-espresso: #0d0a08;
-  --color-brand-tan: #d18a5d;
+  --color-brand-leather: #2d1e16;
+  --color-brand-leather-mid: #3d2a1e;
+  --color-brand-leather-glow: #5a3d28;
+  --color-brand-espresso: #1a110b;
+  --color-brand-tan: #c19a6b;
 
   --color-brand-success: #25d366;
   --color-brand-info: #5aa9e6;
@@ -36,9 +36,9 @@
   body {
     @apply bg-brand-green-dark text-brand-cream font-sans antialiased overflow-x-hidden relative;
     background-image:
-      radial-gradient(circle at 78% 0%, rgba(87, 43, 25, 0.3) 0%, transparent 34%),
-      radial-gradient(circle at 8% 58%, rgba(38, 30, 27, 0.24) 0%, transparent 32%),
-      linear-gradient(180deg, #0b0b0e 0%, #09090b 60%, #0b0a0a 100%);
+      radial-gradient(circle at 78% 0%, rgba(17, 62, 46, 0.3) 0%, transparent 34%),
+      radial-gradient(circle at 8% 58%, rgba(10, 42, 31, 0.24) 0%, transparent 32%),
+      linear-gradient(180deg, #08261c 0%, #041a14 60%, #08261c 100%);
     background-attachment: fixed;
   }
 
@@ -52,8 +52,8 @@
   }
 
   ::selection {
-    background: rgba(229, 138, 85, 0.32);
-    color: #f3f0eb;
+    background: rgba(198, 168, 91, 0.3);
+    color: #ede6d6;
   }
 }
 
@@ -63,19 +63,19 @@
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #09090b;
+  background: #041a14;
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #b96335, #4a2d1d);
+  background: linear-gradient(180deg, #a8893d, #5a4a26);
   border-radius: 8px;
-  border: 2px solid #09090b;
+  border: 2px solid #041a14;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #e58a55, #b96335);
+  background: linear-gradient(180deg, #c6a85b, #a8893d);
 }
 * {
   scrollbar-width: thin;
-  scrollbar-color: #b96335 #09090b;
+  scrollbar-color: #a8893d #041a14;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -101,18 +101,18 @@
 .cinematic-vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle, transparent 30%, rgba(9, 9, 11, 0.88) 100%);
+  background: radial-gradient(circle, transparent 30%, rgba(4, 26, 20, 0.88) 100%);
   pointer-events: none;
 }
 
 .luxury-glass {
-  background: rgba(17, 17, 20, 0.82);
+  background: rgba(10, 42, 31, 0.82);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(229, 138, 85, 0.14);
+  border: 1px solid rgba(198, 168, 91, 0.14);
 }
 
 .luxury-gradient {
-  background: linear-gradient(135deg, #17171c 0%, #09090b 100%);
+  background: linear-gradient(135deg, #0a2a1f 0%, #041a14 100%);
 }
 
 .gold-text {
@@ -121,7 +121,7 @@
 
 /* Gradient gold headline accent */
 .gold-gradient-text {
-  background: linear-gradient(120deg, #f3b084 0%, #e58a55 45%, #b96335 100%);
+  background: linear-gradient(120deg, #e6cd85 0%, #c6a85b 45%, #a8893d 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -132,7 +132,7 @@
 }
 
 .luxury-shimmer {
-  background: #111114;
+  background: #0a2a1f;
 }
 
 .gold-button {
@@ -140,8 +140,8 @@
 }
 
 .on-dark .product-card {
-  background-color: rgba(17, 17, 20, 0.9);
-  border-color: rgba(229, 138, 85, 0.16);
+  background-color: rgba(10, 42, 31, 0.9);
+  border-color: rgba(198, 168, 91, 0.16);
 }
 
 .touch-callout-none {
@@ -216,14 +216,14 @@
 /* Fine gold rule */
 .gold-rule {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(229, 138, 85, 0.65), transparent);
+  background: linear-gradient(90deg, transparent, rgba(198, 168, 91, 0.6), transparent);
 }
 
 /* Leather grain surface */
 .leather-surface {
-  background-color: #171210;
+  background-color: #2d1e16;
   background-image:
-    radial-gradient(circle at 20% 20%, rgba(209, 138, 93, 0.14), transparent 45%),
+    radial-gradient(circle at 20% 20%, rgba(193, 154, 107, 0.12), transparent 45%),
     radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.42), transparent 50%),
     url("data:image/svg+xml,%3Csvg viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23l)' opacity='0.06'/%3E%3C/svg%3E");
 }
@@ -242,7 +242,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid rgba(229, 138, 85, 0.75);
+  outline: 2px solid rgba(198, 168, 91, 0.75);
   outline-offset: 2px;
 }
 
