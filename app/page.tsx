@@ -1,10 +1,10 @@
 "use client";
 
-import { Suspense, useMemo, useState, useEffect } from "react";
+import { Suspense, useMemo, useState, useEffect, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -20,10 +20,19 @@ import {
 } from "lucide-react";
 import ProductCard from "./components/ProductCard";
 import { useStore } from "./data/StoreProvider";
-import { getCategories } from "./data/catalog";
+import { getCategories, productHref } from "./data/catalog";
+import { useCurrency } from "./data/CurrencyProvider";
+import CurrencySelector from "./components/CurrencySelector";
 import LeatherBrandCard from "./components/LeatherBrandCard";
 import Reveal from "./components/Reveal";
 import ContentIcon from "./components/ContentIcon";
+
+const HERO_THEMES = [
+  { accent: "#83baff", glow: "rgba(38, 108, 225, 0.34)", deep: "#071122" },
+  { accent: "#e6a878", glow: "rgba(153, 77, 35, 0.32)", deep: "#140d0a" },
+  { accent: "#d9c49e", glow: "rgba(142, 111, 52, 0.25)", deep: "#11110d" },
+  { accent: "#9fd5dc", glow: "rgba(42, 124, 139, 0.28)", deep: "#071315" },
+];
 
 function SearchParamsHandler({
   setSelectedCategory,
@@ -49,12 +58,15 @@ function SearchParamsHandler({
 function HomeContent() {
   const router = useRouter();
   const { products, settings } = useStore();
+  const { formatPrice } = useCurrency();
   const content = settings.pages.home;
   const shared = settings.shared;
   const [selectedCategory, setSelectedCategory] = useState("Featured");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("featured");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [heroIndex, setHeroIndex] = useState(0);
+  const [heroPaused, setHeroPaused] = useState(false);
 
   const categories = useMemo(() => getCategories(products), [products]);
 
@@ -79,6 +91,20 @@ function HomeContent() {
     const rest = products.filter((p) => !p.isFeatured);
     return [...flagged, ...rest].slice(0, 8);
   }, [products]);
+
+  const heroProducts = useMemo(() => featuredProducts.slice(0, 4), [featuredProducts]);
+  const activeHeroIndex = heroProducts.length ? heroIndex % heroProducts.length : 0;
+  const heroProduct = heroProducts[activeHeroIndex] ?? products[0];
+  const heroTheme = HERO_THEMES[activeHeroIndex % HERO_THEMES.length];
+  const heroOrderUrl = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(
+    `${content.orderMessage}\n\n${heroProduct.name} — ${formatPrice(heroProduct.price)}`
+  )}`;
+
+  useEffect(() => {
+    if (heroPaused || heroProducts.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setInterval(() => setHeroIndex((index) => index + 1), 6500);
+    return () => window.clearInterval(timer);
+  }, [heroPaused, heroProducts.length]);
 
   const filteredProducts = useMemo(() => {
     let list =
@@ -117,107 +143,207 @@ function HomeContent() {
         <SearchParamsHandler setSelectedCategory={setSelectedCategory} categories={categories} />
       </Suspense>
 
-      <div className="animate-glow-drift pointer-events-none absolute right-[8%] top-[4%] z-0 h-[620px] w-[620px] rounded-full bg-brand-gold/[0.09] blur-[190px]" />
-      <div className="pointer-events-none absolute left-0 top-[55%] z-0 h-[420px] w-[420px] rounded-full bg-white/[0.025] blur-[150px]" />
+      <section
+        className="relative z-10 isolate overflow-hidden bg-[var(--hero-deep)]"
+        style={{
+          "--hero-accent": heroTheme.accent,
+          "--hero-glow": heroTheme.glow,
+          "--hero-deep": heroTheme.deep,
+        } as CSSProperties}
+        onPointerEnter={() => setHeroPaused(true)}
+        onPointerLeave={() => setHeroPaused(false)}
+        onTouchStart={() => setHeroPaused(true)}
+      >
+        <Image
+          src={settings.heroImage}
+          alt={content.heroImageAlt}
+          fill
+          sizes="100vw"
+          className="pointer-events-none -z-20 scale-110 object-cover opacity-[0.07] blur-2xl"
+        />
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_64%_48%,var(--hero-glow),transparent_34%),linear-gradient(115deg,rgba(3,6,14,0.96),rgba(5,9,19,0.58)_48%,rgba(3,5,12,0.92))] transition-colors duration-1000" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        <div className="grain-overlay opacity-40" />
 
-      <section className="relative z-10 flex items-center px-5 pb-20 pt-10 sm:px-8 md:pb-24 lg:min-h-[calc(100vh-104px)] lg:px-12 lg:py-14">
-        <div className="mx-auto grid w-full max-w-[1500px] grid-cols-1 items-center gap-14 lg:grid-cols-12 lg:gap-10">
-          <div className="z-20 flex flex-col items-start text-left lg:col-span-7">
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}>
-              <span className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-brand-gold/20 bg-brand-gold/[0.06] px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.24em] text-brand-gold-light md:text-[10px]">
-                <span className="h-1.5 w-1.5 rounded-full bg-brand-gold shadow-[0_0_14px_rgba(229,138,85,0.7)]" />
-                {settings.heroTagline}
-              </span>
-              <h1 className="mb-7 max-w-4xl text-[clamp(2.9rem,6.2vw,6.6rem)] leading-[0.9] tracking-[-0.06em] text-brand-cream">
-                {settings.heroTitle1} <br />
-                <span className="gold-gradient-text">{settings.heroTitle2}</span> <br />
-                {settings.heroTitle3}
-              </h1>
-              <p className="mb-9 max-w-md text-sm font-light leading-7 text-brand-cream-muted md:text-base">
-                {settings.heroDescription}
-              </p>
-              <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-                <a
-                  href="#collection"
-                  className="gold-button inline-flex h-13 items-center justify-center gap-3 px-8 shadow-[0_16px_40px_-18px_rgba(229,138,85,0.65)] hover:shadow-[0_20px_45px_-16px_rgba(229,138,85,0.75)] active:scale-[0.98]"
+        <div className="relative mx-auto min-h-[920px] w-full max-w-[1600px] lg:min-h-[1020px] lg:pt-[880px] xl:min-h-[calc(100svh-104px)] xl:pt-0">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
+            className="relative z-20 px-5 pt-9 sm:px-8 lg:absolute lg:left-[5.5%] lg:top-[19%] lg:w-[43%] lg:px-0 lg:pt-0"
+          >
+            <div className="mb-5 flex items-center gap-3 text-[8px] font-semibold uppercase tracking-[0.3em] text-white/55 lg:mb-7">
+              <span className="h-px w-8 bg-[var(--hero-accent)]" />
+              {settings.heroTagline}
+            </div>
+            <h1 className="max-w-[680px] text-[clamp(3rem,12vw,5.8rem)] font-medium uppercase leading-[0.84] tracking-[-0.065em] text-white lg:text-[clamp(4.8rem,6.7vw,7.6rem)]">
+              {settings.heroTitle1}
+              <br />
+              <span className="font-serif italic text-[var(--hero-accent)]">{settings.heroTitle2}</span>
+              <br />
+              {settings.heroTitle3}
+            </h1>
+            <p className="mt-6 max-w-[350px] text-[12px] font-light leading-6 text-white/55 lg:mt-8 lg:text-[13px] lg:leading-7">
+              {settings.heroDescription}
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-3 lg:mt-8">
+              <a
+                href="#collection"
+                className="inline-flex h-11 items-center justify-center gap-3 rounded-full bg-[var(--hero-accent)] px-6 text-[9px] font-bold uppercase tracking-[0.18em] text-[#07101f] transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
+              >
+                {settings.heroCta1Text}
+                <ArrowRight size={14} />
+              </a>
+              <a
+                href={conciergeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 px-5 text-[9px] font-semibold uppercase tracking-[0.16em] text-white/75 transition-colors hover:border-[var(--hero-accent)] hover:text-white"
+              >
+                <MessageCircle size={14} />
+                {settings.heroCta2Text}
+              </a>
+            </div>
+            <LeatherBrandCard className="mt-6 hidden w-[250px] lg:block [@media(max-width:1279px)]:hidden [@media(max-height:850px)]:hidden" />
+          </motion.div>
+
+          <div className="relative z-10 mx-auto h-[390px] w-full max-w-[780px] sm:h-[470px] lg:absolute lg:left-[34%] lg:top-[5%] lg:h-[88%] lg:max-w-none lg:w-[49%]">
+            <div className="pointer-events-none absolute left-1/2 top-[43%] h-[58%] w-[58%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--hero-glow)] blur-[90px]" />
+            <div className="pointer-events-none absolute left-1/2 top-[76%] h-10 w-[48%] -translate-x-1/2 rounded-[50%] bg-black/75 blur-2xl" />
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={heroProduct.id}
+                initial={{ opacity: 0, scale: 0.94, x: 18 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 1.03, x: -18 }}
+                transition={{ duration: 0.65, ease: [0.25, 0.1, 0.25, 1] }}
+                className="absolute inset-x-[3%] bottom-[12%] top-[2%] sm:inset-x-[8%] lg:inset-x-0 lg:bottom-[9%] lg:top-0"
+              >
+                <Image
+                  src={heroProduct.image}
+                  alt={heroProduct.name}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 94vw, 48vw"
+                  className="scale-[1.16] object-cover object-center drop-shadow-[0_45px_45px_rgba(0,0,0,0.7)] [mask-image:radial-gradient(ellipse_at_center,#000_38%,rgba(0,0,0,0.94)_58%,transparent_78%)]"
+                />
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="absolute bottom-3 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 rounded-full border border-white/10 bg-black/35 p-1.5 backdrop-blur-xl lg:bottom-auto lg:left-0 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 lg:flex-col lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
+              {heroProducts.map((product, index) => (
+                <div key={product.id} className="flex items-center gap-3 lg:flex-row-reverse">
+                  <span className={`hidden w-5 text-right font-mono text-[8px] tracking-widest lg:block ${activeHeroIndex === index ? "text-[var(--hero-accent)]" : "text-white/30"}`}>
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setHeroIndex(index);
+                      setHeroPaused(true);
+                    }}
+                    aria-label={`${content.viewProductLabel.replace("{productName}", product.name)}`}
+                    aria-pressed={activeHeroIndex === index}
+                    className={`group relative h-[62px] w-[54px] shrink-0 overflow-hidden rounded-xl border transition-all duration-500 sm:h-[72px] sm:w-[62px] lg:h-[82px] lg:w-[68px] ${activeHeroIndex === index ? "border-[var(--hero-accent)] bg-[var(--hero-accent)]/10 shadow-[0_0_28px_var(--hero-glow)]" : "border-white/10 bg-white/[0.035] opacity-55 hover:opacity-100"}`}
+                  >
+                    <Image src={product.image} alt="" fill sizes="68px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <span className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
+                    {product.isNew && (
+                      <span className="absolute left-1 top-1 rounded-full bg-[var(--hero-accent)] px-1.5 py-0.5 text-[5px] font-bold uppercase tracking-wider text-[#07101f]">
+                        {product.newBadgeText || content.newBadgeText}
+                      </span>
+                    )}
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="pointer-events-none absolute bottom-24 left-[7%] hidden max-w-[240px] lg:block">
+              <span className="mb-2 block text-[7px] font-bold uppercase tracking-[0.28em] text-[var(--hero-accent)]">{content.signatureLabel}</span>
+              <p className="text-[10px] font-light leading-5 text-white/45">{settings.heroQuote}</p>
+            </div>
+          </div>
+
+          <motion.aside
+            key={`panel-${heroProduct.id}`}
+            initial={{ opacity: 0, x: 18 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.55 }}
+            className="relative z-30 px-5 pb-10 sm:px-8 lg:px-10 xl:absolute xl:right-[3.5%] xl:top-[20%] xl:w-[245px] xl:px-0 xl:pb-0"
+            aria-live="polite"
+          >
+            <div className="border-t border-white/15 pt-5 xl:border-t-0 xl:pt-0">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <span className="text-[8px] font-bold uppercase tracking-[0.28em] text-[var(--hero-accent)]">{heroProduct.category}</span>
+                {(heroProduct.isNew || heroProduct.isBestSeller) && (
+                  <span className="rounded-full border border-white/15 px-2.5 py-1 text-[6px] font-bold uppercase tracking-[0.2em] text-white/55">
+                    {heroProduct.isNew ? heroProduct.newBadgeText || content.newBadgeText : heroProduct.offerBadgeText || content.offerBadgeText}
+                  </span>
+                )}
+              </div>
+              <h2 className="text-[25px] font-medium uppercase leading-[1.05] tracking-[-0.04em] text-white">{heroProduct.name}</h2>
+              <div className="mt-3 flex items-baseline gap-2">
+                <span className="font-serif text-[22px] text-white">{formatPrice(heroProduct.price)}</span>
+                {heroProduct.oldPrice && <span className="text-[10px] text-white/35 line-through">{formatPrice(heroProduct.oldPrice)}</span>}
+              </div>
+              <p className="mt-4 line-clamp-3 text-[11px] font-light leading-6 text-white/50">{heroProduct.description}</p>
+
+              {heroProduct.specifications?.length ? (
+                <div className="mt-5 divide-y divide-white/10 border-y border-white/10">
+                  {heroProduct.specifications.slice(0, 3).map((spec) => (
+                    <div key={`${spec.label}-${spec.value}`} className="flex items-center justify-between gap-3 py-2.5">
+                      <span className="text-[7px] font-semibold uppercase tracking-[0.18em] text-white/35">{spec.label}</span>
+                      <span className="text-right text-[9px] text-white/70">{spec.value}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              <div className="mt-5 flex flex-col gap-2.5">
+                <Link
+                  href={productHref(heroProduct)}
+                  className="group flex h-11 items-center justify-between rounded-full border border-[var(--hero-accent)]/60 px-5 text-[8px] font-bold uppercase tracking-[0.2em] text-white transition-all hover:bg-[var(--hero-accent)] hover:text-[#07101f]"
                 >
-                  {settings.heroCta1Text}
-                  <ArrowRight size={15} />
-                </a>
+                  {content.viewPieceLabel}
+                  <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
                 <a
-                  href={conciergeUrl}
+                  href={heroOrderUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-13 items-center justify-center gap-2.5 rounded-full border border-white/15 bg-white/[0.025] px-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-cream transition-all duration-500 hover:border-brand-gold/60 hover:bg-brand-gold/[0.07] active:scale-[0.98]"
+                  className="flex h-10 items-center justify-center gap-2 rounded-full bg-white text-[8px] font-bold uppercase tracking-[0.18em] text-[#07101f] transition-colors hover:bg-[var(--hero-accent)]"
                 >
-                  <MessageCircle size={15} />
-                  {settings.heroCta2Text}
+                  <MessageCircle size={13} />
+                  {content.orderMessage.split(".")[0]}
                 </a>
               </div>
 
-              <div className="mt-9 grid w-full max-w-xl grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-white/[0.025] p-4 backdrop-blur-sm sm:p-5">
+              <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4">
+                <CurrencySelector />
+                <span className="text-[6px] font-semibold uppercase tracking-[0.22em] text-white/30">{shared.brandName}</span>
+              </div>
+
+              <div className="mt-5 grid grid-cols-3 gap-2 xl:mt-6">
                 {[
                   { value: `${products.length}+`, label: content.curatedPiecesLabel },
                   { value: `${categories.length}`, label: content.collectionsLabel },
                   { value: content.dispatchStatValue, label: content.dispatchLabel },
                 ].map((stat) => (
-                  <div key={stat.label} className="border-l border-white/10 pl-3 first:border-l-0 first:pl-0 sm:pl-5">
-                    <span className="block font-serif text-2xl text-brand-gold-light md:text-3xl">{stat.value}</span>
-                    <span className="mt-1 block text-[8px] uppercase leading-4 tracking-[0.14em] text-brand-cream-muted sm:text-[9px]">{stat.label}</span>
+                  <div key={stat.label}>
+                    <span className="block font-serif text-lg text-white/85">{stat.value}</span>
+                    <span className="mt-1 block text-[6px] uppercase leading-3 tracking-[0.14em] text-white/30">{stat.label}</span>
                   </div>
                 ))}
               </div>
+              <LeatherBrandCard className="mt-6 w-full max-w-[280px] xl:hidden" />
+            </div>
+          </motion.aside>
 
-              <LeatherBrandCard className="mt-6 max-w-[340px]" />
-            </motion.div>
-          </div>
-
-          <div className="z-10 flex items-center justify-center lg:col-span-5">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.2, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-              className="relative w-full max-w-[420px] lg:max-w-[480px]"
-            >
-              <div className="pointer-events-none absolute -inset-4 rounded-[2.4rem] border border-brand-gold/10 bg-brand-gold/[0.035]" />
-              <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/15 bg-brand-green-mid shadow-[0_45px_120px_-45px_rgba(0,0,0,0.95)]">
-                <Image
-                  src={settings.heroImage}
-                  alt={content.heroImageAlt}
-                  fill
-                  priority
-                  sizes="(max-width: 1024px) 90vw, 480px"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/10 to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 rounded-2xl border border-white/10 bg-black/55 p-5 backdrop-blur-xl sm:bottom-6 sm:left-6 sm:right-6">
-                  <span className="mb-2 block text-[8px] font-bold uppercase tracking-[0.24em] text-brand-gold-light">{content.signatureLabel}</span>
-                  <p className="text-[11px] font-light leading-6 text-brand-cream sm:text-xs">{settings.heroQuote}</p>
-                </div>
-              </div>
-              <div className="absolute -right-4 -top-4 hidden h-24 w-24 md:block">
-                <div className="animate-spin-slow absolute inset-0">
-                  <svg viewBox="0 0 100 100" className="h-full w-full">
-                    <defs>
-                      <path id="sealCircle" d="M 50,50 m -37,0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0" />
-                    </defs>
-                    <text className="fill-brand-gold text-[8.5px] uppercase tracking-[0.25em]">
-                      <textPath href="#sealCircle">{content.sealText}</textPath>
-                    </text>
-                  </svg>
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Gem size={20} className="text-brand-gold" />
-                </div>
-              </div>
-            </motion.div>
-          </div>
+          <a href="#categories" className="absolute bottom-7 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-1 text-[7px] font-bold uppercase tracking-[0.24em] text-white/35 transition-colors hover:text-[var(--hero-accent)] xl:flex">
+            <span>{content.scrollLabel}</span>
+            <ChevronDown size={13} className="animate-bounce" />
+          </a>
         </div>
-
-        <a href="#categories" className="absolute bottom-5 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-1 text-[8px] font-bold uppercase tracking-[0.22em] text-brand-gold/70 transition-colors hover:text-brand-gold lg:flex">
-          <span>{content.scrollLabel}</span>
-          <ChevronDown size={14} className="animate-bounce" />
-        </a>
       </section>
 
       <section className="relative z-10 border-y border-white/[0.06] bg-white/[0.018] px-5 py-8 sm:px-8 md:px-12">
