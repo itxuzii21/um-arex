@@ -28,9 +28,9 @@ import Reveal from "./components/Reveal";
 import ContentIcon from "./components/ContentIcon";
 
 const HERO_THEME = {
-  accent: "#c6a85b",
-  glow: "rgba(17, 62, 46, 0.4)",
-  deep: "#041a14",
+  accent: "#d4af37",
+  glow: "rgba(90, 61, 40, 0.4)",
+  deep: "#1c110b",
 };
 
 function SearchParamsHandler({
@@ -160,7 +160,7 @@ function HomeContent() {
           sizes="100vw"
           className="pointer-events-none -z-20 scale-110 object-cover opacity-[0.07] blur-2xl"
         />
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_64%_48%,var(--hero-glow),transparent_34%),linear-gradient(115deg,rgba(4,26,20,0.98),rgba(10,42,31,0.76)_48%,rgba(4,26,20,0.96))] transition-colors duration-1000" />
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_64%_48%,var(--hero-glow),transparent_34%),linear-gradient(115deg,rgba(28,17,11,0.98),rgba(45,30,22,0.76)_48%,rgba(28,17,11,0.96))] transition-colors duration-1000" />
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         <div className="grain-overlay opacity-40" />
 

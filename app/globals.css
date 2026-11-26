@@ -5,16 +5,16 @@
   --font-serif: "Space Grotesk", sans-serif;
   --font-sans: "Manrope", sans-serif;
 
-  --color-brand-green-dark: #041a14;
-  --color-brand-green-mid: #0a2a1f;
-  --color-brand-green-glow: #113e2e;
-  --color-brand-green-soft: #0e3527;
-  --color-brand-gold: #c6a85b;
-  --color-brand-gold-dark: #a8893d;
-  --color-brand-gold-light: #e6cd85;
-  --color-brand-input: #0e3527;
-  --color-brand-cream: #ede6d6;
-  --color-brand-cream-muted: #b8b0a0;
+  --color-brand-green-dark: #1c110b;
+  --color-brand-green-mid: #2d1e16;
+  --color-brand-green-glow: #5a3d28;
+  --color-brand-green-soft: #3d2a1e;
+  --color-brand-gold: #d4af37;
+  --color-brand-gold-dark: #b08d24;
+  --color-brand-gold-light: #f0d778;
+  --color-brand-input: #2d1e16;
+  --color-brand-cream: #f5f0eb;
+  --color-brand-cream-muted: #a89a90;
   --color-brand-white: #ffffff;
 
   --color-brand-leather: #2d1e16;
@@ -36,9 +36,9 @@
   body {
     @apply bg-brand-green-dark text-brand-cream font-sans antialiased overflow-x-hidden relative;
     background-image:
-      radial-gradient(circle at 78% 0%, rgba(17, 62, 46, 0.3) 0%, transparent 34%),
-      radial-gradient(circle at 8% 58%, rgba(10, 42, 31, 0.24) 0%, transparent 32%),
-      linear-gradient(180deg, #08261c 0%, #041a14 60%, #08261c 100%);
+      radial-gradient(circle at 78% 0%, rgba(90, 61, 40, 0.3) 0%, transparent 34%),
+      radial-gradient(circle at 8% 58%, rgba(45, 30, 22, 0.24) 0%, transparent 32%),
+      linear-gradient(180deg, #2d1e16 0%, #1c110b 60%, #2d1e16 100%);
     background-attachment: fixed;
   }
 
@@ -52,8 +52,8 @@
   }
 
   ::selection {
-    background: rgba(198, 168, 91, 0.3);
-    color: #ede6d6;
+    background: rgba(212, 175, 55, 0.3);
+    color: #f5f0eb;
   }
 }
 
@@ -63,19 +63,19 @@
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #041a14;
+  background: #1c110b;
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #a8893d, #5a4a26);
+  background: linear-gradient(180deg, #b08d24, #5a3d28);
   border-radius: 8px;
-  border: 2px solid #041a14;
+  border: 2px solid #1c110b;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #c6a85b, #a8893d);
+  background: linear-gradient(180deg, #d4af37, #b08d24);
 }
 * {
   scrollbar-width: thin;
-  scrollbar-color: #a8893d #041a14;
+  scrollbar-color: #b08d24 #1c110b;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -101,18 +101,18 @@
 .cinematic-vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle, transparent 30%, rgba(4, 26, 20, 0.88) 100%);
+  background: radial-gradient(circle, transparent 30%, rgba(28, 17, 11, 0.88) 100%);
   pointer-events: none;
 }
 
 .luxury-glass {
-  background: rgba(10, 42, 31, 0.82);
+  background: rgba(45, 30, 22, 0.82);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(198, 168, 91, 0.14);
+  border: 1px solid rgba(212, 175, 55, 0.14);
 }
 
 .luxury-gradient {
-  background: linear-gradient(135deg, #0a2a1f 0%, #041a14 100%);
+  background: linear-gradient(135deg, #2d1e16 0%, #1c110b 100%);
 }
 
 .gold-text {
@@ -121,7 +121,7 @@
 
 /* Gradient gold headline accent */
 .gold-gradient-text {
-  background: linear-gradient(120deg, #e6cd85 0%, #c6a85b 45%, #a8893d 100%);
+  background: linear-gradient(120deg, #f0d778 0%, #d4af37 45%, #b08d24 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -132,7 +132,7 @@
 }
 
 .luxury-shimmer {
-  background: #0a2a1f;
+  background: #2d1e16;
 }
 
 .gold-button {
@@ -140,8 +140,8 @@
 }
 
 .on-dark .product-card {
-  background-color: rgba(10, 42, 31, 0.9);
-  border-color: rgba(198, 168, 91, 0.16);
+  background-color: rgba(45, 30, 22, 0.9);
+  border-color: rgba(212, 175, 55, 0.16);
 }
 
 .touch-callout-none {
@@ -187,7 +187,7 @@
   left: 0;
   width: 45%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(230, 205, 133, 0.18), transparent);
+  background: linear-gradient(90deg, transparent, rgba(240, 215, 120, 0.18), transparent);
   transform: translateX(-120%) skewX(-18deg);
   pointer-events: none;
 }
@@ -216,7 +216,7 @@
 /* Fine gold rule */
 .gold-rule {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(198, 168, 91, 0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.6), transparent);
 }
 
 /* Leather grain surface */
@@ -242,7 +242,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid rgba(198, 168, 91, 0.75);
+  outline: 2px solid rgba(212, 175, 55, 0.75);
   outline-offset: 2px;
 }
 

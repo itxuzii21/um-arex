@@ -105,7 +105,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] } }
       }}
-      className="group relative aspect-[4/5] overflow-hidden rounded-[1.6rem] border border-brand-gold/15 bg-brand-green-mid shadow-[0_24px_70px_-32px_rgba(0,0,0,0.8)] transition-all duration-500 hover:-translate-y-1 hover:border-brand-gold/45 hover:shadow-[0_30px_80px_-30px_rgba(198,168,91,0.22)]"
+      className="group relative aspect-[4/5] overflow-hidden rounded-[1.6rem] border border-brand-gold/15 bg-brand-green-mid shadow-[0_24px_70px_-32px_rgba(0,0,0,0.8)] transition-all duration-500 hover:-translate-y-1 hover:border-brand-gold/45 hover:shadow-[0_30px_80px_-30px_rgba(212,175,55,0.22)]"
     >
       <div
         className="relative h-full w-full select-none touch-pan-y"
