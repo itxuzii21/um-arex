@@ -27,12 +27,11 @@ import LeatherBrandCard from "./components/LeatherBrandCard";
 import Reveal from "./components/Reveal";
 import ContentIcon from "./components/ContentIcon";
 
-const HERO_THEMES = [
-  { accent: "#83baff", glow: "rgba(38, 108, 225, 0.34)", deep: "#071122" },
-  { accent: "#e6a878", glow: "rgba(153, 77, 35, 0.32)", deep: "#140d0a" },
-  { accent: "#d9c49e", glow: "rgba(142, 111, 52, 0.25)", deep: "#11110d" },
-  { accent: "#9fd5dc", glow: "rgba(42, 124, 139, 0.28)", deep: "#071315" },
-];
+const HERO_THEME = {
+  accent: "#e58a55",
+  glow: "rgba(87, 43, 25, 0.34)",
+  deep: "#09090b",
+};
 
 function SearchParamsHandler({
   setSelectedCategory,
@@ -95,7 +94,7 @@ function HomeContent() {
   const heroProducts = useMemo(() => featuredProducts.slice(0, 4), [featuredProducts]);
   const activeHeroIndex = heroProducts.length ? heroIndex % heroProducts.length : 0;
   const heroProduct = heroProducts[activeHeroIndex] ?? products[0];
-  const heroTheme = HERO_THEMES[activeHeroIndex % HERO_THEMES.length];
+  const heroTheme = HERO_THEME;
   const heroOrderUrl = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(
     `${content.orderMessage}\n\n${heroProduct.name} — ${formatPrice(heroProduct.price)}`
   )}`;
@@ -161,7 +160,7 @@ function HomeContent() {
           sizes="100vw"
           className="pointer-events-none -z-20 scale-110 object-cover opacity-[0.07] blur-2xl"
         />
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_64%_48%,var(--hero-glow),transparent_34%),linear-gradient(115deg,rgba(3,6,14,0.96),rgba(5,9,19,0.58)_48%,rgba(3,5,12,0.92))] transition-colors duration-1000" />
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_64%_48%,var(--hero-glow),transparent_34%),linear-gradient(115deg,rgba(9,9,11,0.97),rgba(17,17,20,0.68)_48%,rgba(9,9,11,0.94))] transition-colors duration-1000" />
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         <div className="grain-overlay opacity-40" />
 
@@ -189,7 +188,7 @@ function HomeContent() {
             <div className="mt-6 flex flex-wrap items-center gap-3 lg:mt-8">
               <a
                 href="#collection"
-                className="inline-flex h-11 items-center justify-center gap-3 rounded-full bg-[var(--hero-accent)] px-6 text-[9px] font-bold uppercase tracking-[0.18em] text-[#07101f] transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
+                className="inline-flex h-11 items-center justify-center gap-3 rounded-full bg-[var(--hero-accent)] px-6 text-[9px] font-bold uppercase tracking-[0.18em] text-[#09090b] transition-all duration-300 hover:brightness-110 active:scale-[0.98]"
               >
                 {settings.heroCta1Text}
                 <ArrowRight size={14} />
@@ -249,7 +248,7 @@ function HomeContent() {
                     <Image src={product.image} alt="" fill sizes="68px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
                     <span className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
                     {product.isNew && (
-                      <span className="absolute left-1 top-1 rounded-full bg-[var(--hero-accent)] px-1.5 py-0.5 text-[5px] font-bold uppercase tracking-wider text-[#07101f]">
+                      <span className="absolute left-1 top-1 rounded-full bg-[var(--hero-accent)] px-1.5 py-0.5 text-[5px] font-bold uppercase tracking-wider text-[#09090b]">
                         {product.newBadgeText || content.newBadgeText}
                       </span>
                     )}
@@ -302,7 +301,7 @@ function HomeContent() {
               <div className="mt-5 flex flex-col gap-2.5">
                 <Link
                   href={productHref(heroProduct)}
-                  className="group flex h-11 items-center justify-between rounded-full border border-[var(--hero-accent)]/60 px-5 text-[8px] font-bold uppercase tracking-[0.2em] text-white transition-all hover:bg-[var(--hero-accent)] hover:text-[#07101f]"
+                  className="group flex h-11 items-center justify-between rounded-full border border-[var(--hero-accent)]/60 px-5 text-[8px] font-bold uppercase tracking-[0.2em] text-white transition-all hover:bg-[var(--hero-accent)] hover:text-[#09090b]"
                 >
                   {content.viewPieceLabel}
                   <ArrowUpRight size={14} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -311,7 +310,7 @@ function HomeContent() {
                   href={heroOrderUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-10 items-center justify-center gap-2 rounded-full bg-white text-[8px] font-bold uppercase tracking-[0.18em] text-[#07101f] transition-colors hover:bg-[var(--hero-accent)]"
+                  className="flex h-10 items-center justify-center gap-2 rounded-full bg-white text-[8px] font-bold uppercase tracking-[0.18em] text-[#09090b] transition-colors hover:bg-[var(--hero-accent)]"
                 >
                   <MessageCircle size={13} />
                   {content.orderMessage.split(".")[0]}
