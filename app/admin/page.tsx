@@ -388,7 +388,6 @@ export default function AdminPage() {
   const store = useStore();
   const [authReady, setAuthReady] = useState(() => !isSupabaseConfigured || !supabase);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [accessToken, setAccessToken] = useState("");
   const [recoveryMode, setRecoveryMode] = useState(false);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -430,7 +429,6 @@ export default function AdminPage() {
       if (!active) return;
       if (!session) {
         setIsAuthenticated(false);
-        setAccessToken("");
         setAuthReady(true);
         return;
       }
@@ -438,11 +436,9 @@ export default function AdminPage() {
         void client.auth.signOut();
         setPasswordError("This portal is restricted to the configured administrator account.");
         setIsAuthenticated(false);
-        setAccessToken("");
         setAuthReady(true);
         return;
       }
-      setAccessToken(session.access_token);
       setIsAuthenticated(true);
       setAuthReady(true);
     };
@@ -456,7 +452,6 @@ export default function AdminPage() {
       if (event === "SIGNED_OUT") {
         setRecoveryMode(false);
         setIsAuthenticated(false);
-        setAccessToken("");
       }
       acceptSession(session);
     });
@@ -633,7 +628,6 @@ export default function AdminPage() {
       return;
     }
 
-    setAccessToken(data.session.access_token);
     setPassword("");
     setIsAuthenticated(true);
     setLoginBusy(false);
@@ -657,7 +651,6 @@ export default function AdminPage() {
     if (dirty && !confirm("You have unsaved changes. Discard them and sign out?")) return;
     if (supabase) await supabase.auth.signOut();
     sessionStorage.removeItem("umarex_admin_passcode");
-    setAccessToken("");
     setPassword("");
     setRecoveryMode(false);
     setIsAuthenticated(false);
@@ -682,27 +675,37 @@ export default function AdminPage() {
       setActiveTab("commerce");
       return;
     }
-    if (!accessToken) {
-      setSaveStatus("error");
-      setSaveError("Your session has expired. Sign out and sign in again before saving.");
-      return;
-    }
-    const normalizedSettings = settingsForSave(settings);
-    setSaveStatus("saving");
-    setSaveError("");
-    store.setSettings(normalizedSettings);
-    store.setProducts(products);
-
-    if (!isSupabaseConfigured) {
+    if (!isSupabaseConfigured || !supabase) {
       setSaveStatus("local");
       setDirty(false);
       setTimeout(() => setSaveStatus("idle"), 2500);
       return;
     }
 
+    const normalizedSettings = settingsForSave(settings);
+    setSaveStatus("saving");
+    setSaveError("");
+    store.setSettings(normalizedSettings);
+    store.setProducts(products);
+
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !session || session.user.email?.toLowerCase() !== ADMIN_ACCOUNT_EMAIL.toLowerCase()) {
+      setSaveStatus("error");
+      setSaveError("Your session has expired. Sign out and sign in again before saving.");
+      return;
+    }
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user || user.email?.toLowerCase() !== ADMIN_ACCOUNT_EMAIL.toLowerCase()) {
+      setSaveStatus("error");
+      setSaveError("Your admin session is invalid or has expired. Please sign in again.");
+      return;
+    }
+
+    const currentAccessToken = session.access_token;
     const [catalogRes, settingsRes] = await Promise.all([
-      store.persist(CATALOG_CONTENT_ID, { products }, accessToken),
-      store.persist(SETTINGS_CONTENT_ID, normalizedSettings, accessToken),
+      store.persist(CATALOG_CONTENT_ID, { products }, currentAccessToken),
+      store.persist(SETTINGS_CONTENT_ID, normalizedSettings, currentAccessToken),
     ]);
 
     if (catalogRes.ok && settingsRes.ok) {
@@ -714,7 +717,7 @@ export default function AdminPage() {
       setSaveStatus("error");
       setSaveError(catalogRes.error || settingsRes.error || "Save failed.");
     }
-  }, [products, settings, accessToken, store]);
+  }, [products, settings, store]);
 
   const updateSetting = <K extends keyof SiteSettings>(key: K, value: SiteSettings[K]) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
@@ -978,7 +981,6 @@ export default function AdminPage() {
         setSecurityNotice({ type: "error", text: "Your current password is incorrect. Please try again." });
         return;
       }
-      setAccessToken(data.session.access_token);
     }
 
     const { error } = await supabase.auth.updateUser({ password: newPassword });
@@ -1011,14 +1013,8 @@ export default function AdminPage() {
         <section className="relative hidden overflow-hidden border-r border-white/5 bg-brand-green-mid p-12 lg:flex lg:flex-col lg:justify-between xl:p-16">
           <div className="absolute -left-32 top-1/3 h-96 w-96 rounded-full bg-brand-gold/5 blur-3xl" />
           <div className="absolute -right-40 -top-20 h-[30rem] w-[30rem] rounded-full bg-brand-leather-glow/20 blur-3xl" />
-          <Link href="/" className="relative flex w-fit items-center gap-3">
-            <span className="grid h-12 w-12 place-items-center rounded-full border border-brand-gold/25 bg-black/10">
-              <Image src="/leather-logo.png" alt="UM-AREX Leather" width={40} height={40} className="object-contain" />
-            </span>
-            <span>
-              <span className="block font-serif text-lg font-semibold tracking-[0.28em] text-brand-gold">UM-AREX</span>
-              <span className="mt-1 block text-[8px] uppercase tracking-[0.42em] text-brand-cream-muted">Leather atelier</span>
-            </span>
+          <Link href="/" className="relative flex w-fit items-center">
+            <Image src="/leather-logo.png" alt="UM-AREX Leather" width={240} height={79} priority className="h-[72px] w-auto object-contain" />
           </Link>
           <div className="relative max-w-xl py-16">
             <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-brand-gold/20 bg-brand-gold/5 px-4 py-2 text-[10px] uppercase tracking-[0.22em] text-brand-gold">
@@ -1041,9 +1037,8 @@ export default function AdminPage() {
         <section className="flex min-h-screen items-center justify-center px-5 py-12 sm:px-10">
           <div className="w-full max-w-md">
             <div className="mb-10 lg:hidden">
-              <Link href="/" className="inline-flex items-center gap-3">
-                <Image src="/leather-logo.png" alt="UM-AREX Leather" width={44} height={44} className="rounded-full border border-brand-gold/20 bg-brand-green-mid p-1" />
-                <span><span className="block font-serif text-base font-semibold tracking-[0.25em] text-brand-gold">UM-AREX</span><span className="mt-1 block text-[8px] uppercase tracking-[0.3em] text-brand-cream-muted">Leather atelier</span></span>
+              <Link href="/" className="inline-flex items-center">
+                <Image src="/leather-logo.png" alt="UM-AREX Leather" width={210} height={69} priority className="h-[62px] w-auto object-contain" />
               </Link>
             </div>
             <div className="mb-8">
@@ -1109,12 +1104,8 @@ export default function AdminPage() {
       {mobileNavOpen && <button aria-label="Close navigation" onClick={() => setMobileNavOpen(false)} className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden" />}
       <aside className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-white/[0.07] bg-brand-green-mid transition-transform duration-300 lg:translate-x-0 ${mobileNavOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex h-24 items-center justify-between border-b border-white/[0.06] px-6">
-          <Link href="/" className="flex items-center gap-3">
-            <Image src="/leather-logo.png" alt="UM-AREX Leather" width={42} height={42} className="rounded-full border border-brand-gold/20 bg-black/10 p-1" />
-            <span>
-              <span className="block font-serif text-base font-semibold tracking-[0.24em] text-brand-gold">UM-AREX</span>
-              <span className="mt-1 block text-[8px] uppercase tracking-[0.35em] text-brand-cream-muted">Leather admin</span>
-            </span>
+          <Link href="/" className="flex items-center">
+            <Image src="/leather-logo.png" alt="UM-AREX Leather" width={180} height={59} className="h-[52px] w-auto object-contain" />
           </Link>
           <button onClick={() => setMobileNavOpen(false)} aria-label="Close navigation" className="rounded-lg p-2 text-brand-cream-muted hover:bg-white/5 lg:hidden"><X size={18} /></button>
         </div>

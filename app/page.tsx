@@ -22,7 +22,6 @@ import ProductCard from "./components/ProductCard";
 import { useStore } from "./data/StoreProvider";
 import { getCategories, productHref } from "./data/catalog";
 import { useCurrency } from "./data/CurrencyProvider";
-import CurrencySelector from "./components/CurrencySelector";
 import WatchBrandCard from "./components/WatchBrandCard";
 import Reveal from "./components/Reveal";
 import ContentIcon from "./components/ContentIcon";
@@ -317,11 +316,6 @@ function HomeContent() {
                 </a>
               </div>
 
-              <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4">
-                <CurrencySelector />
-                <span className="text-[6px] font-semibold uppercase tracking-[0.22em] text-brand-cream/30">{shared.brandName}</span>
-              </div>
-
               <div className="mt-5 grid grid-cols-3 gap-2 xl:mt-6">
                 {[
                   { value: `${products.length}+`, label: content.curatedPiecesLabel },
@@ -570,7 +564,7 @@ function HomeContent() {
                       href={shared.watchUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="gold-button inline-flex h-12 items-center justify-center gap-2.5 px-7 active:scale-[0.98]"
+                      className="watch-green-button inline-flex h-12 items-center justify-center gap-2.5 rounded-full border border-brand-watch-green-glow px-7 font-semibold uppercase tracking-[0.16em] active:scale-[0.98] hover:border-brand-gold/50"
                     >
                       {content.leatherPrimaryCta} <ArrowUpRight size={14} />
                     </a>
@@ -578,7 +572,7 @@ function HomeContent() {
                       href={shared.watchUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-brand-tan/40 px-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-cream transition-all duration-500 hover:border-brand-gold hover:bg-brand-gold/5 active:scale-[0.98]"
+                      className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-brand-watch-green-glow px-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-brand-cream transition-all duration-500 hover:border-brand-gold hover:bg-brand-watch-green-mid/50 active:scale-[0.98]"
                     >
                       {content.leatherSecondaryCta}
                     </a>

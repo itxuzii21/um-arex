@@ -309,7 +309,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       } catch {
         return {
           ok: false,
-          error: "Could not reach the save service. Run the site with Netlify Dev or deploy to Netlify to save to the database.",
+          error: "Could not reach the save service. Check your connection and try again.",
         };
       }
     },

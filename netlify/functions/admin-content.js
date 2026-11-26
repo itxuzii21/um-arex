@@ -7,10 +7,10 @@ function json(status, payload) {
 }
 
 async function isAdmin(accessToken) {
-  const email = process.env.ADMIN_ACCOUNT_EMAIL || "uzairmirza7863@gmail.com";
+  const email = "uzairmirza7863@gmail.com";
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  if (!accessToken || !email || !url || !key) return false;
+  const key = process.env.SUPABASE_SECRET_KEY;
+  if (!accessToken || !url || !key) return false;
 
   const response = await fetch(`${url}/auth/v1/user`, {
     headers: {

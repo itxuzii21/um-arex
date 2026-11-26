@@ -67,18 +67,15 @@ export default function Navbar() {
         </div>
 
         <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-4 px-5 py-4 md:px-8 lg:px-12">
-          <Link href="/" className="flex items-center gap-3 transition-transform duration-500 active:scale-95">
-            <div className="relative h-11 w-11 rounded-full border border-brand-gold/25 bg-brand-green-mid p-1 shadow-inner">
-              <Image src={shared.logoUrl} alt={shared.logoAlt} fill sizes="44px" className="rounded-full object-contain p-1" />
-            </div>
-            <div className="leading-none">
-              <span className="block font-serif text-xl font-semibold uppercase tracking-[0.22em] text-brand-gold">
-                {shared.brandName}
-              </span>
-              <span className="mt-1.5 block text-[8px] font-medium uppercase tracking-[0.32em] text-brand-cream-muted">
-                {shared.brandSubtitle}
-              </span>
-            </div>
+          <Link href="/" className="flex shrink-0 items-center transition-transform duration-500 active:scale-95">
+            <Image
+              src={shared.logoUrl}
+              alt={shared.logoAlt}
+              width={200}
+              height={66}
+              priority
+              className="h-[52px] w-auto object-contain sm:h-[58px]"
+            />
           </Link>
 
           <nav className="hidden items-center gap-7 xl:flex">
@@ -94,10 +91,14 @@ export default function Navbar() {
               {nav.about}
               <span className={underline} />
             </Link>
-            <a href={shared.watchUrl} target="_blank" rel="noopener noreferrer" className={`${navLink} inline-flex items-center gap-1.5 text-brand-tan hover:text-brand-gold-light`}>
+            <a
+              href={shared.watchUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="watch-green-button inline-flex items-center gap-1.5 rounded-full border border-brand-watch-green-glow px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.14em] hover:border-brand-gold/50"
+            >
               {nav.leather}
               <ArrowUpRight size={11} />
-              <span className={underline} />
             </a>
             <Link href="/faq" className={navLink}>
               {nav.faq}
@@ -154,12 +155,7 @@ export default function Navbar() {
             className="fixed inset-0 z-[70] flex min-h-screen flex-col overflow-y-auto bg-brand-green-dark p-5 sm:p-7"
           >
             <div className="flex items-center justify-between border-b border-brand-gold/10 pb-5">
-              <div className="flex items-center gap-3">
-                <div className="relative h-9 w-9 rounded-full border border-brand-gold/20 bg-brand-green-mid p-1">
-                  <Image src={shared.logoUrl} alt={shared.logoAlt} fill sizes="36px" className="rounded-full object-contain p-1" />
-                </div>
-                <span className="font-serif text-sm font-medium uppercase tracking-[0.2em] text-brand-gold">{shared.brandName}</span>
-              </div>
+              <Image src={shared.logoUrl} alt={shared.logoAlt} width={180} height={60} priority className="h-12 w-auto object-contain" />
               <button
                 onClick={() => setIsMenuOpen(false)}
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-gold/15 bg-brand-green-mid text-brand-gold transition-all duration-300 active:scale-90"
@@ -211,7 +207,7 @@ export default function Navbar() {
                   href={shared.watchUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="leather-sheen leather-surface flex items-center justify-between rounded-2xl border border-brand-tan/30 px-5 py-4"
+                  className="watch-green-button leather-sheen flex items-center justify-between rounded-2xl border border-brand-watch-green-glow px-5 py-4 hover:border-brand-gold/50"
                 >
                   <div>
                     <span className="block text-[8px] font-bold uppercase tracking-[0.18em] text-brand-tan">{nav.sisterMaison}</span>

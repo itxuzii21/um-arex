@@ -23,6 +23,10 @@
   --color-brand-espresso: #1a110b;
   --color-brand-tan: #c19a6b;
 
+  --color-brand-watch-green-dark: #041a14;
+  --color-brand-watch-green-mid: #0a2a1f;
+  --color-brand-watch-green-glow: #113e2e;
+
   --color-brand-success: #25d366;
   --color-brand-info: #5aa9e6;
   --color-brand-danger: #e05d5d;
@@ -137,6 +141,10 @@
 
 .gold-button {
   @apply bg-brand-gold text-brand-green-dark hover:bg-brand-gold-light transition-all duration-500 rounded-full font-semibold uppercase tracking-[0.16em] text-[11px];
+}
+
+.watch-green-button {
+  @apply bg-brand-watch-green-mid text-brand-cream transition-all duration-500 hover:bg-brand-watch-green-glow hover:text-brand-gold-light;
 }
 
 .on-dark .product-card {

@@ -37,13 +37,8 @@ export default function Footer() {
       <div className="pointer-events-none absolute -right-40 -top-40 h-96 w-96 rounded-full bg-brand-gold/[0.05] blur-[120px]" />
       <div className="relative mx-auto grid max-w-[1500px] grid-cols-1 gap-12 border-b border-white/[0.07] px-5 pb-16 sm:grid-cols-2 md:px-8 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:gap-10 lg:px-12">
         <div className="flex flex-col items-start">
-          <Link href="/" onClick={handleLogoClick} className="flex items-center gap-3" aria-label={`${shared.brandName} ${footer.homeLabel}`}>
-            <div className="relative h-11 w-11 rounded-full border border-brand-gold/20 bg-brand-green-mid p-1">
-              <Image src={shared.logoUrl} alt={shared.logoAlt} fill sizes="44px" className="object-contain p-1" />
-            </div>
-            <span className="font-serif text-xl font-semibold uppercase tracking-[0.16em] text-brand-gold">
-              {shared.brandName}
-            </span>
+          <Link href="/" onClick={handleLogoClick} className="flex items-center" aria-label={`${shared.brandName} ${footer.homeLabel}`}>
+            <Image src={shared.logoUrl} alt={shared.logoAlt} width={220} height={73} className="h-[62px] w-auto object-contain" />
           </Link>
           <p className="mt-6 max-w-xs text-[13px] font-light leading-7 text-brand-cream-muted">
             {settings.footerDescription}
@@ -52,7 +47,7 @@ export default function Footer() {
             href={shared.watchUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group mt-6 inline-flex items-center gap-2 rounded-full border border-brand-tan/30 bg-brand-leather/40 px-4 py-2.5 text-[9px] font-semibold uppercase tracking-[0.16em] text-brand-tan transition-all duration-300 hover:border-brand-gold hover:text-brand-gold-light"
+            className="watch-green-button group mt-6 inline-flex items-center gap-2 rounded-full border border-brand-watch-green-glow px-4 py-2.5 text-[9px] font-semibold uppercase tracking-[0.16em] hover:border-brand-gold/50"
           >
             {footer.leatherLabel}
             <ArrowUpRight size={12} className="transition-transform duration-300 group-hover:rotate-45" />
