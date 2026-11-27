@@ -7,6 +7,11 @@ import {
   type SharedContent,
   type ShowcaseSettings,
 } from "./content";
+import {
+  DEFAULT_PAGE_LAYOUTS,
+  normalizePageLayouts,
+  type PageLayouts,
+} from "./pageLayout";
 
 export interface SiteSettings {
   bannerText: string;
@@ -64,6 +69,7 @@ export interface SiteSettings {
   shared: SharedContent;
   commerce: CommerceSettings;
   showcase: ShowcaseSettings;
+  pageLayouts: PageLayouts;
 }
 
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
@@ -121,6 +127,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   pages: DEFAULT_PAGES,
   shared: DEFAULT_SHARED,
   commerce: DEFAULT_COMMERCE,
+  pageLayouts: DEFAULT_PAGE_LAYOUTS,
   showcase: {
     featuredProductIds: ["25", "24", "23", "22", "21"],
     newProductIds: ["25", "23", "20"],
@@ -148,6 +155,7 @@ function mergeContent<T>(defaults: T, input: unknown): T {
 
 export function mergeSiteSettings(input?: Partial<SiteSettings> | null): SiteSettings {
   const merged = mergeContent(DEFAULT_SITE_SETTINGS, input || {}) as SiteSettings;
+  merged.pageLayouts = normalizePageLayouts(merged.pageLayouts);
   const currencies = Array.isArray(merged.commerce.currencies) ? merged.commerce.currencies : [];
   const normalizedCurrencies = currencies.map((currency) => ({
     ...currency,

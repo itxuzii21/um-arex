@@ -11,6 +11,7 @@ import ContentIcon from "../components/ContentIcon";
 import { useStore } from "../data/StoreProvider";
 import { useCurrency } from "../data/CurrencyProvider";
 import type { LeatherProduct } from "../data/content";
+import { LEATHER_PRODUCT_GRID_SIZE_CLASSES, PAGE_CARD_SIZE_CLASSES, normalizePageLayout } from "../data/pageLayout";
 
 interface LeatherRecord {
   id: string | number;
@@ -32,6 +33,8 @@ export default function LeatherPage() {
   const { formatPrice } = useCurrency();
   const content = settings.pages.leather;
   const shared = settings.shared;
+  const layout = normalizePageLayout("leather", settings.pageLayouts.leather);
+  const sectionStyle = (id: string) => ({ order: layout.sectionOrder.indexOf(id) });
   const [products, setProducts] = useState<LeatherProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const displayProducts = content.products.length ? content.products : products;
@@ -72,7 +75,7 @@ export default function LeatherPage() {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-brand-espresso text-brand-cream">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-brand-espresso text-brand-cream">
       {/* Ambient leather glows */}
       <div className="animate-glow-drift pointer-events-none absolute left-1/4 top-[15%] z-0 h-[500px] w-[500px] rounded-full bg-brand-leather-glow/20 blur-[150px]" />
       <div className="pointer-events-none absolute bottom-[10%] right-1/4 z-0 h-[400px] w-[400px] rounded-full bg-brand-gold/5 blur-[130px]" />
@@ -93,7 +96,7 @@ export default function LeatherPage() {
       </div>
 
       {/* Hero */}
-      <section className="relative z-10 flex min-h-[78vh] items-center justify-center px-6 py-20">
+      <section id="leather-hero" style={sectionStyle("leather-hero")} className="relative z-10 flex min-h-[78vh] items-center justify-center px-6 py-20">
         <div className="mx-auto max-w-4xl text-center">
           <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}>
             <span className="mb-7 inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.4em] text-brand-tan md:text-xs">
@@ -129,7 +132,7 @@ export default function LeatherPage() {
       </section>
 
       {/* Live collection preview from shared database */}
-      <section id="preview" className="relative z-10 scroll-mt-24 border-t border-brand-tan/15 px-6 py-24 md:px-12">
+      <section id="preview" style={sectionStyle("leather-preview")} className="relative z-10 scroll-mt-24 border-t border-brand-tan/15 px-6 py-24 md:px-12">
         <div className="mx-auto max-w-7xl">
           <Reveal className="mb-14 text-center">
             <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.4em] text-brand-tan">{content.previewTag}</span>
@@ -140,7 +143,7 @@ export default function LeatherPage() {
           </Reveal>
 
           {loading && !content.products.length ? (
-            <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+            <div className={`grid ${LEATHER_PRODUCT_GRID_SIZE_CLASSES[layout.cardSizes.leatherProducts]}`}>
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="animate-pulse rounded-3xl border border-brand-tan/10 bg-brand-leather/30 p-4">
                   <div className="mb-4 aspect-[4/5] rounded-2xl bg-brand-leather-mid/50" />
@@ -150,7 +153,7 @@ export default function LeatherPage() {
               ))}
             </div>
           ) : displayProducts.length > 0 ? (
-            <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+            <div className={`grid ${LEATHER_PRODUCT_GRID_SIZE_CLASSES[layout.cardSizes.leatherProducts]}`}>
               {displayProducts.map((p, i) => (
                 <Reveal key={p.id} delay={i * 0.06}>
                   <a
@@ -199,14 +202,14 @@ export default function LeatherPage() {
       </section>
 
       {/* Brand values */}
-      <section className="relative z-10 border-t border-brand-tan/15 px-6 py-24 md:px-12">
+      <section id="leather-values" style={sectionStyle("leather-values")} className="relative z-10 border-t border-brand-tan/15 px-6 py-24 md:px-12">
         <div className="mx-auto max-w-5xl">
           <Reveal className="mb-16 text-center">
             <h2 className="text-2xl text-brand-cream md:text-3xl">{content.standardTitle}</h2>
           </Reveal>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {content.values.map((item, i) => (
-              <Reveal key={item.id} delay={i * 0.12} className="hover-lift rounded-3xl border border-brand-tan/15 bg-brand-leather/30 p-8 text-center hover:border-brand-gold/30">
+              <Reveal key={item.id} delay={i * 0.12} className={`hover-lift rounded-3xl border border-brand-tan/15 bg-brand-leather/30 text-center hover:border-brand-gold/30 ${PAGE_CARD_SIZE_CLASSES.leatherValues[layout.cardSizes.leatherValues]}`}>
                 <span className="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-brand-tan/30 text-brand-gold-light"><ContentIcon name={item.icon} /></span>
                 <h3 className="mb-3 font-serif text-base uppercase tracking-wider text-brand-gold-light">{item.title}</h3>
                 <p className="text-xs font-light leading-relaxed text-brand-cream-muted">{item.description}</p>
@@ -217,8 +220,8 @@ export default function LeatherPage() {
       </section>
 
       {/* CTA */}
-      <section className="relative z-10 border-t border-brand-tan/15 px-6 py-20 md:px-12">
-        <div className="mx-auto max-w-2xl text-center">
+      <section id="leather-cta" style={sectionStyle("leather-cta")} className="relative z-10 border-t border-brand-tan/15 px-6 py-20 md:px-12">
+        <div className={`mx-auto max-w-2xl text-center ${PAGE_CARD_SIZE_CLASSES.leatherCta[layout.cardSizes.leatherCta]}`}>
           <Reveal>
             <h2 className="mb-4 font-serif text-2xl text-brand-cream md:text-3xl">{content.ctaTitle}</h2>
             <p className="mb-9 text-xs font-light leading-relaxed text-brand-cream-muted md:text-sm">

@@ -118,6 +118,7 @@ const server = http.createServer((request, response) => {
 });
 
 server.on("upgrade", (request, socket, head) => {
+  socket.on("error", () => socket.destroy());
   const upstream = http.request({
     hostname: upstreamHost,
     port: nextPort,
@@ -127,6 +128,7 @@ server.on("upgrade", (request, socket, head) => {
   });
 
   upstream.on("upgrade", (upstreamResponse, upstreamSocket, upstreamHead) => {
+    upstreamSocket.on("error", () => socket.destroy());
     const headers = Object.entries(upstreamResponse.headers)
       .map(([name, value]) => `${name}: ${value}`)
       .join("\r\n");

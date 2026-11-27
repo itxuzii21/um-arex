@@ -40,21 +40,7 @@ export interface Category {
 
 import leatherCatalog from "./data/leather.json";
 
-const getProducts = (): Product[] => {
-  if (typeof window !== "undefined") {
-    const stored = localStorage.getItem("umarex_leather_products");
-    if (stored) {
-      try {
-        return JSON.parse(stored) as Product[];
-      } catch {
-        return leatherCatalog as Product[];
-      }
-    }
-  }
-  return leatherCatalog as Product[];
-};
-
-export const PRODUCTS: Product[] = typeof window !== "undefined" ? getProducts() : leatherCatalog as Product[];
+export const PRODUCTS: Product[] = leatherCatalog as Product[];
 
 export const OWNER_WHATSAPP_NUMBER = "923279595329";
 export const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/EsbVXoDJEvuIjYAp0ipzs0?mode=gi_t";

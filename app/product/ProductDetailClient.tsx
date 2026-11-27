@@ -19,6 +19,7 @@ import { useStore } from "../data/StoreProvider";
 import ProductCard from "../components/ProductCard";
 import { useCurrency } from "../data/CurrencyProvider";
 import { resolveContentText } from "../data/content";
+import { PAGE_CARD_SIZE_CLASSES, RELATED_PRODUCT_GRID_SIZE_CLASSES, normalizePageLayout } from "../data/pageLayout";
 
 const slideVariants = {
   enter: (dir: number) => ({ x: dir > 0 ? "100%" : dir < 0 ? "-100%" : 0, opacity: 0 }),
@@ -30,6 +31,8 @@ export default function ProductDetailClient({ productId }: { productId: string }
   const { products, settings, status } = useStore();
   const { formatPrice, formatAmount, formatPkr, isInternational, deliveryAvailable, country, currencyCode, convertPrice } = useCurrency();
   const page = settings.pages.product;
+  const layout = normalizePageLayout("product", settings.pageLayouts.product);
+  const sectionStyle = (id: string) => ({ order: layout.sectionOrder.indexOf(id) });
   const commerce = settings.commerce;
   const product = useMemo(() => products.find((p) => p.id === productId), [products, productId]);
 
@@ -141,7 +144,7 @@ export default function ProductDetailClient({ productId }: { productId: string }
       <div className="pointer-events-none absolute left-1/4 top-[20%] z-0 h-[500px] w-[500px] rounded-full bg-brand-green-glow/10 blur-[150px]" />
       <div className="pointer-events-none absolute bottom-[20%] right-1/4 z-0 h-[400px] w-[400px] rounded-full bg-brand-gold/5 blur-[120px]" />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-16">
+      <div className="relative z-10 mx-auto flex max-w-7xl flex-col px-4 py-6 md:px-6 md:py-16">
         {/* Breadcrumb */}
         <nav className="mb-6 flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-brand-cream-muted md:mb-10">
           <Link href="/" className="transition-colors hover:text-brand-gold">{page.breadcrumbHome}</Link>
@@ -151,7 +154,7 @@ export default function ProductDetailClient({ productId }: { productId: string }
           <span className="truncate text-brand-gold">{product.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 items-start gap-8 md:gap-12 lg:grid-cols-12 lg:gap-16">
+        <div id="product-details" style={sectionStyle("product-details")} className="grid grid-cols-1 items-start gap-8 md:gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Gallery */}
           <div className="flex flex-col items-center lg:col-span-7">
             <div
@@ -238,7 +241,7 @@ export default function ProductDetailClient({ productId }: { productId: string }
             </div>
             {isInternational && <p className="-mt-3 mb-6 text-[10px] leading-5 text-brand-cream-muted"><span className="font-semibold text-brand-tan">{commerce.ratesUpdatedLabel}:</span> {resolveContentText(commerce.ratesNote, { currencyMargin: formatPkr(Math.max(500, Number(commerce.currencyMarginPkr) || 0)) })}</p>}
 
-            <div className="relative mb-6 overflow-hidden rounded-2xl border border-brand-gold/25 bg-brand-green-mid/40 p-5 shadow-xl md:mb-8">
+            <div className={`relative mb-6 overflow-hidden rounded-2xl border border-brand-gold/25 bg-brand-green-mid/40 shadow-xl md:mb-8 ${PAGE_CARD_SIZE_CLASSES.productShipping[layout.cardSizes.productShipping]}`}>
               <div className="pointer-events-none absolute right-0 top-0 h-24 w-24 rounded-full bg-brand-gold/5 blur-xl" />
               <h3 className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-brand-gold">
                 <Truck size={14} /> {product.shippingTitle || page.shippingTitle}
@@ -257,7 +260,7 @@ export default function ProductDetailClient({ productId }: { productId: string }
               <p className="text-xs font-light leading-relaxed text-brand-cream-muted md:text-sm">{product.detailDescription || product.description}</p>
             </div>
 
-            <div className="mb-8 space-y-4 border-t border-brand-gold/10 pt-6 md:mb-10 md:pt-8">
+            <div className={`mb-8 border-t border-brand-gold/10 pt-6 md:mb-10 md:pt-8 ${PAGE_CARD_SIZE_CLASSES.productSpecifications[layout.cardSizes.productSpecifications]}`}>
               <h3 className="text-[10px] font-bold uppercase tracking-[0.25em] text-brand-gold">{product.specificationsTitle || page.specificationsTitle}</h3>
               <div className="grid grid-cols-2 gap-4">
                 {specifications.map((s, index) => (
@@ -291,12 +294,12 @@ export default function ProductDetailClient({ productId }: { productId: string }
 
         {/* Related */}
         {related.length > 0 && (
-          <div className="mt-20 border-t border-brand-gold/10 pt-16 md:mt-28">
+          <div id="product-related" style={sectionStyle("product-related")} className="mt-20 border-t border-brand-gold/10 pt-16 md:mt-28">
             <div className="mb-10 text-center">
               <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.4em] text-brand-gold">{product.relatedTag || page.relatedTag}</span>
               <h2 className="text-2xl text-brand-cream md:text-3xl">{(product.relatedTitle || page.relatedTitle).replace("{category}", product.category)}</h2>
             </div>
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div className={`grid ${RELATED_PRODUCT_GRID_SIZE_CLASSES[layout.cardSizes.productRelated]}`}>
               {related.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}

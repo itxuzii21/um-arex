@@ -6,10 +6,13 @@ import { useStore } from "../data/StoreProvider";
 import ContentIcon from "../components/ContentIcon";
 import { BackLink, PageIntroHeader } from "../components/PageBlocks";
 import { resolveContentText } from "../data/content";
+import { PAGE_CARD_SIZE_CLASSES, normalizePageLayout } from "../data/pageLayout";
 
 export default function TrackOrderPage() {
   const { settings } = useStore();
   const content = settings.pages.trackOrder;
+  const layout = normalizePageLayout("trackOrder", settings.pageLayouts.trackOrder);
+  const sectionStyle = (id: string) => ({ order: layout.sectionOrder.indexOf(id) });
   const [trackingNumber, setTrackingNumber] = useState("");
   const [requested, setRequested] = useState(false);
 
@@ -34,12 +37,14 @@ export default function TrackOrderPage() {
     <div className="relative min-h-screen overflow-hidden bg-brand-green-dark text-brand-cream">
       <div className="pointer-events-none absolute left-1/4 top-[15%] h-[500px] w-[500px] rounded-full bg-brand-green-glow/10 blur-[150px]" />
       <div className="pointer-events-none absolute bottom-[10%] right-1/4 h-[400px] w-[400px] rounded-full bg-brand-gold/5 blur-[120px]" />
-      <div className="relative z-10 mx-auto max-w-4xl px-5 py-8 md:px-8 md:py-20">
+      <div className="relative z-10 mx-auto flex max-w-4xl flex-col px-5 py-8 md:px-8 md:py-20">
         <BackLink label={content.backLabel} href="/#collection" />
-        <PageIntroHeader content={content} className="mb-12 md:mb-16" />
+        <div id="track-order-intro" style={sectionStyle("track-order-intro")}>
+          <PageIntroHeader content={content} className="mb-12 md:mb-16" />
+        </div>
 
-        <div className="mx-auto mb-12 max-w-2xl">
-          <form onSubmit={handleTrack} className="relative overflow-hidden rounded-[2rem] border border-brand-gold/15 bg-gradient-to-br from-brand-green-mid/50 to-brand-green-dark p-7 shadow-2xl md:p-10">
+        <div id="track-order-form" style={sectionStyle("track-order-form")} className="mx-auto mb-12 max-w-2xl">
+          <form onSubmit={handleTrack} className={`relative overflow-hidden rounded-[2rem] border border-brand-gold/15 bg-gradient-to-br from-brand-green-mid/50 to-brand-green-dark shadow-2xl ${PAGE_CARD_SIZE_CLASSES.trackingForm[layout.cardSizes.trackingForm]}`}>
             <div className="pointer-events-none absolute -bottom-20 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-brand-gold/5 blur-[80px]" />
             <div className="relative z-10">
               <label htmlFor="tracking" className="mb-3 block text-[10px] font-bold uppercase tracking-[0.3em] text-brand-gold">{content.fieldLabel}</label>
@@ -63,14 +68,14 @@ export default function TrackOrderPage() {
           </form>
         </div>
 
-        <div className="mx-auto mb-12 max-w-2xl">
+        <div id="track-order-journey" style={sectionStyle("track-order-journey")} className="mx-auto mb-12 max-w-2xl">
           <div className="mb-8 text-center">
             <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.4em] text-brand-gold">{content.journeyTag}</span>
             <h2 className="font-serif text-2xl text-brand-cream">{content.journeyTitle}</h2>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {content.steps.map((step, index) => (
-              <div key={step.id} className="flex items-start gap-4 rounded-2xl border border-brand-gold/10 bg-brand-green-mid/30 p-5 transition hover:border-brand-gold/25">
+              <div key={step.id} className={`flex items-start gap-4 rounded-2xl border border-brand-gold/10 bg-brand-green-mid/30 transition hover:border-brand-gold/25 ${PAGE_CARD_SIZE_CLASSES.journeySteps[layout.cardSizes.journeySteps]}`}>
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-brand-gold/25 bg-brand-green-dark text-brand-gold"><ContentIcon name={step.icon} size={17} /></span>
                 <div>
                   <div className="mb-1 flex items-center gap-2"><span className="text-[9px] font-bold text-brand-gold/60">0{index + 1}</span><h3 className="text-sm font-medium text-brand-cream">{step.title}</h3></div>
@@ -82,8 +87,8 @@ export default function TrackOrderPage() {
           <p className="mt-6 text-center text-[11px] text-brand-cream-muted">{content.summary}</p>
         </div>
 
-        <div className="mx-auto max-w-2xl text-center">
-          <div className="relative overflow-hidden rounded-[2rem] border border-brand-gold/15 bg-gradient-to-br from-brand-green-mid/50 to-brand-green-dark p-8 shadow-2xl">
+        <div id="track-order-support" style={sectionStyle("track-order-support")} className="mx-auto max-w-2xl text-center">
+          <div className={`relative overflow-hidden rounded-[2rem] border border-brand-gold/15 bg-gradient-to-br from-brand-green-mid/50 to-brand-green-dark shadow-2xl ${PAGE_CARD_SIZE_CLASSES.trackingSupport[layout.cardSizes.trackingSupport]}`}>
             <div className="pointer-events-none absolute -bottom-20 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-brand-gold/5 blur-[80px]" />
             <div className="relative z-10">
               <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.4em] text-brand-gold">{content.supportTag}</span>

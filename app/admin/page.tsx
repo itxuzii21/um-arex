@@ -13,6 +13,8 @@ import {
 import { Product, ProductSpecification } from "../types";
 import type { CountryOption } from "../data/content";
 import { SiteSettings, DEFAULT_SITE_SETTINGS } from "../data/siteSettings";
+import { normalizePageLayouts } from "../data/pageLayout";
+import PageLayoutEditor from "./PageLayoutEditor";
 import {
   useStore, CATALOG_CONTENT_ID, SETTINGS_CONTENT_ID,
 } from "../data/StoreProvider";
@@ -20,7 +22,7 @@ import { supabase, isSupabaseConfigured, ADMIN_ACCOUNT_EMAIL } from "@/lib/supab
 
 type AdminProduct = Product & { collectionTag?: string };
 
-type Tab = "products" | "showcase" | "shared" | "pages" | "trackOrder" | "commerce" | "hero" | "navbar" | "story" | "banner" | "specs" | "contact" | "footer" | "social" | "security";
+type Tab = "products" | "showcase" | "pageLayouts" | "shared" | "pages" | "trackOrder" | "commerce" | "hero" | "navbar" | "story" | "banner" | "specs" | "contact" | "footer" | "social" | "security";
 type ShowcaseField = keyof SiteSettings["showcase"];
 type SaveStatus = "idle" | "saving" | "saved" | "error" | "local";
 type Notice = { type: "success" | "error" | "info"; text: string } | null;
@@ -50,6 +52,7 @@ const navigation: { label: string; tabs: { key: Tab; label: string; icon: typeof
     label: "Website content",
     tabs: [
       { key: "shared", label: "Brand, navigation & SEO", icon: Globe2 },
+      { key: "pageLayouts", label: "Page layouts", icon: Settings2 },
       { key: "navbar", label: "Header", icon: PanelTop },
       { key: "hero", label: "Hero section", icon: ImageIcon },
       { key: "story", label: "Brand story", icon: BookOpenText },
@@ -76,6 +79,7 @@ const pageMeta: Record<Tab, { eyebrow: string; title: string; description: strin
   products: { eyebrow: "Leather catalog", title: "Wallets & accessories", description: "Manage leather products, galleries, pricing, materials, and every field on each product detail page." },
   showcase: { eyebrow: "Leather catalog", title: "Product Showcase", description: "Choose featured, new, and best-seller wallets and accessories, and arrange the featured collection." },
   shared: { eyebrow: "Website content", title: "Brand, navigation & SEO", description: "Control the leather brand name, logos, navigation labels, footer labels, links, and search metadata." },
+  pageLayouts: { eyebrow: "Website content", title: "Page layouts", description: "Reorder sections on every public page and resize cards, forms, policy boxes, and other panels." },
   pages: { eyebrow: "Website content", title: "Pages & policies", description: "Edit homepage extras, About, FAQ, policies, leather content, search messages, and product-page defaults." },
   trackOrder: { eyebrow: "Website content", title: "Track order page", description: "Edit the tracking form, delivery journey, support messages, and WhatsApp request flow." },
   commerce: { eyebrow: "International sales", title: "Delivery, countries & currency", description: "Configure delivery, enabled countries, currencies, exchange rates, and the international pricing margin." },
@@ -210,6 +214,7 @@ function settingsForSave(settings: SiteSettings): SiteSettings {
   return {
     ...settings,
     showcase: normalizeShowcase(settings.showcase),
+    pageLayouts: normalizePageLayouts(settings.pageLayouts),
     commerce: {
       ...settings.commerce,
       domesticDeliveryChargePkr: Number(settings.commerce.domesticDeliveryChargePkr),
@@ -257,6 +262,7 @@ function addSearchResults(value: unknown, path: string, labels: string[], locati
 }
 
 function topLevelSearchLocation(key: string): SearchLocation | null {
+  if (key === "pageLayouts") return { tab: "pageLayouts", section: "Page layouts" };
   if (key === "bannerText") return { tab: "navbar", section: "Header & announcement" };
   if (key.startsWith("hero")) return { tab: "hero", section: "Hero section" };
   if (key.startsWith("story")) return { tab: "story", section: "Brand story" };
@@ -524,6 +530,7 @@ export default function AdminPage() {
     { id: "quick:product", label: "Product detail defaults", detail: "Shipping, materials and order buttons", tab: "pages", page: "product", path: "settings.pages.product", searchText: "product detail leather materials specifications" },
     { id: "quick:showcase", label: "Product Showcase", detail: "Featured ordering, new arrivals and best sellers", tab: "showcase", searchText: "featured new best seller showcase wallets accessories" },
     { id: "quick:home", label: "Homepage section headings", detail: "Category and collection titles", tab: "pages", page: "home", path: "settings.categorySectionTag", searchText: "home category collection headings" },
+    { id: "quick:layout", label: "Page layouts", detail: "Section order and card sizes", tab: "pageLayouts", path: "settings.pageLayouts", searchText: "page layouts every page reorder move sections resize boxes categories benefits reviews policies forms products" },
     { id: "quick:products", label: "Leather products", detail: `${products.length} wallets and accessories in your catalog`, tab: "products", searchText: "products catalog wallets accessories leather" },
     { id: "quick:security", label: "Change administrator password", detail: "Account security and reset email", tab: "security", searchText: "password security reset" },
   ], [settings.commerce.domesticDeliveryChargePkr, products.length]);
@@ -1267,7 +1274,11 @@ export default function AdminPage() {
             </section>
           )}
 
-          {activeTab !== "products" && activeTab !== "showcase" && activeTab !== "security" && (
+          {activeTab === "pageLayouts" && (
+            <PageLayoutEditor value={settings.pageLayouts} onChange={(value) => updateSetting("pageLayouts", value)} />
+          )}
+
+          {activeTab !== "products" && activeTab !== "showcase" && activeTab !== "pageLayouts" && activeTab !== "security" && (
             <div className="rounded-2xl border border-white/[0.07] bg-brand-green-mid p-5 sm:p-7">
               {activeTab === "shared" && <ContentEditor label="Brand, navigation, footer & SEO" path="settings.shared" value={settings.shared} onChange={(value) => updateSetting("shared", value as SiteSettings["shared"])} />}
 

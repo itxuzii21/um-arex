@@ -6,11 +6,15 @@ import { BackLink, PageIntroHeader } from "../components/PageBlocks";
 import { useStore } from "../data/StoreProvider";
 import { useCurrency } from "../data/CurrencyProvider";
 import { resolveContentText } from "../data/content";
+import { FAQ_ITEM_SIZE_CLASSES, PAGE_CARD_SIZE_CLASSES, normalizePageLayout } from "../data/pageLayout";
 
 export default function FAQPage() {
   const { settings } = useStore();
   const { formatPkr } = useCurrency();
   const content = settings.pages.faq;
+  const layout = normalizePageLayout("faq", settings.pageLayouts.faq);
+  const sectionStyle = (id: string) => ({ order: layout.sectionOrder.indexOf(id) });
+  const faqSize = FAQ_ITEM_SIZE_CLASSES[layout.cardSizes.faqItems];
   const [openId, setOpenId] = useState<string | null>(null);
   const supportUrl = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(content.supportMessage)}`;
 
@@ -23,12 +27,14 @@ export default function FAQPage() {
       <div className="pointer-events-none absolute left-1/4 top-[20%] z-0 h-[500px] w-[500px] rounded-full bg-brand-green-glow/10 blur-[150px]" />
       <div className="pointer-events-none absolute bottom-[20%] right-1/4 z-0 h-[400px] w-[400px] rounded-full bg-brand-gold/5 blur-[120px]" />
 
-      <div className="relative z-10 mx-auto max-w-4xl px-6 py-8 md:py-20">
+      <div className="relative z-10 mx-auto flex max-w-4xl flex-col px-6 py-8 md:py-20">
         <BackLink label={content.backLabel} />
 
-        <PageIntroHeader content={content} className="mb-16" />
+        <div id="faq-intro" style={sectionStyle("faq-intro")}>
+          <PageIntroHeader content={content} className="mb-16" />
+        </div>
 
-        <div className="mb-16 space-y-4">
+        <div id="faq-questions" style={sectionStyle("faq-questions")} className="mb-16 space-y-4">
           {content.items.map((item, index) => {
             const isOpen = openId === item.id;
             const questionId = `faq-question-${index}`;
@@ -45,7 +51,7 @@ export default function FAQPage() {
                   onClick={() => toggleFAQ(item.id)}
                   aria-expanded={isOpen}
                   aria-controls={answerId}
-                  className="group flex w-full cursor-pointer items-center justify-between p-6 text-left"
+                  className={`group flex w-full cursor-pointer items-center justify-between text-left ${faqSize.button}`}
                 >
                   <span className="pr-4 text-sm font-medium text-brand-cream transition-colors duration-300 group-hover:text-brand-gold md:text-base">
                     {item.question}
@@ -66,7 +72,7 @@ export default function FAQPage() {
                   }`}
                 >
                   <div className="min-h-0 overflow-hidden">
-                    <div className="border-t border-brand-gold/10 px-6 pb-6 pt-4 text-sm font-light leading-relaxed text-brand-cream-muted">
+                    <div className={`border-t border-brand-gold/10 text-sm font-light leading-relaxed text-brand-cream-muted ${faqSize.answer}`}>
                       {resolveContentText(item.answer, { deliveryCharge: formatPkr(settings.commerce.domesticDeliveryChargePkr) })}
                     </div>
                   </div>
@@ -76,7 +82,7 @@ export default function FAQPage() {
           })}
         </div>
 
-        <div className="relative overflow-hidden rounded-[2rem] border border-brand-gold/15 bg-gradient-to-br from-brand-green-mid/50 to-brand-green-dark p-8 text-center shadow-2xl md:p-12">
+        <div id="faq-support" style={sectionStyle("faq-support")} className={`relative overflow-hidden rounded-[2rem] border border-brand-gold/15 bg-gradient-to-br from-brand-green-mid/50 to-brand-green-dark text-center shadow-2xl ${PAGE_CARD_SIZE_CLASSES.faqSupport[layout.cardSizes.faqSupport]}`}>
           <div className="pointer-events-none absolute -bottom-20 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-brand-gold/5 blur-[80px]" />
           <div className="relative z-10">
             <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.4em] text-brand-gold">{content.supportTag}</span>
