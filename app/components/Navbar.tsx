@@ -66,16 +66,16 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-4 px-5 py-4 md:px-8 lg:px-12">
-          <Link href="/" className="flex items-center gap-3 transition-transform duration-500 active:scale-95">
-            <div className="relative h-11 w-11 rounded-full border border-brand-gold/25 bg-brand-green-mid p-1 shadow-inner">
+        <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-3 px-5 py-4 sm:gap-4 md:px-8 lg:px-12">
+          <Link href="/" className="flex shrink-0 items-center gap-2 transition-transform duration-500 active:scale-95 sm:gap-3">
+            <div className="relative h-9 w-9 shrink-0 rounded-full border border-brand-gold/25 bg-brand-green-mid p-1 shadow-inner sm:h-11 sm:w-11">
               <Image src={shared.logoUrl} alt={shared.logoAlt} fill sizes="44px" className="rounded-full object-contain p-1" />
             </div>
             <div className="leading-none">
-              <span className="block font-serif text-xl font-semibold uppercase tracking-[0.22em] text-brand-gold">
+              <span className="block whitespace-nowrap font-serif text-base font-semibold uppercase tracking-[0.18em] text-brand-gold sm:text-xl sm:tracking-[0.22em]">
                 {shared.brandName}
               </span>
-              <span className="mt-1.5 block text-[8px] font-medium uppercase tracking-[0.32em] text-brand-cream-muted">
+              <span className="mt-1.5 block whitespace-nowrap text-[7px] font-medium uppercase tracking-[0.24em] text-brand-cream-muted sm:text-[8px] sm:tracking-[0.32em]">
                 {shared.brandSubtitle}
               </span>
             </div>
@@ -109,8 +109,9 @@ export default function Navbar() {
             </Link>
           </nav>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
             <div className="hidden md:block"><CurrencySelector /></div>
+            <div className="md:hidden"><CurrencySelector compact /></div>
             <button
               onClick={() => setSearchOpen(true)}
               aria-label={nav.search}
@@ -148,7 +149,7 @@ export default function Navbar() {
             aria-modal="true"
             aria-label={nav.navigationMenuLabel}
             variants={menuVariants}
-            initial="closed"
+            initial={false}
             animate="opened"
             exit="closed"
             className="fixed inset-0 z-[70] flex min-h-screen flex-col overflow-y-auto bg-brand-green-dark p-5 sm:p-7"

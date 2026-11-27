@@ -6,17 +6,6 @@ import type { CurrencyOption } from "./content";
 
 const CURRENCY_KEY = "umarex_currency";
 
-const REGION_CURRENCIES: Record<string, string> = {
-  PK: "PKR",
-  US: "USD", CA: "CAD", MX: "USD", PA: "USD", DO: "USD", GT: "USD", CR: "USD",
-  GB: "GBP", IE: "GBP",
-  AT: "EUR", BE: "EUR", HR: "EUR", CY: "EUR", EE: "EUR", FI: "EUR", FR: "EUR", DE: "EUR", GR: "EUR", IT: "EUR", LV: "EUR", LT: "EUR", LU: "EUR", MT: "EUR", NL: "EUR", PT: "EUR", SK: "EUR", SI: "EUR", ES: "EUR",
-  AE: "AED", SA: "SAR", QA: "SAR", KW: "SAR", BH: "SAR", OM: "SAR",
-  AU: "AUD", NZ: "NZD",
-  JP: "JPY", CN: "CNY", HK: "CNY", MO: "CNY", TW: "CNY",
-  IN: "INR", TR: "TRY", CH: "CHF", LI: "CHF",
-};
-
 interface CurrencyValue {
   currency: CurrencyOption;
   currencyCode: string;
@@ -30,17 +19,6 @@ interface CurrencyValue {
 }
 
 const CurrencyContext = createContext<CurrencyValue | null>(null);
-
-function detectCurrency(available: CurrencyOption[]): string {
-  try {
-    const locale = navigator.language || "en-PK";
-    const region = new Intl.Locale(locale).region || "PK";
-    const code = REGION_CURRENCIES[region] || "USD";
-    return available.some((item) => item.code === code) ? code : "PKR";
-  } catch {
-    return "PKR";
-  }
-}
 
 function detectCountry(): string {
   try {
@@ -59,16 +37,15 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDetectedCountry(detectCountry());
-      const stored = localStorage.getItem(CURRENCY_KEY);
-      const detected = detectCurrency(available);
-      setCurrencyCodeState(stored && available.some((item) => item.code === stored) ? stored : detected);
+      const stored = sessionStorage.getItem(CURRENCY_KEY);
+      setCurrencyCodeState(stored && available.some((item) => item.code === stored) ? stored : "PKR");
     }, 0);
     return () => clearTimeout(timer);
   }, [available]);
 
   const setCurrencyCode = useCallback((code: string) => {
     setCurrencyCodeState(code);
-    localStorage.setItem(CURRENCY_KEY, code);
+    sessionStorage.setItem(CURRENCY_KEY, code);
   }, []);
 
   const currency = useMemo(
