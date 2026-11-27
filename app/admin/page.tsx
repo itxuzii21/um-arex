@@ -12,12 +12,14 @@ import {
 } from "lucide-react";
 import { Product } from "../types";
 import { SiteSettings, DEFAULT_SITE_SETTINGS } from "../data/siteSettings";
+import { normalizePageLayouts } from "../data/pageLayout";
+import PageLayoutEditor from "./PageLayoutEditor";
 import {
   useStore, CATALOG_CONTENT_ID, SETTINGS_CONTENT_ID,
 } from "../data/StoreProvider";
 import { supabase, isSupabaseConfigured, ADMIN_ACCOUNT_EMAIL } from "@/lib/supabase";
 
-type Tab = "products" | "shared" | "pages" | "trackOrder" | "commerce" | "hero" | "navbar" | "story" | "banner" | "specs" | "contact" | "footer" | "social" | "security";
+type Tab = "products" | "pageLayouts" | "shared" | "pages" | "trackOrder" | "commerce" | "hero" | "navbar" | "story" | "banner" | "specs" | "contact" | "footer" | "social" | "security";
 type SaveStatus = "idle" | "saving" | "saved" | "error" | "local";
 type Notice = { type: "success" | "error" | "info"; text: string } | null;
 const PAGE_LABELS = {
@@ -43,6 +45,7 @@ const navigation: { label: string; tabs: { key: Tab; label: string; icon: typeof
     label: "Website content",
     tabs: [
       { key: "shared", label: "Brand, navigation & SEO", icon: Globe2 },
+      { key: "pageLayouts", label: "Page layouts", icon: Settings2 },
       { key: "navbar", label: "Header", icon: PanelTop },
       { key: "hero", label: "Hero section", icon: ImageIcon },
       { key: "story", label: "Brand story", icon: BookOpenText },
@@ -68,6 +71,7 @@ const navigation: { label: string; tabs: { key: Tab; label: string; icon: typeof
 const pageMeta: Record<Tab, { eyebrow: string; title: string; description: string }> = {
   products: { eyebrow: "Catalog management", title: "Product collection", description: "Manage products, galleries, pricing, and every field on each product detail page." },
   shared: { eyebrow: "Website content", title: "Brand, navigation & SEO", description: "Control the brand name, logos, navigation labels, footer labels, leather links, and search metadata." },
+  pageLayouts: { eyebrow: "Website content", title: "Page layouts", description: "Reorder sections on every public page and resize cards, forms, policy boxes, and other panels." },
   pages: { eyebrow: "Website content", title: "Pages & policies", description: "Edit homepage extras, About, FAQ, policies, leather content, search messages, and product-page defaults." },
   trackOrder: { eyebrow: "Website content", title: "Track order page", description: "Edit the tracking form, delivery journey, support messages, and WhatsApp request flow." },
   commerce: { eyebrow: "International sales", title: "Delivery & currency", description: "Configure worldwide delivery, shipping-charge confirmation, country currencies, exchange rates, and the international margin." },
@@ -124,6 +128,7 @@ function addSearchResults(value: unknown, path: string, labels: string[], locati
 }
 
 function topLevelSearchLocation(key: string): SearchLocation | null {
+  if (key === "pageLayouts") return { tab: "pageLayouts", section: "Page layouts" };
   if (key === "bannerText") return { tab: "navbar", section: "Header & announcement" };
   if (key.startsWith("hero")) return { tab: "hero", section: "Hero section" };
   if (key.startsWith("story")) return { tab: "story", section: "Brand story" };
@@ -383,6 +388,7 @@ export default function AdminPage() {
     { id: "quick:tracking", label: "Track order page", detail: "Form, delivery journey and WhatsApp message", tab: "trackOrder", searchText: "track order tracking" },
     { id: "quick:watch", label: "Product detail defaults", detail: "Shipping, specifications and order buttons", tab: "pages", page: "watch", path: "settings.pages.watch", searchText: "product detail watch specifications" },
     { id: "quick:home", label: "Homepage section headings", detail: "Category and collection titles", tab: "pages", page: "home", path: "settings.categorySectionTag", searchText: "home category collection headings" },
+    { id: "quick:layout", label: "Page layouts", detail: "Section order and card sizes", tab: "pageLayouts", path: "settings.pageLayouts", searchText: "page layouts every page reorder move sections resize boxes categories benefits reviews policies forms products" },
     { id: "quick:products", label: "Products", detail: `${products.length} products in your collection`, tab: "products", searchText: "products catalog watches" },
     { id: "quick:security", label: "Change administrator password", detail: "Account security and reset email", tab: "security", searchText: "password security reset" },
   ], [settings.commerce.domesticDeliveryChargePkr, products.length]);
@@ -536,8 +542,9 @@ export default function AdminPage() {
     }
     setSaveStatus("saving");
     setSaveError("");
+    const normalizedSettings = { ...settings, pageLayouts: normalizePageLayouts(settings.pageLayouts) };
     store.setProducts(products);
-    store.setSettings(settings);
+    store.setSettings(normalizedSettings);
 
     if (!isSupabaseConfigured) {
       setSaveStatus("local");
@@ -548,7 +555,7 @@ export default function AdminPage() {
 
     const [catalogRes, settingsRes] = await Promise.all([
       store.persist(CATALOG_CONTENT_ID, { products }, accessToken),
-      store.persist(SETTINGS_CONTENT_ID, settings, accessToken),
+      store.persist(SETTINGS_CONTENT_ID, normalizedSettings, accessToken),
     ]);
 
     if (catalogRes.ok && settingsRes.ok) {
@@ -909,7 +916,11 @@ export default function AdminPage() {
             </section>
           )}
 
-          {activeTab !== "products" && activeTab !== "security" && (
+          {activeTab === "pageLayouts" && (
+            <PageLayoutEditor value={settings.pageLayouts} onChange={(value) => updateSetting("pageLayouts", value)} />
+          )}
+
+          {activeTab !== "products" && activeTab !== "pageLayouts" && activeTab !== "security" && (
             <div className="rounded-2xl border border-white/[0.07] bg-[#0b2018] p-5 sm:p-7">
               {activeTab === "shared" && <ContentEditor label="Brand, navigation, footer & SEO" path="settings.shared" value={settings.shared} onChange={(value) => updateSetting("shared", value as SiteSettings["shared"])} />}
 

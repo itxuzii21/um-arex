@@ -6,6 +6,11 @@ import {
   type PagesContent,
   type SharedContent,
 } from "./content";
+import {
+  DEFAULT_PAGE_LAYOUTS,
+  normalizePageLayouts,
+  type PageLayouts,
+} from "./pageLayout";
 
 export interface SiteSettings {
   // Navbar
@@ -72,6 +77,7 @@ export interface SiteSettings {
   pages: PagesContent;
   shared: SharedContent;
   commerce: CommerceSettings;
+  pageLayouts: PageLayouts;
 }
 
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
@@ -139,6 +145,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   pages: DEFAULT_PAGES,
   shared: DEFAULT_SHARED,
   commerce: DEFAULT_COMMERCE,
+  pageLayouts: DEFAULT_PAGE_LAYOUTS,
 };
 
 const STORAGE_KEY_SETTINGS = "umarex_site_settings";
@@ -179,6 +186,7 @@ function mergeContent<T>(defaults: T, input: unknown): T {
 
 export function mergeSiteSettings(input?: Partial<SiteSettings> | null): SiteSettings {
   const merged = mergeContent(DEFAULT_SITE_SETTINGS, input || {}) as SiteSettings;
+  merged.pageLayouts = normalizePageLayouts(merged.pageLayouts);
   for (const [key, [previous, next]] of Object.entries(COPY_UPGRADES)) {
     const settingKey = key as keyof SiteSettings;
     if (merged[settingKey] === previous) (merged as unknown as Record<string, unknown>)[settingKey] = next;

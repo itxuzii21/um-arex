@@ -37,22 +37,7 @@ export interface Category {
 
 import watchCatalog from "./data/watches.json";
 
-// Try to load from localStorage first (for admin edits), fallback to static JSON
-const getProducts = (): Product[] => {
-  if (typeof window !== "undefined") {
-    const stored = localStorage.getItem("umarex_products");
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch {
-        return watchCatalog;
-      }
-    }
-  }
-  return watchCatalog;
-};
-
-export const PRODUCTS: Product[] = typeof window !== "undefined" ? getProducts() : watchCatalog;
+export const PRODUCTS: Product[] = watchCatalog;
 
 export const OWNER_WHATSAPP_NUMBER = "923279595329";
 export const WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/EsbVXoDJEvuIjYAp0ipzs0?mode=gi_t";

@@ -25,6 +25,12 @@ import { useCurrency } from "./data/CurrencyProvider";
 import LeatherBrandCard from "./components/LeatherBrandCard";
 import Reveal from "./components/Reveal";
 import ContentIcon from "./components/ContentIcon";
+import {
+  HOME_CARD_SIZE_CLASSES,
+  HOME_CATEGORY_ICON_SIZE_CLASSES,
+  HOME_PRODUCT_GRID_SIZE_CLASSES,
+  normalizePageLayout,
+} from "./data/pageLayout";
 
 const HERO_THEME = {
   accent: "#c6a85b",
@@ -59,6 +65,8 @@ function HomeContent() {
   const { formatPrice } = useCurrency();
   const content = settings.pages.home;
   const shared = settings.shared;
+  const layout = normalizePageLayout("home", settings.pageLayouts.home);
+  const sectionStyle = (id: string) => ({ order: layout.sectionOrder.indexOf(id) });
   const [selectedCategory, setSelectedCategory] = useState("Featured");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("featured");
@@ -136,14 +144,16 @@ function HomeContent() {
   }, [selectedCategory, featuredProducts, products, query, sort]);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-brand-green-dark font-sans text-brand-cream">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-brand-green-dark font-sans text-brand-cream">
       <Suspense fallback={null}>
         <SearchParamsHandler setSelectedCategory={setSelectedCategory} categories={categories} />
       </Suspense>
 
       <section
+        id="hero"
         className="relative z-10 isolate overflow-hidden bg-[var(--hero-deep)]"
         style={{
+          ...sectionStyle("hero"),
           "--hero-accent": heroTheme.accent,
           "--hero-glow": heroTheme.glow,
           "--hero-deep": heroTheme.deep,
@@ -338,10 +348,10 @@ function HomeContent() {
         </div>
       </section>
 
-      <section className="relative z-10 border-y border-white/[0.06] bg-white/[0.018] px-5 py-8 sm:px-8 md:px-12">
+      <section id="benefits" style={sectionStyle("benefits")} className="relative z-10 border-y border-white/[0.06] bg-white/[0.018] px-5 py-8 sm:px-8 md:px-12">
         <div className="mx-auto grid max-w-[1500px] grid-cols-2 gap-3 md:grid-cols-4">
           {content.benefits.map((item) => (
-            <Reveal key={item.id} className="flex flex-col items-start gap-3 rounded-2xl border border-white/[0.06] bg-brand-green-dark/15 p-4 lg:flex-row lg:p-5">
+            <Reveal key={item.id} className={`flex flex-col items-start gap-3 rounded-2xl border border-white/[0.06] bg-brand-green-dark/15 lg:flex-row ${HOME_CARD_SIZE_CLASSES.benefits[layout.cardSizes.benefits]}`}>
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-gold/20 bg-brand-gold/[0.06] text-brand-gold">
                 <ContentIcon name={item.icon} size={18} />
               </span>
@@ -354,22 +364,22 @@ function HomeContent() {
         </div>
       </section>
 
-      <section id="categories" className="relative z-10 scroll-mt-28 border-b border-white/[0.06] bg-brand-green-dark px-5 py-20 sm:px-8 md:px-12 md:py-24">
+      <section id="categories" style={sectionStyle("categories")} className="relative z-10 scroll-mt-28 border-b border-white/[0.06] bg-brand-green-dark px-5 py-20 sm:px-8 md:px-12 md:py-24">
         <div className="mx-auto max-w-[1500px]">
           <Reveal className="mb-8">
             <span className="mb-3 block text-[9px] font-bold uppercase tracking-[0.28em] text-brand-gold">{settings.categorySectionTag}</span>
             <h2 className="text-3xl text-brand-cream md:text-4xl">{settings.categorySectionTitle}</h2>
           </Reveal>
           <div className="no-scrollbar flex snap-x snap-mandatory flex-row flex-nowrap items-stretch justify-start gap-3 overflow-x-auto px-1 py-2 md:flex-wrap">
-            <button type="button" onClick={() => handleCategorySelect("Featured")} className={`group flex shrink-0 snap-center items-center gap-3 rounded-2xl border p-2 pr-5 text-left transition-all duration-300 ${selectedCategory === "Featured" ? "border-brand-gold/60 bg-brand-gold/[0.09]" : "border-white/10 bg-white/[0.025] hover:border-brand-gold/35 hover:bg-white/[0.045]"}`}>
-              <span className={`relative flex h-14 w-14 items-center justify-center overflow-hidden rounded-xl border bg-brand-green-mid p-2.5 ${selectedCategory === "Featured" ? "border-brand-gold/40" : "border-white/10"}`}>
+            <button type="button" onClick={() => handleCategorySelect("Featured")} className={`group flex shrink-0 snap-center items-center rounded-2xl border text-left transition-all duration-300 ${HOME_CARD_SIZE_CLASSES.categories[layout.cardSizes.categories]} ${selectedCategory === "Featured" ? "border-brand-gold/60 bg-brand-gold/[0.09]" : "border-white/10 bg-white/[0.025] hover:border-brand-gold/35 hover:bg-white/[0.045]"}`}>
+              <span className={`relative flex ${HOME_CATEGORY_ICON_SIZE_CLASSES[layout.cardSizes.categories]} items-center justify-center overflow-hidden rounded-xl border bg-brand-green-mid p-2.5 ${selectedCategory === "Featured" ? "border-brand-gold/40" : "border-white/10"}`}>
                 <Image src={shared.logoUrl} alt={content.featuredLabel} fill sizes="56px" className="object-contain p-1 brightness-110" />
               </span>
               <span className={`text-[10px] font-bold uppercase tracking-[0.16em] ${selectedCategory === "Featured" ? "text-brand-gold-light" : "text-brand-cream-muted group-hover:text-brand-gold"}`}>{content.featuredLabel}</span>
             </button>
             {categories.map((category) => (
-              <button type="button" key={category.name} onClick={() => handleCategorySelect(category.name)} className={`group flex shrink-0 snap-center items-center gap-3 rounded-2xl border p-2 pr-5 text-left transition-all duration-300 ${selectedCategory === category.name ? "border-brand-gold/60 bg-brand-gold/[0.09]" : "border-white/10 bg-white/[0.025] hover:border-brand-gold/35 hover:bg-white/[0.045]"}`}>
-                <span className={`relative h-14 w-14 overflow-hidden rounded-xl border bg-brand-green-mid ${selectedCategory === category.name ? "border-brand-gold/40" : "border-white/10"}`}>
+              <button type="button" key={category.name} onClick={() => handleCategorySelect(category.name)} className={`group flex shrink-0 snap-center items-center rounded-2xl border text-left transition-all duration-300 ${HOME_CARD_SIZE_CLASSES.categories[layout.cardSizes.categories]} ${selectedCategory === category.name ? "border-brand-gold/60 bg-brand-gold/[0.09]" : "border-white/10 bg-white/[0.025] hover:border-brand-gold/35 hover:bg-white/[0.045]"}`}>
+                <span className={`relative ${HOME_CATEGORY_ICON_SIZE_CLASSES[layout.cardSizes.categories]} overflow-hidden rounded-xl border bg-brand-green-mid ${selectedCategory === category.name ? "border-brand-gold/40" : "border-white/10"}`}>
                   <Image src={category.image} alt={category.name} fill sizes="56px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
                   <span className="absolute inset-0 bg-brand-green-dark/15 transition-colors group-hover:bg-transparent" />
                 </span>
@@ -383,7 +393,7 @@ function HomeContent() {
         </div>
       </section>
 
-      <section id="collection" className="relative z-10 scroll-mt-28 px-5 py-20 sm:px-8 md:px-12 md:py-24">
+      <section id="collection" style={sectionStyle("collection")} className="relative z-10 scroll-mt-28 px-5 py-20 sm:px-8 md:px-12 md:py-24">
         <div className="mx-auto max-w-[1500px]">
           <Reveal className="mb-9 md:flex md:items-end md:justify-between md:gap-8">
             <div>
@@ -430,7 +440,7 @@ function HomeContent() {
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: [0.215, 0.61, 0.355, 1] }}
-            className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:grid-cols-4"
+            className={`grid gap-4 ${HOME_PRODUCT_GRID_SIZE_CLASSES[layout.cardSizes.products]}`}
           >
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
@@ -449,7 +459,7 @@ function HomeContent() {
         </div>
       </section>
 
-      <section id="story" className="relative z-10 scroll-mt-28 border-t border-white/[0.06] bg-white/[0.015] px-5 py-24 sm:px-8 md:px-12 md:py-32 lg:px-20">
+      <section id="story" style={sectionStyle("story")} className="relative z-10 scroll-mt-28 border-t border-white/[0.06] bg-white/[0.015] px-5 py-24 sm:px-8 md:px-12 md:py-32 lg:px-20">
         <div className="mx-auto grid max-w-[1500px] grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
           <Reveal className="order-2 lg:order-1 lg:col-span-5">
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.8rem] border border-white/10 shadow-[0_35px_90px_-40px_rgba(0,0,0,0.9)]">
@@ -466,7 +476,7 @@ function HomeContent() {
               </h2>
               <p className="mb-5 max-w-xl text-sm font-light leading-7 text-brand-cream-muted md:text-[15px]">{settings.storyParagraph1}</p>
               <p className="mb-8 max-w-xl text-sm font-light leading-7 text-brand-cream-muted md:text-[15px]">{settings.storyParagraph2}</p>
-              <div className="grid w-full grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-brand-green-mid/35 p-4 backdrop-blur-sm sm:p-5">
+              <div className={`grid w-full grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-brand-green-mid/35 backdrop-blur-sm ${HOME_CARD_SIZE_CLASSES.storyStats[layout.cardSizes.storyStats]}`}>
                 <div className="rounded-xl border border-brand-gold/10 bg-white/[0.025] p-4 sm:p-5">
                   <span className="mb-2 block font-serif text-3xl tracking-tight text-brand-gold-light sm:text-4xl">{settings.storyStat1Value}</span>
                   <span className="block max-w-[150px] text-[9px] uppercase leading-5 tracking-[0.14em] text-brand-cream-muted">{settings.storyStat1Label}</span>
@@ -481,7 +491,7 @@ function HomeContent() {
         </div>
       </section>
 
-      <section className="relative z-10 border-t border-white/[0.06] px-5 py-24 sm:px-8 md:px-12 md:py-32">
+      <section id="specifications" style={sectionStyle("specifications")} className="relative z-10 border-t border-white/[0.06] px-5 py-24 sm:px-8 md:px-12 md:py-32">
         <div className="mx-auto max-w-[1500px]">
           <Reveal className="mb-14 text-center">
             <span className="mb-4 inline-flex rounded-full border border-brand-gold/15 bg-brand-gold/[0.05] px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.24em] text-brand-gold">{settings.specsTag}</span>
@@ -503,7 +513,7 @@ function HomeContent() {
                 { icon: <Award size={19} />, title: settings.spec2Title, desc: settings.spec2Description },
                 { icon: <Gem size={19} />, title: settings.spec3Title, desc: settings.spec3Description },
               ].map((spec, index) => (
-                <Reveal key={spec.title} delay={index * 0.1} className="flex items-start gap-5 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-5 transition-colors duration-500 hover:border-brand-gold/20 sm:p-6">
+                <Reveal key={spec.title} delay={index * 0.1} className={`flex items-start rounded-2xl border border-white/[0.07] bg-white/[0.025] transition-colors duration-500 hover:border-brand-gold/20 ${HOME_CARD_SIZE_CLASSES.specifications[layout.cardSizes.specifications]}`}>
                   <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-brand-gold/20 bg-brand-gold/[0.06] text-brand-gold-light">
                     {spec.icon}
                   </span>
@@ -518,7 +528,7 @@ function HomeContent() {
         </div>
       </section>
 
-      <section className="relative z-10 border-t border-white/[0.06] bg-white/[0.018] px-5 py-24 sm:px-8 md:px-12 md:py-32">
+      <section id="testimonials" style={sectionStyle("testimonials")} className="relative z-10 border-t border-white/[0.06] bg-white/[0.018] px-5 py-24 sm:px-8 md:px-12 md:py-32">
         <div className="mx-auto max-w-[1500px]">
           <Reveal className="mb-12 text-center">
             <span className="mb-4 inline-flex rounded-full border border-brand-gold/15 bg-brand-gold/[0.05] px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.24em] text-brand-gold">{content.testimonialsTag}</span>
@@ -526,7 +536,7 @@ function HomeContent() {
           </Reveal>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {content.testimonials.map((testimonial, index) => (
-              <Reveal key={testimonial.id} delay={index * 0.12} className="flex h-full flex-col rounded-2xl border border-white/[0.07] bg-brand-green-mid/35 p-6 transition-colors duration-500 hover:border-brand-gold/25 sm:p-7">
+              <Reveal key={testimonial.id} delay={index * 0.12} className={`flex h-full flex-col rounded-2xl border border-white/[0.07] bg-brand-green-mid/35 transition-colors duration-500 hover:border-brand-gold/25 ${HOME_CARD_SIZE_CLASSES.testimonials[layout.cardSizes.testimonials]}`}>
                 <div className="mb-6 flex gap-1 text-brand-gold" aria-label={content.ratingLabel}>
                   {Array.from({ length: 5 }).map((_, star) => (
                     <Star key={star} size={13} fill="currentColor" />
@@ -543,11 +553,11 @@ function HomeContent() {
         </div>
       </section>
 
-      <section className="relative z-10 border-t border-white/[0.06] px-5 py-24 sm:px-8 md:px-12 md:py-32">
+      <section id="sisterBrand" style={sectionStyle("sisterBrand")} className="relative z-10 border-t border-white/[0.06] px-5 py-24 sm:px-8 md:px-12 md:py-32">
         <div className="mx-auto max-w-[1500px]">
           <Reveal>
             <div className="leather-sheen leather-surface relative overflow-hidden rounded-[1.8rem] border border-brand-tan/25 shadow-[0_35px_100px_-40px_rgba(0,0,0,0.95)]">
-              <div className="relative z-10 grid grid-cols-1 items-center gap-10 p-7 sm:p-9 md:grid-cols-12 md:p-12 lg:p-16">
+              <div className={`relative z-10 grid grid-cols-1 items-center gap-10 md:grid-cols-12 ${HOME_CARD_SIZE_CLASSES.sisterBrand[layout.cardSizes.sisterBrand]}`}>
                 <div className="md:col-span-7">
                   <span className="mb-5 inline-flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.24em] text-brand-tan">
                     <span className="h-[1px] w-7 bg-brand-tan/60" /> {content.leatherTag}
@@ -584,13 +594,13 @@ function HomeContent() {
         </div>
       </section>
 
-      <section id="contact" className="relative z-10 scroll-mt-28 border-t border-white/[0.06] px-5 py-24 sm:px-8 md:px-12 md:py-32">
+      <section id="contact" style={sectionStyle("contact")} className="relative z-10 scroll-mt-28 border-t border-white/[0.06] px-5 py-24 sm:px-8 md:px-12 md:py-32">
         <div className="mx-auto grid max-w-[1500px] grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-6">
             <Reveal>
               <span className="mb-4 block text-[9px] font-bold uppercase tracking-[0.28em] text-brand-gold">{content.faqTag}</span>
               <h2 className="mb-8 text-3xl tracking-[-0.04em] text-brand-cream md:text-5xl">{content.faqTitle}</h2>
-              <div className="divide-y divide-white/[0.07] overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.02] px-5 sm:px-6">
+              <div className={`divide-y divide-white/[0.07] overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.02] ${HOME_CARD_SIZE_CLASSES.faqs[layout.cardSizes.faqs]}`}>
                 {content.faqs.map((faq, index) => (
                   <div key={faq.id}>
                     <button
@@ -616,7 +626,7 @@ function HomeContent() {
 
           <div className="lg:col-span-6">
             <Reveal delay={0.1}>
-              <div className="relative h-full min-h-[480px] overflow-hidden rounded-[1.8rem] border border-white/10 bg-gradient-to-br from-brand-green-soft/80 to-brand-green-dark/60 p-7 text-center shadow-[0_35px_100px_-45px_rgba(0,0,0,0.95)] sm:p-10">
+              <div className={`relative h-full overflow-hidden rounded-[1.8rem] border border-white/10 bg-gradient-to-br from-brand-green-soft/80 to-brand-green-dark/60 text-center shadow-[0_35px_100px_-45px_rgba(0,0,0,0.95)] ${HOME_CARD_SIZE_CLASSES.contact[layout.cardSizes.contact]}`}>
                 <div className="pointer-events-none absolute -bottom-20 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-brand-gold/10 blur-[80px]" />
                 <div className="relative z-10 flex h-full flex-col items-center justify-center">
                   <span className="mb-4 inline-flex rounded-full border border-brand-gold/20 bg-brand-gold/[0.06] px-3.5 py-2 text-[9px] font-bold uppercase tracking-[0.24em] text-brand-gold-light">{settings.contactTag}</span>
