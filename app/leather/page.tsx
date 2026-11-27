@@ -95,7 +95,7 @@ export default function LeatherPage() {
       {/* Hero */}
       <section className="relative z-10 flex min-h-[78vh] items-center justify-center px-6 py-20">
         <div className="mx-auto max-w-4xl text-center">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}>
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}>
             <span className="mb-7 inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.4em] text-brand-tan md:text-xs">
               <span className="h-[1px] w-8 bg-brand-tan/60" /> {content.heroTag} <span className="h-[1px] w-8 bg-brand-tan/60" />
             </span>

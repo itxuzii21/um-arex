@@ -165,7 +165,7 @@ function HomeContent() {
 
         <div className="relative mx-auto min-h-[920px] w-full max-w-[1600px] lg:min-h-[1020px] lg:pt-[880px] xl:min-h-[calc(100svh-104px)] xl:pt-0">
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
             className="relative z-20 px-5 pt-9 sm:px-8 lg:absolute lg:left-[5.5%] lg:top-[19%] lg:w-[43%] lg:px-0 lg:pt-0"
@@ -211,9 +211,8 @@ function HomeContent() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={heroProduct.id}
-                initial={{ opacity: 0, scale: 0.94, x: 18 }}
+                initial={false}
                 animate={{ opacity: 1, scale: 1, x: 0 }}
-                exit={{ opacity: 0, scale: 1.03, x: -18 }}
                 transition={{ duration: 0.65, ease: [0.25, 0.1, 0.25, 1] }}
                 className="absolute inset-x-[3%] bottom-[12%] top-[2%] sm:inset-x-[8%] lg:inset-x-0 lg:bottom-[9%] lg:top-0"
               >
@@ -264,7 +263,7 @@ function HomeContent() {
 
           <motion.aside
             key={`panel-${heroProduct.id}`}
-            initial={{ opacity: 0, x: 18 }}
+            initial={false}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.55 }}
             className="relative z-30 px-5 pb-10 sm:px-8 lg:px-10 xl:absolute xl:right-[3.5%] xl:top-[20%] xl:w-[245px] xl:px-0 xl:pb-0"
@@ -428,7 +427,7 @@ function HomeContent() {
 
           <motion.div
             key={selectedCategory + sort}
-            initial={{ opacity: 0, y: 15 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: [0.215, 0.61, 0.355, 1] }}
             className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:grid-cols-4"

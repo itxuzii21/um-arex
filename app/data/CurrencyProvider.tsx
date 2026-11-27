@@ -7,17 +7,6 @@ import type { CountryOption, CurrencyOption } from "./content";
 const CURRENCY_KEY = "umarex_leather_currency";
 const COUNTRY_KEY = "umarex_leather_country";
 
-const REGION_CURRENCIES: Record<string, string> = {
-  PK: "PKR",
-  US: "USD", CA: "CAD", MX: "USD", PA: "USD", DO: "USD", GT: "USD", CR: "USD",
-  GB: "GBP", IE: "GBP",
-  AT: "EUR", BE: "EUR", HR: "EUR", CY: "EUR", EE: "EUR", FI: "EUR", FR: "EUR", DE: "EUR", GR: "EUR", IT: "EUR", LV: "EUR", LT: "EUR", LU: "EUR", MT: "EUR", NL: "EUR", PT: "EUR", SK: "EUR", SI: "EUR", ES: "EUR",
-  AE: "AED", SA: "SAR", QA: "SAR", KW: "SAR", BH: "SAR", OM: "SAR",
-  AU: "AUD", NZ: "NZD",
-  JP: "JPY", CN: "CNY", HK: "CNY", MO: "CNY", TW: "CNY",
-  IN: "INR", TR: "TRY", CH: "CHF", LI: "CHF",
-};
-
 interface CurrencyValue {
   currency: CurrencyOption;
   currencyCode: string;
@@ -65,23 +54,19 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
       const nextCountry = selectedCountry?.code || "PK";
       setCountryCodeState(nextCountry);
 
-      const storedCurrency = localStorage.getItem(CURRENCY_KEY);
-      const countryCurrency = selectedCountry?.currency || "PKR";
-      const nextCurrency = storedCurrency && available.some((item) => item.code === storedCurrency)
-        ? storedCurrency
-        : available.some((item) => item.code === countryCurrency)
-          ? countryCurrency
-          : available.some((item) => item.code === REGION_CURRENCIES[detected])
-            ? REGION_CURRENCIES[detected]
-            : "PKR";
-      setCurrencyCodeState(nextCurrency);
+      const storedCurrency = sessionStorage.getItem(CURRENCY_KEY);
+      setCurrencyCodeState(
+        storedCurrency && available.some((item) => item.code === storedCurrency)
+          ? storedCurrency
+          : "PKR"
+      );
     }, 0);
     return () => clearTimeout(timer);
   }, [available, enabledCountries]);
 
   const setCurrencyCode = useCallback((code: string) => {
     setCurrencyCodeState(code);
-    localStorage.setItem(CURRENCY_KEY, code);
+    sessionStorage.setItem(CURRENCY_KEY, code);
   }, []);
 
   const setCountryCode = useCallback((code: string) => {
@@ -91,7 +76,7 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(COUNTRY_KEY, country.code);
     if (available.some((item) => item.code === country.currency)) {
       setCurrencyCodeState(country.currency);
-      localStorage.setItem(CURRENCY_KEY, country.currency);
+      sessionStorage.setItem(CURRENCY_KEY, country.currency);
     }
   }, [available, enabledCountries]);
 

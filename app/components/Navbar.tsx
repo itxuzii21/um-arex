@@ -66,7 +66,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-4 px-5 py-4 md:px-8 lg:px-12">
+        <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-3 px-5 py-4 sm:gap-4 md:px-8 lg:px-12">
           <Link href="/" className="flex shrink-0 items-center transition-transform duration-500 active:scale-95">
             <Image
               src={shared.logoUrl}
@@ -74,7 +74,7 @@ export default function Navbar() {
               width={200}
               height={66}
               priority
-              className="h-[52px] w-auto object-contain sm:h-[58px]"
+              className="h-11 w-auto max-w-[120px] object-contain sm:h-[58px] sm:max-w-none"
             />
           </Link>
 
@@ -110,8 +110,9 @@ export default function Navbar() {
             </Link>
           </nav>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2.5">
             <div className="hidden md:block"><CurrencySelector /></div>
+            <div className="md:hidden"><CurrencySelector compact /></div>
             <button
               onClick={() => setSearchOpen(true)}
               aria-label={nav.search}
@@ -149,7 +150,7 @@ export default function Navbar() {
             aria-modal="true"
             aria-label={nav.navigationMenuLabel}
             variants={menuVariants}
-            initial="closed"
+            initial={false}
             animate="opened"
             exit="closed"
             className="fixed inset-0 z-[70] flex min-h-screen flex-col overflow-y-auto bg-brand-green-dark p-5 sm:p-7"
