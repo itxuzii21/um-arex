@@ -353,6 +353,7 @@ export interface CommerceSettings {
   dispatchEstimate: string;
   currencyMarginPkr: number;
   currencySelectorLabel: string;
+  autoCurrencyEnabled: boolean;
   countrySelectorLabel: string;
   ratesUpdatedLabel: string;
   ratesNote: string;
@@ -774,6 +775,7 @@ export const DEFAULT_COMMERCE: CommerceSettings = {
   dispatchEstimate: "Dispatch within 24 hours after verification",
   currencyMarginPkr: 500,
   currencySelectorLabel: "Display currency",
+  autoCurrencyEnabled: true,
   countrySelectorLabel: "Delivery country",
   ratesUpdatedLabel: "Indicative rates",
   ratesNote: "International prices add {currencyMargin} before conversion. Rates are editable and the final order total is confirmed on WhatsApp.",

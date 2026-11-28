@@ -6,10 +6,14 @@ import { useCurrency } from "../data/CurrencyProvider";
 
 export default function CurrencySelector({ compact = false }: { compact?: boolean }) {
   const { settings } = useStore();
-  const { currencyCode, setCurrencyCode } = useCurrency();
+  const { currencyCode, setCurrencyCode, detectedCountryName, isAutoSelected } = useCurrency();
+  const detectionHint = isAutoSelected ? detectedCountryName : "";
 
   return (
-    <label className={`relative flex ${compact ? "h-8 gap-1 px-2" : "h-10 gap-1.5 px-2.5 sm:px-3"} items-center rounded-full border border-brand-gold/20 bg-brand-green-mid/50 text-brand-cream-muted transition hover:border-brand-gold/60 hover:text-brand-gold`}>
+    <label
+      title={detectionHint ? `Detected ${detectionHint}. Choose another currency to change it.` : undefined}
+      className={`relative flex ${compact ? "h-8 gap-1 px-2" : "h-10 gap-1.5 px-2.5 sm:px-3"} items-center rounded-full border border-brand-gold/20 bg-brand-green-mid/50 text-brand-cream-muted transition hover:border-brand-gold/60 hover:text-brand-gold`}
+    >
       <Globe size={compact ? 12 : 14} className="shrink-0 text-brand-gold" aria-hidden="true" />
       <span className="sr-only">{settings.commerce.currencySelectorLabel}</span>
       <select
@@ -24,6 +28,11 @@ export default function CurrencySelector({ compact = false }: { compact?: boolea
           </option>
         ))}
       </select>
+      {!compact && detectionHint && (
+        <span className="max-w-[132px] truncate text-[9px] font-medium normal-case tracking-normal text-brand-cream-muted">
+          Detected: {detectionHint}
+        </span>
+      )}
     </label>
   );
 }
