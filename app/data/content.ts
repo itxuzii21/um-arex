@@ -324,6 +324,13 @@ export interface CurrencyOption {
   rate: number;
 }
 
+export interface CountryOption {
+  code: string;
+  name: string;
+  currency: string;
+  enabled: boolean;
+}
+
 export interface CommerceSettings {
   worldwideDeliveryEnabled: boolean;
   deliveryQuoteRequired: boolean;
@@ -333,9 +340,11 @@ export interface CommerceSettings {
   dispatchEstimate: string;
   currencyMarginPkr: number;
   currencySelectorLabel: string;
+  autoCurrencyEnabled: boolean;
   ratesUpdatedLabel: string;
   ratesNote: string;
   currencies: CurrencyOption[];
+  countries: CountryOption[];
 }
 
 export const DEFAULT_PAGES: PagesContent = {
@@ -709,6 +718,7 @@ export const DEFAULT_COMMERCE: CommerceSettings = {
   dispatchEstimate: "Dispatch within 24 hours after verification",
   currencyMarginPkr: 500,
   currencySelectorLabel: "Currency / country",
+  autoCurrencyEnabled: true,
   ratesUpdatedLabel: "Indicative rates",
   ratesNote: "International prices add {currencyMargin} before conversion. Rates are editable and the final order total is confirmed on WhatsApp.",
   currencies: [
@@ -726,5 +736,53 @@ export const DEFAULT_COMMERCE: CommerceSettings = {
     { code: "TRY", symbol: "₺", locale: "tr-TR", rate: 0.12 },
     { code: "CHF", symbol: "CHF", locale: "de-CH", rate: 0.0031 },
     { code: "NZD", symbol: "NZ$", locale: "en-NZ", rate: 0.006 },
+  ],
+  countries: [
+    { code: "PK", name: "Pakistan", currency: "PKR", enabled: true },
+    { code: "US", name: "United States", currency: "USD", enabled: true },
+    { code: "CA", name: "Canada", currency: "CAD", enabled: true },
+    { code: "MX", name: "Mexico", currency: "USD", enabled: true },
+    { code: "PA", name: "Panama", currency: "USD", enabled: true },
+    { code: "DO", name: "Dominican Republic", currency: "USD", enabled: true },
+    { code: "GT", name: "Guatemala", currency: "USD", enabled: true },
+    { code: "CR", name: "Costa Rica", currency: "USD", enabled: true },
+    { code: "GB", name: "United Kingdom", currency: "GBP", enabled: true },
+    { code: "IE", name: "Ireland", currency: "GBP", enabled: true },
+    { code: "AT", name: "Austria", currency: "EUR", enabled: true },
+    { code: "BE", name: "Belgium", currency: "EUR", enabled: true },
+    { code: "HR", name: "Croatia", currency: "EUR", enabled: true },
+    { code: "CY", name: "Cyprus", currency: "EUR", enabled: true },
+    { code: "EE", name: "Estonia", currency: "EUR", enabled: true },
+    { code: "FI", name: "Finland", currency: "EUR", enabled: true },
+    { code: "FR", name: "France", currency: "EUR", enabled: true },
+    { code: "DE", name: "Germany", currency: "EUR", enabled: true },
+    { code: "GR", name: "Greece", currency: "EUR", enabled: true },
+    { code: "IT", name: "Italy", currency: "EUR", enabled: true },
+    { code: "LV", name: "Latvia", currency: "EUR", enabled: true },
+    { code: "LT", name: "Lithuania", currency: "EUR", enabled: true },
+    { code: "LU", name: "Luxembourg", currency: "EUR", enabled: true },
+    { code: "MT", name: "Malta", currency: "EUR", enabled: true },
+    { code: "NL", name: "Netherlands", currency: "EUR", enabled: true },
+    { code: "PT", name: "Portugal", currency: "EUR", enabled: true },
+    { code: "SK", name: "Slovakia", currency: "EUR", enabled: true },
+    { code: "SI", name: "Slovenia", currency: "EUR", enabled: true },
+    { code: "ES", name: "Spain", currency: "EUR", enabled: true },
+    { code: "AE", name: "United Arab Emirates", currency: "AED", enabled: true },
+    { code: "SA", name: "Saudi Arabia", currency: "SAR", enabled: true },
+    { code: "QA", name: "Qatar", currency: "SAR", enabled: true },
+    { code: "KW", name: "Kuwait", currency: "SAR", enabled: true },
+    { code: "BH", name: "Bahrain", currency: "SAR", enabled: true },
+    { code: "OM", name: "Oman", currency: "SAR", enabled: true },
+    { code: "AU", name: "Australia", currency: "AUD", enabled: true },
+    { code: "NZ", name: "New Zealand", currency: "NZD", enabled: true },
+    { code: "JP", name: "Japan", currency: "JPY", enabled: true },
+    { code: "CN", name: "China", currency: "CNY", enabled: true },
+    { code: "HK", name: "Hong Kong", currency: "CNY", enabled: true },
+    { code: "MO", name: "Macau", currency: "CNY", enabled: true },
+    { code: "TW", name: "Taiwan", currency: "CNY", enabled: true },
+    { code: "IN", name: "India", currency: "INR", enabled: true },
+    { code: "TR", name: "Türkiye", currency: "TRY", enabled: true },
+    { code: "CH", name: "Switzerland", currency: "CHF", enabled: true },
+    { code: "LI", name: "Liechtenstein", currency: "CHF", enabled: true },
   ],
 };

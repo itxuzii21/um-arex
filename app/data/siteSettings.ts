@@ -195,9 +195,19 @@ export function mergeSiteSettings(input?: Partial<SiteSettings> | null): SiteSet
     merged.bannerText = DEFAULT_SITE_SETTINGS.bannerText;
   }
   const currencies = Array.isArray(merged.commerce.currencies) ? merged.commerce.currencies : [];
-  merged.commerce.currencies = currencies.some((currency) => currency.code === "PKR")
-    ? currencies
-    : [DEFAULT_COMMERCE.currencies[0], ...currencies];
+  const normalizedCurrencies = currencies.map((currency) => ({
+    ...currency,
+    rate: currency.code === "PKR" ? 1 : Number(currency.rate) > 0 ? Number(currency.rate) : 1,
+  }));
+  merged.commerce.currencies = normalizedCurrencies.some((currency) => currency.code === "PKR")
+    ? normalizedCurrencies
+    : [DEFAULT_COMMERCE.currencies[0], ...normalizedCurrencies];
+  merged.commerce.currencyMarginPkr = Math.max(500, Number(merged.commerce.currencyMarginPkr) || 500);
+
+  const countries = Array.isArray(merged.commerce.countries) ? merged.commerce.countries : [];
+  merged.commerce.countries = countries.some((country) => country.code === "PK")
+    ? countries.map((country) => country.code === "PK" ? { ...country, currency: "PKR", enabled: true } : country)
+    : [DEFAULT_COMMERCE.countries[0], ...countries];
   return merged;
 }
 

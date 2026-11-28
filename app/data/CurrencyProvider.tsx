@@ -1,10 +1,12 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useStore } from "./StoreProvider";
-import type { CurrencyOption } from "./content";
+import type { CountryOption, CurrencyOption } from "./content";
 
 const CURRENCY_KEY = "umarex_currency";
+
+type DetectionSource = "ip" | "locale" | "none";
 
 interface CurrencyValue {
   currency: CurrencyOption;
@@ -12,6 +14,9 @@ interface CurrencyValue {
   setCurrencyCode: (code: string) => void;
   isInternational: boolean;
   detectedCountry: string;
+  detectedCountryName: string;
+  detectionSource: DetectionSource;
+  isAutoSelected: boolean;
   formatPrice: (pkr: number) => string;
   formatAmount: (amount: number) => string;
   formatPkr: (pkr: number) => string;
@@ -20,38 +25,135 @@ interface CurrencyValue {
 
 const CurrencyContext = createContext<CurrencyValue | null>(null);
 
-function detectCountry(): string {
+function readSession(key: string): string {
   try {
-    return new Intl.Locale(navigator.language || "en-PK").region || "PK";
+    return sessionStorage.getItem(key) || "";
   } catch {
-    return "PK";
+    return "";
   }
 }
 
+function writeSession(key: string, value: string): void {
+  try {
+    sessionStorage.setItem(key, value);
+  } catch {
+    return;
+  }
+}
+
+function detectLocaleCountry(): string {
+  try {
+    return new Intl.Locale(navigator.language || "").region || "";
+  } catch {
+    return "";
+  }
+}
+
+async function detectIpCountry(signal: AbortSignal): Promise<string> {
+  try {
+    const response = await fetch("/.netlify/functions/geo", { signal, cache: "no-store" });
+    if (!response.ok) return "";
+    const data = await response.json() as { countryCode?: unknown };
+    return typeof data.countryCode === "string" && /^[A-Z]{2}$/i.test(data.countryCode)
+      ? data.countryCode.toUpperCase()
+      : "";
+  } catch {
+    return "";
+  }
+}
+
+function currencyForCountry(
+  countryCode: string,
+  countries: CountryOption[],
+  currencies: CurrencyOption[]
+): string {
+  const country = countries.find((item) => item.code === countryCode && item.enabled);
+  return country && currencies.some((item) => item.code === country.currency)
+    ? country.currency
+    : "";
+}
+
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
-  const { settings } = useStore();
+  const { settings, status } = useStore();
   const [currencyCode, setCurrencyCodeState] = useState("PKR");
   const [detectedCountry, setDetectedCountry] = useState("PK");
+  const [detectionSource, setDetectionSource] = useState<DetectionSource>("none");
+  const [isAutoSelected, setIsAutoSelected] = useState(false);
+  const manualCurrencyRef = useRef(false);
   const available = settings.commerce.currencies;
+  const enabledCountries = useMemo(
+    () => settings.commerce.countries.filter((country) => country.enabled),
+    [settings.commerce.countries]
+  );
+  const autoCurrencyEnabled = settings.commerce.autoCurrencyEnabled;
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDetectedCountry(detectCountry());
-      const stored = sessionStorage.getItem(CURRENCY_KEY);
-      setCurrencyCodeState(stored && available.some((item) => item.code === stored) ? stored : "PKR");
+    if (status === "loading") return;
+
+    let cancelled = false;
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 2500);
+    const localeCountry = detectLocaleCountry();
+    const storedCurrency = readSession(CURRENCY_KEY);
+    const hasManualCurrency = Boolean(storedCurrency && available.some((item) => item.code === storedCurrency));
+
+    const initialTimer = window.setTimeout(() => {
+      manualCurrencyRef.current = hasManualCurrency;
+      setDetectedCountry(localeCountry);
+      setDetectionSource(localeCountry ? "locale" : "none");
+
+      if (hasManualCurrency) {
+        setCurrencyCodeState(storedCurrency);
+        setIsAutoSelected(false);
+      } else if (!autoCurrencyEnabled) {
+        setCurrencyCodeState("PKR");
+        setIsAutoSelected(false);
+      } else {
+        const localeCurrency = currencyForCountry(localeCountry, enabledCountries, available);
+        setCurrencyCodeState(localeCurrency || "PKR");
+        setIsAutoSelected(Boolean(localeCurrency));
+      }
+
+      void refineDetection();
     }, 0);
-    return () => clearTimeout(timer);
-  }, [available]);
+
+    async function refineDetection() {
+      if (!autoCurrencyEnabled) return;
+      const ipCountry = await detectIpCountry(controller.signal);
+      if (cancelled) return;
+
+      const nextDetectedCountry = ipCountry || localeCountry;
+      setDetectedCountry(nextDetectedCountry);
+      setDetectionSource(ipCountry ? "ip" : localeCountry ? "locale" : "none");
+
+      if (!manualCurrencyRef.current) {
+        const mappedCurrency = currencyForCountry(nextDetectedCountry, enabledCountries, available);
+        setCurrencyCodeState(mappedCurrency || "PKR");
+        setIsAutoSelected(Boolean(mappedCurrency));
+      }
+    }
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+      window.clearTimeout(initialTimer);
+      window.clearTimeout(timeout);
+    };
+  }, [autoCurrencyEnabled, available, enabledCountries, status]);
 
   const setCurrencyCode = useCallback((code: string) => {
+    manualCurrencyRef.current = true;
+    setIsAutoSelected(false);
     setCurrencyCodeState(code);
-    sessionStorage.setItem(CURRENCY_KEY, code);
+    writeSession(CURRENCY_KEY, code);
   }, []);
 
   const currency = useMemo(
     () => available.find((item) => item.code === currencyCode) || available[0] || { code: "PKR", symbol: "Rs", locale: "en-PK", rate: 1 },
     [available, currencyCode]
   );
+  const detectedCountryName = enabledCountries.find((item) => item.code === detectedCountry)?.name
+    || (detectionSource === "none" ? "" : detectedCountry);
 
   const isInternational = currency.code !== "PKR";
   const margin = Math.max(500, Number(settings.commerce.currencyMarginPkr) || 0);
@@ -82,8 +184,21 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   );
 
   const value = useMemo<CurrencyValue>(
-    () => ({ currency, currencyCode: currency.code, setCurrencyCode, isInternational, detectedCountry, formatPrice, formatAmount, formatPkr, convertPrice }),
-    [currency, setCurrencyCode, isInternational, detectedCountry, formatPrice, formatAmount, formatPkr, convertPrice]
+    () => ({
+      currency,
+      currencyCode: currency.code,
+      setCurrencyCode,
+      isInternational,
+      detectedCountry,
+      detectedCountryName,
+      detectionSource,
+      isAutoSelected,
+      formatPrice,
+      formatAmount,
+      formatPkr,
+      convertPrice,
+    }),
+    [currency, setCurrencyCode, isInternational, detectedCountry, detectedCountryName, detectionSource, isAutoSelected, formatPrice, formatAmount, formatPkr, convertPrice]
   );
 
   return <CurrencyContext.Provider value={value}>{children}</CurrencyContext.Provider>;

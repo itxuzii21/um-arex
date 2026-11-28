@@ -988,7 +988,19 @@ export default function AdminPage() {
                     <button type="button" onClick={() => setDeliveryEditorOpen(true)} className="inline-flex items-center justify-center gap-2 rounded-xl border border-brand-gold/30 px-4 py-3 text-xs font-semibold text-brand-gold transition hover:bg-brand-gold hover:text-[#082016]"><Edit3 size={14} /> Change delivery charge</button>
                   </div>
                   <div className="rounded-xl border border-brand-gold/15 bg-brand-gold/5 p-4 text-[11px] leading-6 text-[#c7b98e]">International prices add a minimum PKR 500 margin before conversion and round up to the next whole currency unit. Each rate is the number of currency units per 1 PKR and is multiplied after adding the margin. PKR prices stay unchanged. Delivery charges are confirmed on WhatsApp before payment.</div>
-                  <ContentEditor label="Worldwide delivery & currency" path="settings.commerce" value={settings.commerce} onChange={(value) => updateSetting("commerce", value as SiteSettings["commerce"])} />
+                  <label data-admin-field="settings.commerce.autoCurrencyEnabled" className="flex cursor-pointer items-start gap-3 rounded-xl border border-brand-gold/20 bg-brand-gold/5 p-5">
+                    <input type="checkbox" checked={settings.commerce.autoCurrencyEnabled} onChange={(event) => updateSetting("commerce", { ...settings.commerce, autoCurrencyEnabled: event.target.checked })} className="mt-0.5 h-4 w-4 shrink-0 accent-brand-gold" />
+                    <span>
+                      <span className="block text-xs font-semibold text-[#dbe4de]">Automatic currency by country</span>
+                      <span className="mt-1 block text-[11px] leading-5 text-[#8d9f94]">Suggests a currency from the visitor&apos;s IP country, then browser language, with PKR as fallback. A manual currency choice is never overwritten.</span>
+                    </span>
+                  </label>
+                  <ContentEditor
+                    label="Worldwide delivery & currency"
+                    path="settings.commerce"
+                    value={Object.fromEntries(Object.entries(settings.commerce).filter(([key]) => key !== "countries" && key !== "autoCurrencyEnabled"))}
+                    onChange={(value) => updateSetting("commerce", { ...settings.commerce, ...(value as Partial<SiteSettings["commerce"]>) })}
+                  />
                 </div>
               )}
 
